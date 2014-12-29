@@ -42,10 +42,5 @@
   		<artifactId>storm-kafka</artifactId>
   		<version>0.9.3</version>
   	</dependency>
-  	<dependency>
-  		<groupId>com.zqh.bigdata</groupId>
-  		<artifactId>flume-kafka-storm</artifactId>
-  		<version>1.0-SNAPSHOT</version>
-  	</dependency>
   </dependencies>
 </project>
