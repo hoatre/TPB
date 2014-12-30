@@ -9,6 +9,8 @@ import kafka.producer.ProducerConfig;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import storm.tpb.testing.*;
+
 import java.util.TimerTask;
 import java.util.Timer;
 
@@ -76,31 +78,25 @@ public class ProducerTest  extends TimerTask {
 			e.printStackTrace();
 		}	
 	}
-	
-	private static Transaction GetObject()
-	{
-		   Random randomGenerator = new Random();
-		   Integer trx_id;
-		   trx_id = randomGenerator.nextInt(1000);
-		   String trx_code;
-		   int a = randomGenerator.nextInt(5);
-		   if(a==1)trx_code="Deposit";
-		   else if (a==2)trx_code="Withdrawal";
-		   else if (a==3)trx_code="Transfer From";
-		   else if (a==4)trx_code="Transfer To";
-		   else if (a==5)trx_code="Balance Inquiry";
-		   else trx_code="Deposit";
-		   String ch_id;
-		   a = randomGenerator.nextInt(4);
-		   if(a==1)ch_id="Branch 1";
-		   else if (a==2)ch_id="Branch 2";
-		   else if (a==3)ch_id="Branch 3";
-		   else if (a==4)ch_id="Contact Center";
-		   else ch_id="Branch 1";
-		    Integer amount = randomGenerator.nextInt(200);
-		    String acc_no=java.util.UUID.randomUUID().toString();
-		Transaction tran = new  Transaction(trx_id,trx_code,ch_id,amount,acc_no,"Savings");
-		return tran;
-	}
+
+    private static storm.tpb.testing.Transaction GetObject()
+    {
+        Random randomGenerator = new Random();
+        final String trx_id = java.util.UUID.randomUUID().toString();
+        //Generate Transaction Code
+        final String[] trx_codes = new String[] {"Deposit", "Withdrawal", "Transfer From", "Transfer To", "Balance Inquiry"};
+        final Random rand = new Random();
+        final String trx_code = trx_codes[rand.nextInt(trx_codes.length)];
+        //Generate Channel ID
+        final String[] ch_ids = new String[] {"Branch 1", "Branch 2", "Branch 3", "Contact Center"};
+        final String ch_id = ch_ids[rand.nextInt(ch_ids.length)];
+        //Generate Account
+        final String[] acc_nos = new String[] {"100-121-12121212", "200-555-12313123", "100-643-10231323", "400-223-32424234", "500-123-23313443"};
+        final String acc_no = acc_nos[rand.nextInt(acc_nos.length)];
+        //Generate Amount
+        final Integer amount = randomGenerator.nextInt(200);
+        storm.tpb.testing.Transaction tran = new storm.tpb.testing.Transaction(trx_id,trx_code,ch_id,amount,acc_no,"Savings");
+        return tran;
+    }
 	
 }

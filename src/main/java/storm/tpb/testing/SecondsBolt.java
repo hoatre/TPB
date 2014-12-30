@@ -10,6 +10,7 @@ import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Values;
 import org.apache.log4j.Logger;
 import redis.clients.jedis.Jedis;
+import storm.tpb.util.Properties;
 import storm.tpb.util.TupleHelpers;
 
 import java.sql.Connection;
@@ -34,8 +35,8 @@ public class SecondsBolt implements IRichBolt {
 
     public void prepare(Map stormConf, TopologyContext context,
                         OutputCollector collector) {
-        this.host = (String)stormConf.get("redis-host");
-        this.port = Integer.valueOf(stormConf.get("redis-port").toString());
+        this.host = Properties.getString("redis.host");;
+        this.port = Properties.getInt("redis.port");
         this.collector=collector;
         reconnect();
     }
@@ -58,8 +59,8 @@ public class SecondsBolt implements IRichBolt {
         transaction.setamount(Integer.parseInt(input.getValue(1).toString()));
         LOGGER.debug("Transactions summary");
 
-        jedis.append(transaction.getch_id() + "_seconds", transaction.getamount().toString() +",");
-
+        //jedis.set(transaction.getch_id() + "_seconds", transaction.getamount().toString());
+        jedis.publish("real-time-" + transaction.getch_id(), transaction.getamount().toString());
         /*
         if (transaction.getch_id().equals("Branch 1"))
             jedis.append(transaction.getch_id(), transaction.getamount());

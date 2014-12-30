@@ -7,6 +7,7 @@ import backtype.storm.topology.OutputFieldsDeclarer;
 import backtype.storm.tuple.Tuple;
 import org.apache.log4j.Logger;
 import redis.clients.jedis.Jedis;
+import storm.tpb.util.Properties;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -30,8 +31,8 @@ public class MinutesBolt implements IRichBolt {
 
     public void prepare(Map stormConf, TopologyContext context,
                         OutputCollector collector) {
-        this.host = (String)stormConf.get("redis-host");
-        this.port = Integer.valueOf(stormConf.get("redis-port").toString());
+        this.host = Properties.getString("redis.host");;
+        this.port = Properties.getInt("redis.port");
         this.collector=collector;
         reconnect();
     }
