@@ -29,7 +29,7 @@ public class ProducerTest  extends TimerTask {
 	}
 	public static void main(String[] args) {
 		long firstArg=0;
-		if (args.length > 0) {
+		if (args.length >= 1) {
 		    try {
 		        firstArg = Long.parseLong(args[0]);
 		    } catch (NumberFormatException e) {
@@ -37,11 +37,20 @@ public class ProducerTest  extends TimerTask {
 		        System.exit(1);
 		    }
 		}
+		long secondArg=1000;
+		if (args.length >= 2){
+			 try {
+				  secondArg = Long.parseLong(args[1]);
+			    } catch (NumberFormatException e) {
+			        System.err.println("Argument" + args[1] + " must be an Long.");
+			        System.exit(1);
+			 }	
+		}
 		if(firstArg != 0)
-		rangeTime = firstArg/800;
+		rangeTime = firstArg/secondArg;
 		
 		ProducerTest producertask = new ProducerTest(storm.tpb.util.Properties.getString("kafka.topic.name"),1000);
-		new Timer().scheduleAtFixedRate(producertask,0, 800);
+		new Timer().scheduleAtFixedRate(producertask,0, secondArg);
 	}
 	
 	public void run() {
