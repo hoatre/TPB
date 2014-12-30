@@ -25,12 +25,12 @@ import backtype.storm.tuple.Tuple;
 
 public class PrinterBolt extends BaseBasicBolt {
 
-  @Override
+  
   public void execute(Tuple tuple, BasicOutputCollector collector) {
     System.out.println(tuple);
   }
 
-  @Override
+
   public void declareOutputFields(OutputFieldsDeclarer ofd) {
   }
 

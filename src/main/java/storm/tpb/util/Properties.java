@@ -20,7 +20,7 @@ public class Properties
         try
         {
             this.config = new PropertiesConfiguration(
-                    this.getClass().getResource("/storm.properties"));
+                    this.getClass().getResource("/conf.properties"));
         }
         catch (Exception ex)
         {

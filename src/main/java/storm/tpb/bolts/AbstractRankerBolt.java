@@ -76,7 +76,6 @@ public abstract class AbstractRankerBolt extends BaseBasicBolt {
   /**
    * This method functions as a template method (design pattern).
    */
-  @Override
   public final void execute(Tuple tuple, BasicOutputCollector collector) {
     if (TupleHelpers.isTickTuple(tuple)) {
       getLogger().debug("Received tick tuple, triggering emit of current rankings");
@@ -94,7 +93,6 @@ public abstract class AbstractRankerBolt extends BaseBasicBolt {
     getLogger().debug("Rankings: " + rankings);
   }
 
-  @Override
   public void declareOutputFields(OutputFieldsDeclarer declarer) {
     declarer.declare(new Fields("rankings"));
   }

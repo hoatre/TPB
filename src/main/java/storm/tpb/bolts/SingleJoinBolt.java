@@ -41,7 +41,6 @@ public class SingleJoinBolt extends BaseRichBolt {
     _outFields = outFields;
   }
 
-  @Override
   public void prepare(Map conf, TopologyContext context, OutputCollector collector) {
     _fieldLocations = new HashMap<String, GlobalStreamId>();
     _collector = collector;
@@ -72,7 +71,6 @@ public class SingleJoinBolt extends BaseRichBolt {
     }
   }
 
-  @Override
   public void execute(Tuple tuple) {
     List<Object> id = tuple.select(_idFields);
     GlobalStreamId streamId = new GlobalStreamId(tuple.getSourceComponent(), tuple.getSourceStreamId());
@@ -98,13 +96,11 @@ public class SingleJoinBolt extends BaseRichBolt {
     }
   }
 
-  @Override
   public void declareOutputFields(OutputFieldsDeclarer declarer) {
     declarer.declare(_outFields);
   }
 
   private class ExpireCallback implements TimeCacheMap.ExpiredCallback<List<Object>, Map<GlobalStreamId, Tuple>> {
-    @Override
     public void expire(List<Object> id, Map<GlobalStreamId, Tuple> tuples) {
       for (Tuple tuple : tuples.values()) {
         _collector.fail(tuple);

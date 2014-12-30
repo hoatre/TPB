@@ -84,7 +84,6 @@ public class RankableObjectWithFields implements Rankable, Serializable {
     return fields;
   }
 
-  @Override
   public int compareTo(Rankable other) {
     long delta = this.getCount() - other.getCount();
     if (delta > 0) {
@@ -139,7 +138,7 @@ public class RankableObjectWithFields implements Rankable, Serializable {
    *
    * @return
    */
-  @Override
+ 
   public Rankable copy() {
     List<Object> shallowCopyOfFields = ImmutableList.copyOf(getFields());
     return new RankableObjectWithFields(getObject(), getCount(), shallowCopyOfFields);

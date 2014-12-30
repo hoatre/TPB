@@ -17,11 +17,6 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry excluding="**" kind="src" output="target/test-classes" path="src/test/resources">
-		<attributes>
-			<attribute name="maven.pomderived" value="true"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
@@ -30,6 +25,25 @@
 	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/Administrator/.m2/repository/commons-configuration/commons-configuration/1.9/commons-configuration-1.9.jar">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="maven.groupId" value="commons-configuration"/>
+			<attribute name="maven.artifactId" value="commons-configuration"/>
+			<attribute name="maven.version" value="1.9"/>
+			<attribute name="maven.scope" value="compile"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/Administrator/.m2/repository/commons-collections/commons-collections/3.2.1/commons-collections-3.2.1.jar" sourcepath="C:/Users/Administrator/.m2/repository/commons-collections/commons-collections/3.2.1/commons-collections-3.2.1-sources.jar">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="javadoc_location" value="jar:file:/C:/Users/Administrator/.m2/repository/commons-collections/commons-collections/3.2.1/commons-collections-3.2.1-javadoc.jar!/"/>
+			<attribute name="maven.groupId" value="commons-collections"/>
+			<attribute name="maven.artifactId" value="commons-collections"/>
+			<attribute name="maven.version" value="3.2.1"/>
+			<attribute name="maven.scope" value="compile"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>

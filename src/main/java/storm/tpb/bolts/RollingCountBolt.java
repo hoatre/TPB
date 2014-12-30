@@ -86,14 +86,12 @@ public class RollingCountBolt extends BaseRichBolt {
   }
 
   @SuppressWarnings("rawtypes")
-  @Override
   public void prepare(Map stormConf, TopologyContext context, OutputCollector collector) {
     this.collector = collector;
     lastModifiedTracker = new NthLastModifiedTimeTracker(deriveNumWindowChunksFrom(this.windowLengthInSeconds,
         this.emitFrequencyInSeconds));
   }
 
-  @Override
   public void execute(Tuple tuple) {
     if (TupleHelpers.isTickTuple(tuple)) {
       LOG.debug("Received tick tuple, triggering emit of current window counts");
@@ -128,7 +126,7 @@ public class RollingCountBolt extends BaseRichBolt {
     collector.ack(tuple);
   }
 
-  @Override
+
   public void declareOutputFields(OutputFieldsDeclarer declarer) {
     declarer.declare(new Fields("obj", "count", "actualWindowLengthInSeconds"));
   }
