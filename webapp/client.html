@@ -1,0 +1,104 @@
+<html>
+  <head>
+
+    <title>REAL TIME Node.js, Redis and Socket.IO</title>
+   
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+
+    <!--Load the AJAX API-->
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    <script type="text/javascript" src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="http://github.com/joewalnes/smoothie/raw/master/smoothie.js"></script>
+    <script type="text/javascript">
+
+      var socket = io.connect('http://localhost:3000/');
+
+      socket.on('connect', function(data){
+        setStatus('connected');
+        socket.emit('subscribe-1', {channel:'real-time-Branch 1'});
+          socket.emit('subscribe-2', {channel:'real-time-Branch 2'});
+          socket.emit('subscribe-3', {channel:'real-time-Branch 3'});
+          socket.emit('subscribe-4', {channel:'real-time-Contact Center'});
+      });
+
+      socket.on('reconnecting', function(data){
+        setStatus('reconnecting');
+      });
+
+      socket.on('message', function (channel, data) {
+        console.log('received a message: ', data);
+          switch(channel) {
+              case 'real-time-Branch 1':
+                  line1.append(new Date().getTime(), data);
+                  break;
+              case 'real-time-Branch 2':
+                  line2.append(new Date().getTime(), data);
+                  break;
+              case 'real-time-Branch 3':
+                  line3.append(new Date().getTime(), data);
+                  break;
+              case 'real-time-Contact Center':
+                  line4.append(new Date().getTime(), data);
+                  break;
+              default:
+                    break;
+          }
+
+        createTimeline();
+        addMessage(data);
+      });
+
+      function addMessage(data) {
+          $('#online').html(data);
+      }
+
+      // Randomly add a data point every 500ms
+      var random = new TimeSeries();
+      // Data
+      var line1 = new TimeSeries();
+      var line2 = new TimeSeries();
+      var line3 = new TimeSeries();
+      var line4 = new TimeSeries();
+
+      setInterval(function() {
+          var socket = io.connect();
+
+          socket.on('connect',function(data){
+              //line1.append(new Date().getTime(), data);
+              //line2.append(new Date().getTime(), data);
+              //line3.append(new Date().getTime(), data);
+              //line4.append(new Date().getTime(), data);
+              createTimeline();
+          });
+
+      }, 1000);
+
+      function createTimeline() {
+          var chart = new SmoothieChart();
+
+
+          chart.addTimeSeries(line1,
+                  { strokeStyle:'rgb(0, 255, 0)', fillStyle:'rgba(0, 255, 0, 0.4)', lineWidth:3 });
+          chart.addTimeSeries(line2,
+                  { strokeStyle:'rgb(255, 0, 255)', fillStyle:'rgba(255, 0, 255, 0.3)', lineWidth:3 });
+          chart.addTimeSeries(line3,
+                  { strokeStyle:'rgb(255, 255, 0)', fillStyle:'rgba(255, 255, 0, 0.4)', lineWidth:3 });
+          chart.addTimeSeries(line4,
+                  { strokeStyle:'rgb(0, 0, 255)', fillStyle:'rgba(0, 0, 255, 0.2)', lineWidth:3 });
+          chart.streamTo(document.getElementById("chart"), 1000);
+      }
+
+
+      function setStatus(msg) {
+          console.log('Connection Status : ' + msg);
+      }
+
+
+    </script>
+  </head>
+
+  <body onload="createTimeline()">
+  <canvas id="chart" width="1000px" height="200px"></canvas>
+  </body>
+</html>
+
