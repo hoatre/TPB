@@ -55,7 +55,8 @@ public class MinutesBolt implements IRichBolt {
         transaction.setamount(Integer.parseInt(input.getValue(1).toString()));
         LOGGER.debug("Transactions summary");
 
-        jedis.append(transaction.getch_id() + "_minutes", transaction.getamount().toString() +",");
+        //jedis.append(transaction.getch_id() + "_minutes", transaction.getamount().toString() +",");
+        jedis.publish("real-time-minutes-" + transaction.getch_id(), transaction.getamount().toString());
         /*
         if (transaction.getch_id().equals("Branch 1"))
             jedis.append(transaction.getch_id(), transaction.getamount());

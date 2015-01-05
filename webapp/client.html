@@ -1,7 +1,7 @@
 <html>
   <head>
 
-    <title>REAL TIME Node.js, Redis and Socket.IO</title>
+    <title>Heart Beat Dashboard</title>
    
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 
@@ -19,6 +19,13 @@
           socket.emit('subscribe-2', {channel:'real-time-Branch 2'});
           socket.emit('subscribe-3', {channel:'real-time-Branch 3'});
           socket.emit('subscribe-4', {channel:'real-time-Contact Center'});
+          
+          //minutes
+
+          socket.emit('subscribe-5', {channel:'real-time-minutes-Branch 1'});
+          socket.emit('subscribe-6', {channel:'real-time-minutes-Branch 2'});
+          socket.emit('subscribe-7', {channel:'real-time-minutes-Branch 3'});
+          socket.emit('subscribe-8', {channel:'real-time-minutes-Contact Center'});
       });
 
       socket.on('reconnecting', function(data){
@@ -40,12 +47,24 @@
               case 'real-time-Contact Center':
                   line4.append(new Date().getTime(), data);
                   break;
+              case 'real-time-minutes-Branch 1':
+                  line5.append(new Date().getTime(), data);
+                  break;
+              case 'real-time-minutes-Branch 2':
+                  line6.append(new Date().getTime(), data);
+                  break;
+              case 'real-time-minutes-Branch 3':
+                  line7.append(new Date().getTime(), data);
+                  break;
+              case 'real-time-minutes-Contact Center':
+                  line8.append(new Date().getTime(), data);
+                  break;              
               default:
                     break;
           }
 
         createTimeline();
-        addMessage(data);
+        //addMessage(data);
       });
 
       function addMessage(data) {
@@ -59,6 +78,13 @@
       var line2 = new TimeSeries();
       var line3 = new TimeSeries();
       var line4 = new TimeSeries();
+      
+      //minutes
+
+      var line5 = new TimeSeries();
+      var line6 = new TimeSeries();
+      var line7 = new TimeSeries();
+      var line8 = new TimeSeries();
 
       setInterval(function() {
           var socket = io.connect();
@@ -73,9 +99,16 @@
 
       }, 1000);
 
+      function myYRangeFunction(range) {
+          // TODO implement your calculation using range.min and range.max
+          var min = 0;
+          var max = 10;
+          return {min: min, max: max};
+      }
+
       function createTimeline() {
           var chart = new SmoothieChart();
-
+          var chartminutes = new SmoothieChart();
 
           chart.addTimeSeries(line1,
                   { strokeStyle:'rgb(0, 255, 0)', fillStyle:'rgba(0, 255, 0, 0.4)', lineWidth:3 });
@@ -86,6 +119,17 @@
           chart.addTimeSeries(line4,
                   { strokeStyle:'rgb(0, 0, 255)', fillStyle:'rgba(0, 0, 255, 0.2)', lineWidth:3 });
           chart.streamTo(document.getElementById("chart"), 1000);
+
+          //minutes
+          chartminutes.addTimeSeries(line5,
+                  { strokeStyle:'rgb(0, 255, 0)', fillStyle:'rgba(0, 255, 0, 0.4)', lineWidth:3 });
+          chartminutes.addTimeSeries(line6,
+                  { strokeStyle:'rgb(255, 0, 255)', fillStyle:'rgba(255, 0, 255, 0.3)', lineWidth:3 });
+          chartminutes.addTimeSeries(line7,
+                  { strokeStyle:'rgb(255, 255, 0)', fillStyle:'rgba(255, 255, 0, 0.4)', lineWidth:3 });
+          chartminutes.addTimeSeries(line8,
+                  { strokeStyle:'rgb(0, 0, 255)', fillStyle:'rgba(0, 0, 255, 0.2)', lineWidth:3 });
+          chartminutes.streamTo(document.getElementById("chartminutes"), 5000);
       }
 
 
@@ -98,7 +142,27 @@
   </head>
 
   <body onload="createTimeline()">
-  <canvas id="chart" width="1000px" height="200px"></canvas>
+  <table>
+      <tr>
+          <td>Total transactions in a second</td>
+      </tr>
+      <tr>
+          <td>
+          <canvas id="chart" width="1000px" height="200px"></canvas>
+          </td>
+      </tr>
+      <tr>
+          <td>Total transactions in 10 seconds</td>
+      </tr>
+      <tr>
+          <td>
+              <canvas id="chartminutes" width="1000px" height="200px"></canvas>
+          </td>
+
+      </tr>
+      
+  </table>
+  
   </body>
 </html>
 

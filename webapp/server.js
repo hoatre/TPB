@@ -23,10 +23,16 @@ if (!module.parent) {
 
     socket.on('connection', function(client) {
         const subscribe = redis.createClient()
+        
         subscribe.subscribe('real-time-Branch 1');
         subscribe.subscribe('real-time-Branch 2');
         subscribe.subscribe('real-time-Branch 3');
         subscribe.subscribe('real-time-Contact Center');
+        //minutes
+        subscribe.subscribe('real-time-minutes-Branch 1');
+        subscribe.subscribe('real-time-minutes-Branch 2');
+        subscribe.subscribe('real-time-minutes-Branch 3');
+        subscribe.subscribe('real-time-minutes-Contact Center');
 
         subscribe.on("message", function(channel, message) {
             client.send(channel, message);

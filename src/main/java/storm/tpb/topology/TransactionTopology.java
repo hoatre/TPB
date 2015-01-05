@@ -77,7 +77,7 @@ public class TransactionTopology
         topology.setBolt(routerId, new RouterBolt(), 4).noneGrouping(spoutId);
         topology.setBolt(counterSeconds, new RollingChannelSummaryBolt(1, 1), 4).fieldsGrouping(routerId, new Fields("ch_id"));
         topology.setBolt(totalSecondsRankerId, new SecondsBolt(), 4).globalGrouping(counterSeconds);
-        topology.setBolt(counterMinutes, new RollingChannelSummaryBolt(60, 1), 4).fieldsGrouping(routerId, new Fields("ch_id"));
+        topology.setBolt(counterMinutes, new RollingChannelSummaryBolt(10, 5), 10).fieldsGrouping(routerId, new Fields("ch_id"));
         topology.setBolt(totalMinutesRankerId, new MinutesBolt(), 4).globalGrouping(counterMinutes);
 
 
