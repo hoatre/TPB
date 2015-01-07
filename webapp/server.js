@@ -6,10 +6,12 @@ const PORT = 3000;
 const HOST = 'localhost';
 
 var express = require('express'),
-    http = require('http'), 
-    server = http.createServer(app);
+    http = require('http');
+
 
 var app = express();
+
+server = http.createServer(app);
 
 const redis = require('redis');
 const client = redis.createClient();
@@ -19,11 +21,16 @@ const io = require('socket.io');
 
 if (!module.parent) {
     server.listen(PORT, HOST);
+    // At the root of your website, we show the index.html page
+    app.get('/', function(req, res) {
+        res.sendfile('./client.html')
+    });
     const socket  = io.listen(server);
 
     socket.on('connection', function(client) {
         const subscribe = redis.createClient()
-        
+
+
         subscribe.subscribe('real-time-Branch 1');
         subscribe.subscribe('real-time-Branch 2');
         subscribe.subscribe('real-time-Branch 3');
