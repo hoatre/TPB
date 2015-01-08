@@ -1,19 +1,21 @@
 {
-  "name" : "node.js",
+  "name" : "node.js kafka",
   "description" : "Realtime stats using node.js, socket.io and redis",
   "version" : "0.0.1",
   "author": {
-    "name": "Venu Anuganti",
-    "email": "venu@venublog.com"
+    "name": "TPB Team",
+    "email": ""
   },
   "dependencies" : {
     "redis": "",
     "socket.io": "",
-    "express": ""
+    "express": "",
+    "smoothie": "",
+    "kafka-node":"0.2.14"
   },
   "repository" : {
     "type": "git",
-    "url": "http://github.com/vanuganti/realtime"
+    "url": "http://github.com/hoatre/TPB"
   },
   "engines" : { 
     "node": ">=0.4.0" 
