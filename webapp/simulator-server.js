@@ -56,8 +56,8 @@ function send(message) {
 var recursive = function (times, msgs, channal, product, transactionType) {
     msgs = msgs || 10;
     times = times || 1000;
-    send(GeneratorTransaction(channal, product, transactionType));
-    if (++count == msgs) return;
+    send(GeneratorTransaction(channal, product, transactionType, msgs));
+    if (--msgs == 0) return;
     setTimeout(recursive(times, msgs, channal, product, transactionType),times);
 }
 
@@ -69,7 +69,7 @@ function randomInt (low, high) {
 
 
 //Generator transaction
-var GeneratorTransaction = function(channal, product, transactionType)
+var GeneratorTransaction = function(channal, product, transactionType, msgs)
 {
     //ID
     var trx_id = randomInt(1,9999999);
@@ -100,7 +100,7 @@ var GeneratorTransaction = function(channal, product, transactionType)
         acc_no: acc_no,
         prd_id: product,
         amount: amount,
-        count: count
+        count: msgs
     };
     var msg = JSON.stringify(trans);
     return msg;
