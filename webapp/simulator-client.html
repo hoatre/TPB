@@ -1,303 +1,303 @@
 <html>
 <head>
-<title>Web Simulator Demo</title>
-<style>
-	#chat{
-		border:solid 1px black;
-	}
-</style>
+	<title>Web Simulator Demo</title>
+	<style>
+		#chat{
+			border:solid 1px black;
+		}
+	</style>
 </head>
 <body>
-	<div id="chat"></div>
-	<form id="send-message">
+<div id="chat"></div>
+<form id="send-message">
 	<table border="1" width="100%">
-	<tr>
-		<td style="width:10%">
-			
-		</td>
-		<td style="width:40%">
-			<span style="font-size:18px;font-weight:bolder">config 1</span>
-		</td>
-		<td style="width:10%">
-			
-		</td>
-		<td style="width:40%;height:40px">
-			<span style="font-size:18px;font-weight:bolder">Config 2</span>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			Time
-		</td>
-		<td>
-			<input id="txtTime" style="width:200px;"></input>
-		</td>
-		<td>
-			Time
-		</td>
-		<td>
-			<input id="txtTime1" style="width:200px;"></input>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			Message
-		</td>
-		<td>
-			<input id="txtCountMessage" style="width:200px;"></input>
-		</td>
-		<td>
-			Message
-		</td>
-		<td>
-			<input id="txtCountMessage1" style="width:200px;"></input>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			Chanel
-		</td>
-		<td>
-			<select id="cboChanel" style="width:200px;">
-				<option value="Branch1" selected >Branch1</option>
-				<option value="Branch2">Branch2 </option>
-				<option value="Branch3">Branch3</option>
-				<option value="Branch4">Branch4</option>
-			</select>
-		</td>
-		<td>
-			Chanel
-		</td>
-		<td>
-			<select id="cboChanel1" style="width:200px;">
-				<option value="Branch1" selected >Branch1</option>
-				<option value="Branch2">Branch2 </option>
-				<option value="Branch3">Branch3</option>
-				<option value="Branch4">Branch4</option>
-			</select>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			Product
-		</td>
-		<td>
-			<select id="cboProduct" style="width:200px;">
-				<option value="Savings" selected >Savings</option>
-			</select>
-		</td>
-		<td>
-			Product
-		</td>
-		<td>
-			<select id="cboProduct1" style="width:200px;">
-				<option value="Savings" selected >Savings</option>
-			</select>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			Transaction Type
-		</td>
-		<td>
-			<select id="cboTransactionType" style="width:200px;">
-				<option value="Deposit" selected >Deposit</option>
-				<option value="Transfer form" selected >Transfer Form</option>
-				<option value="Transfer to" selected >Transfer To</option>
-				<option value="Balance" selected >Balance...</option>
-			</select>
-		</td>
-		<td>
-			Transaction Type
-		</td>
-		<td>
-			<select id="cboTransactionType1" style="width:200px;">
-				<option value="Deposit" selected >Deposit</option>
-				<option value="Transfer form" selected >Transfer Form</option>
-				<option value="Transfer to" selected >Transfer To</option>
-				<option value="Balance" selected >Balance...</option>
-			</select>
-		</td>
-	</tr>
-	<tr>
-		<td style="width:10%">
-			
-		</td>
-		<td style="width:40%">
-			<span style="font-size:18px;font-weight:bolder">config 3</span>
-		</td>
-		<td style="width:10%">
-			
-		</td>
-		<td style="width:40%;height:40px">
-			<span style="font-size:18px;font-weight:bolder">Config 4</span>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			Time
-		</td>
-		<td>
-			<input id="txtTime2" style="width:200px;"></input>
-		</td>
-		<td>
-			Time
-		</td>
-		<td>
-			<input id="txtTime3" style="width:200px;"></input>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			Message
-		</td>
-		<td>
-			<input id="txtCountMessage2" style="width:200px;"></input>
-		</td>
-		<td>
-			Message
-		</td>
-		<td>
-			<input id="txtCountMessage3" style="width:200px;"></input>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			Chanel
-		</td>
-		<td>
-			<select id="cboChanel2" style="width:200px;">
-				<option value="Branch1" selected >Branch1</option>
-				<option value="Branch2">Branch2 </option>
-				<option value="Branch3">Branch3</option>
-				<option value="Branch4">Branch4</option>
-			</select>
-		</td>
-		<td>
-			Chanel
-		</td>
-		<td>
-			<select id="cboChanel3" style="width:200px;">
-				<option value="Branch1" selected >Branch1</option>
-				<option value="Branch2">Branch2 </option>
-				<option value="Branch3">Branch3</option>
-				<option value="Branch4">Branch4</option>
-			</select>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			Product
-		</td>
-		<td>
-			<select id="cboProduct2" style="width:200px;">
-				<option value="Savings" selected >Savings</option>
-			</select>
-		</td>
-		<td>
-			Product
-		</td>
-		<td>
-			<select id="cboProduct3" style="width:200px;">
-				<option value="Savings" selected >Savings</option>
-			</select>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			Transaction Type
-		</td>
-		<td>
-			<select id="cboTransactionType2" style="width:200px;">
-				<option value="Deposit" selected >Deposit</option>
-				<option value="Transfer form" selected >Transfer Form</option>
-				<option value="Transfer to" selected >Transfer To</option>
-				<option value="Balance" selected >Balance...</option>
-			</select>
-		</td>
-		<td>
-			Transaction Type
-		</td>
-		<td>
-			<select id="cboTransactionType3" style="width:200px;">
-				<option value="Deposit" selected >Deposit</option>
-				<option value="Transfer form" selected >Transfer Form</option>
-				<option value="Transfer to" selected >Transfer To</option>
-				<option value="Balance" selected >Balance...</option>
-			</select>
-		</td>
-	</tr>
-	<tr>
-		<td colspan='4' style = 'text-align:center'>
-			<input type="submit" value="Start..."></input>
-		</td>
-	</tr>
-	</table>	
-	</form>
-	<script src="jquery-latest.min.js"></script>
-	<script src="/socket.io/socket.io.js"></script>
-	<script class="include" type="text/javascript" src="jquery.min.js"></script>
-	
-	<script>
-			var plot3;
-			var datachart=[0,0];
-		jQuery(function($){
-			var socket = io.connect('http://localhost:3001/');
-			var $messageForm = $('#send-message');
-			var $txtTime = $('#txtTime');
-			var $txtTime1 = $('#txtTime1');
-			var $txtTime2 = $('#txtTime2');
-			var $txtTime3 = $('#txtTime3');
-			var $txtCountMessage = $('#txtCountMessage');
-			var $txtCountMessage1 = $('#txtCountMessage1');
-			var $txtCountMessage2 = $('#txtCountMessage2');
-			var $txtCountMessage3 = $('#txtCountMessage3');
-			var $cboChanel = $('#cboChanel');
-			var $cboChanel1 = $('#cboChanel1');
-			var $cboChanel2 = $('#cboChanel2');
-			var $cboChanel3 = $('#cboChanel3');
-			var $cboProduct = $('#cboProduct');
-			var $cboProduct1 = $('#cboProduct1');
-			var $cboProduct2 = $('#cboProduct2');
-			var $cboProduct3 = $('#cboProduct3');
-			var $cboTransactionType = $('#cboTransactionType');
-			var $cboTransactionType1 = $('#cboTransactionType1');
-			var $cboTransactionType2 = $('#cboTransactionType2');
-			var $cboTransactionType3 = $('#cboTransactionType3');
-			var $chat = $('#chat');
-			$messageForm.submit(function(e){
-				e.preventDefault();
-				//-----------------------
-				//socket.emit('send message',$txtSec.val());
-				var obj = {
-				    time: $txtTime.val(),
-					time1: $txtTime1.val(),
-					time2: $txtTime2.val(),
-					time3: $txtTime3.val(),
-					countmessage: $txtCountMessage.val(),
-					countmessage1: $txtCountMessage1.val(),
-					countmessage2: $txtCountMessage2.val(),
-					countmessage3: $txtCountMessage3.val(),
-					chanel:$cboChanel.val(),
-					chanel1:$cboChanel1.val(),
-					chanel2:$cboChanel2.val(),
-					chanel3:$cboChanel3.val(),
-					product:$cboProduct.val(),
-					product1:$cboProduct1.val(),
-					product2:$cboProduct2.val(),
-					product3:$cboProduct3.val(),
-					transactiontype:$cboTransactionType.val(),
-					transactiontype1:$cboTransactionType1.val(),
-					transactiontype2:$cboTransactionType2.val(),
-					transactiontype3:$cboTransactionType3.val(),
-					a:5,
-					b:5
-				}
-				socket.emit('send message',obj);
-			})
-		});
+		<tr>
+			<td style="width:10%">
 
-	
-	</script>
+			</td>
+			<td style="width:40%">
+				<span style="font-size:18px;font-weight:bolder">config 1</span>
+			</td>
+			<td style="width:10%">
+
+			</td>
+			<td style="width:40%;height:40px">
+				<span style="font-size:18px;font-weight:bolder">Config 2</span>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Time
+			</td>
+			<td>
+				<input id="txtTime" style="width:200px;"></input>
+			</td>
+			<td>
+				Time
+			</td>
+			<td>
+				<input id="txtTime1" style="width:200px;"></input>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Message
+			</td>
+			<td>
+				<input id="txtCountMessage" style="width:200px;"></input>
+			</td>
+			<td>
+				Message
+			</td>
+			<td>
+				<input id="txtCountMessage1" style="width:200px;"></input>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Channel
+			</td>
+			<td>
+				<select id="cboChannel" style="width:200px;">
+					<option value="Branch1" selected >Branch1</option>
+					<option value="Branch2">Branch2 </option>
+					<option value="Branch3">Branch3</option>
+					<option value="Branch4">Branch4</option>
+				</select>
+			</td>
+			<td>
+				Channel
+			</td>
+			<td>
+				<select id="cboChannel1" style="width:200px;">
+					<option value="Branch1" selected >Branch1</option>
+					<option value="Branch2">Branch2 </option>
+					<option value="Branch3">Branch3</option>
+					<option value="Branch4">Branch4</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Product
+			</td>
+			<td>
+				<select id="cboProduct" style="width:200px;">
+					<option value="Savings" selected >Savings</option>
+				</select>
+			</td>
+			<td>
+				Product
+			</td>
+			<td>
+				<select id="cboProduct1" style="width:200px;">
+					<option value="Savings" selected >Savings</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Transaction Type
+			</td>
+			<td>
+				<select id="cboTransactionType" style="width:200px;">
+					<option value="Deposit" selected >Deposit</option>
+					<option value="Transfer form" selected >Transfer Form</option>
+					<option value="Transfer to" selected >Transfer To</option>
+					<option value="Balance" selected >Balance...</option>
+				</select>
+			</td>
+			<td>
+				Transaction Type
+			</td>
+			<td>
+				<select id="cboTransactionType1" style="width:200px;">
+					<option value="Deposit" selected >Deposit</option>
+					<option value="Transfer form" selected >Transfer Form</option>
+					<option value="Transfer to" selected >Transfer To</option>
+					<option value="Balance" selected >Balance...</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td style="width:10%">
+
+			</td>
+			<td style="width:40%">
+				<span style="font-size:18px;font-weight:bolder">config 3</span>
+			</td>
+			<td style="width:10%">
+
+			</td>
+			<td style="width:40%;height:40px">
+				<span style="font-size:18px;font-weight:bolder">Config 4</span>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Time
+			</td>
+			<td>
+				<input id="txtTime2" style="width:200px;"></input>
+			</td>
+			<td>
+				Time
+			</td>
+			<td>
+				<input id="txtTime3" style="width:200px;"></input>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Message
+			</td>
+			<td>
+				<input id="txtCountMessage2" style="width:200px;"></input>
+			</td>
+			<td>
+				Message
+			</td>
+			<td>
+				<input id="txtCountMessage3" style="width:200px;"></input>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Channel
+			</td>
+			<td>
+				<select id="cboChannel2" style="width:200px;">
+					<option value="Branch1" selected >Branch1</option>
+					<option value="Branch2">Branch2 </option>
+					<option value="Branch3">Branch3</option>
+					<option value="Branch4">Branch4</option>
+				</select>
+			</td>
+			<td>
+				Channel
+			</td>
+			<td>
+				<select id="cboChannel3" style="width:200px;">
+					<option value="Branch1" selected >Branch1</option>
+					<option value="Branch2">Branch2 </option>
+					<option value="Branch3">Branch3</option>
+					<option value="Branch4">Branch4</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Product
+			</td>
+			<td>
+				<select id="cboProduct2" style="width:200px;">
+					<option value="Savings" selected >Savings</option>
+				</select>
+			</td>
+			<td>
+				Product
+			</td>
+			<td>
+				<select id="cboProduct3" style="width:200px;">
+					<option value="Savings" selected >Savings</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Transaction Type
+			</td>
+			<td>
+				<select id="cboTransactionType2" style="width:200px;">
+					<option value="Deposit" selected >Deposit</option>
+					<option value="Transfer form" selected >Transfer Form</option>
+					<option value="Transfer to" selected >Transfer To</option>
+					<option value="Balance" selected >Balance...</option>
+				</select>
+			</td>
+			<td>
+				Transaction Type
+			</td>
+			<td>
+				<select id="cboTransactionType3" style="width:200px;">
+					<option value="Deposit" selected >Deposit</option>
+					<option value="Transfer form" selected >Transfer Form</option>
+					<option value="Transfer to" selected >Transfer To</option>
+					<option value="Balance" selected >Balance...</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td colspan='4' style = 'text-align:center'>
+				<input type="submit" value="Start..."></input>
+			</td>
+		</tr>
+	</table>
+</form>
+<script src="jquery-latest.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script class="include" type="text/javascript" src="jquery.min.js"></script>
+
+<script>
+	var plot3;
+	var datachart=[0,0];
+	jQuery(function($){
+		var socket = io.connect('http://localhost:3001/');
+		var $messageForm = $('#send-message');
+		var $txtTime = $('#txtTime');
+		var $txtTime1 = $('#txtTime1');
+		var $txtTime2 = $('#txtTime2');
+		var $txtTime3 = $('#txtTime3');
+		var $txtCountMessage = $('#txtCountMessage');
+		var $txtCountMessage1 = $('#txtCountMessage1');
+		var $txtCountMessage2 = $('#txtCountMessage2');
+		var $txtCountMessage3 = $('#txtCountMessage3');
+		var $cboChannel = $('#cboChannel');
+		var $cboChannel1 = $('#cboChannel1');
+		var $cboChannel2 = $('#cboChannel2');
+		var $cboChannel3 = $('#cboChannel3');
+		var $cboProduct = $('#cboProduct');
+		var $cboProduct1 = $('#cboProduct1');
+		var $cboProduct2 = $('#cboProduct2');
+		var $cboProduct3 = $('#cboProduct3');
+		var $cboTransactionType = $('#cboTransactionType');
+		var $cboTransactionType1 = $('#cboTransactionType1');
+		var $cboTransactionType2 = $('#cboTransactionType2');
+		var $cboTransactionType3 = $('#cboTransactionType3');
+		var $chat = $('#chat');
+		$messageForm.submit(function(e){
+			e.preventDefault();
+			//-----------------------
+			//socket.emit('send message',$txtSec.val());
+			var obj = {
+				time: $txtTime.val(),
+				time1: $txtTime1.val(),
+				time2: $txtTime2.val(),
+				time3: $txtTime3.val(),
+				countmessage: $txtCountMessage.val(),
+				countmessage1: $txtCountMessage1.val(),
+				countmessage2: $txtCountMessage2.val(),
+				countmessage3: $txtCountMessage3.val(),
+				channel:$cboChannel.val(),
+				channel1:$cboChannel1.val(),
+				channel2:$cboChannel2.val(),
+				channel3:$cboChannel3.val(),
+				product:$cboProduct.val(),
+				product1:$cboProduct1.val(),
+				product2:$cboProduct2.val(),
+				product3:$cboProduct3.val(),
+				transactiontype:$cboTransactionType.val(),
+				transactiontype1:$cboTransactionType1.val(),
+				transactiontype2:$cboTransactionType2.val(),
+				transactiontype3:$cboTransactionType3.val(),
+				a:5,
+				b:5
+			}
+			socket.emit('send message',obj);
+		})
+	});
+
+
+</script>
 </body>
 </html>
