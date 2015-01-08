@@ -9,6 +9,8 @@
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
     <script type="text/javascript" src="http://localhost:3000/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="http://github.com/joewalnes/smoothie/raw/master/smoothie.js"></script>
+    <script type="text/javascript" src="canvasjs.min.js"></script>
+
     <script type="text/javascript">
 
       var socket = io.connect('http://localhost:3000/');
@@ -37,6 +39,7 @@
           switch(channel) {
               case 'real-time-Branch 1':
                   line1.append(new Date().getTime(), data);
+                      alert(data);
                   break;
               case 'real-time-Branch 2':
                   line2.append(new Date().getTime(), data);
@@ -58,7 +61,7 @@
                   break;
               case 'real-time-minutes-Contact Center':
                   line8.append(new Date().getTime(), data);
-                  break;              
+                  break;
               default:
                     break;
           }
@@ -85,7 +88,7 @@
       var line6 = new TimeSeries();
       var line7 = new TimeSeries();
       var line8 = new TimeSeries();
-
+      //var chartCD =  [2, 0, 4, 2, 5, 6, 7, 8, 4, 2, 0, 8];
       setInterval(function() {
           var socket = io.connect();
 
@@ -105,10 +108,12 @@
           var max = 10;
           return {min: min, max: max};
       }
-
       function createTimeline() {
           var chart = new SmoothieChart();
           var chartminutes = new SmoothieChart();
+//          var ctx = document.getElementById("ChartCD").getContext("2d");
+//          var chartCD = new Chart(ctx).Line(data, options);
+          //var chartCD = new SmoothieChart();
 
           chart.addTimeSeries(line1,
                   { strokeStyle:'rgb(0, 255, 0)', fillStyle:'rgba(0, 255, 0, 0.4)', lineWidth:3 });
@@ -130,13 +135,62 @@
           chartminutes.addTimeSeries(line8,
                   { strokeStyle:'rgb(0, 0, 255)', fillStyle:'rgba(0, 0, 255, 0.2)', lineWidth:3 });
           chartminutes.streamTo(document.getElementById("chartminutes"), 5000);
+
+          //chart co dinh
+//          chartCD.addTimeSeries(line1,
+//                  { strokeStyle:'rgb(0, 255, 0)', fillStyle:'rgba(0, 255, 0, 0.4)', lineWidth:3 });
+//          chartCD.addTimeSeries(line2,
+//                  { strokeStyle:'rgb(255, 0, 255)', fillStyle:'rgba(255, 0, 255, 0.3)', lineWidth:3 });
+//          chartCD.addTimeSeries(line3,
+//                  { strokeStyle:'rgb(255, 255, 0)', fillStyle:'rgba(255, 255, 0, 0.4)', lineWidth:3 });
+//          chartCD.addTimeSeries(line4,
+//                  { strokeStyle:'rgb(0, 0, 255)', fillStyle:'rgba(0, 0, 255, 0.2)', lineWidth:3 });
+//          chartCD.streamTo(document.getElementById("chartCD"), 1000);
+          createLineChart();
+          //alert('1');
       }
 
 
       function setStatus(msg) {
           console.log('Connection Status : ' + msg);
       }
+      function createLineChart() {
+          var socket1 = io.connect('http://localhost:3000/');
+              socket1.on('listChart',function(data1){
+                  //alert(data1);
+                  var array = $.map(data1, function(value, index) {
+                      //alert(value);
+                      return [value];
+                  });
 
+                  //var limit = 100000;    //increase number of dataPoints by increasing this
+
+                  var y = 0;
+                  var data = []; var dataSeries = { type: "line" };
+                  var dataPoints = [];
+                  for (var i = 0; i < array.length; i += 1) {
+                      //alert(array[i]);
+                      //y += 1;
+                      dataPoints.push({
+                          x: i + 1,
+                          y: parseInt(array[i])
+                      });
+                  }
+                  dataSeries.dataPoints = dataPoints;
+                  data.push(dataSeries);
+
+
+              var chartCD1 = new CanvasJS.Chart("chartCD",
+                      {
+
+                          data: data  // random generator below
+
+                      });
+
+              chartCD1.render();
+              });
+
+      }
 
     </script>
   </head>
@@ -160,9 +214,18 @@
           </td>
 
       </tr>
-      
+      <tr>
+          <td>chart co dinh</td>
+      </tr>
+      <tr>
+          <td>
+              <!--<canvas id="chartCD" width="1000px" height="200px"></canvas>-->
+              <div id="chartCD" ></div>
+          </td>
+
+      </tr>
   </table>
-  
+
   </body>
 </html>
 
