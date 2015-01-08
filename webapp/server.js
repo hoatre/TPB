@@ -1,15 +1,14 @@
 /*
-    Node.js server script
-    Required node packages: express, redis, socket.io
-*/
+ Node.js server script
+ Required node packages: express, redis, socket.io
+ */
 const PORT = 3000;
 const HOST = 'localhost';
 
 var express = require('express'),
-    http = require('http'), 
+    http = require('http'),
+    app = express(),
     server = http.createServer(app);
-
-var app = express();
 
 const redis = require('redis');
 const client = redis.createClient();
@@ -20,10 +19,13 @@ const io = require('socket.io');
 if (!module.parent) {
     server.listen(PORT, HOST);
     const socket  = io.listen(server);
-
+    // At the root of your website, we show the index.html page
+    app.get('/', function(req, res) {
+        res.sendfile('./client.html')
+    });
     socket.on('connection', function(client) {
         const subscribe = redis.createClient()
-        
+
         subscribe.subscribe('real-time-Branch 1');
         subscribe.subscribe('real-time-Branch 2');
         subscribe.subscribe('real-time-Branch 3');
@@ -33,6 +35,16 @@ if (!module.parent) {
         subscribe.subscribe('real-time-minutes-Branch 2');
         subscribe.subscribe('real-time-minutes-Branch 3');
         subscribe.subscribe('real-time-minutes-Contact Center');
+
+        //var result = redis_lrange("listtest", function(redis_items) {
+        //
+        //});
+
+        //socket.emit('listChart',result);
+
+        //log('msg',result);
+
+        redis_lrange('listtest');
 
         subscribe.on("message", function(channel, message) {
             client.send(channel, message);
@@ -73,4 +85,25 @@ function log(type, msg) {
     }
 
     console.log(color + '   ' + type + '  - ' + reset + msg);
+}
+const redis1 = require('node-redis');
+const client1 = redis1.createClient();
+
+
+
+function redis_lrange(key){
+    var ar;
+    var test = client.lrange(key, 0, 59, function(err, items) {
+        if (err) {
+            console.error("error");
+            log('msg', "2");
+            return "error";
+        } else {
+            //console.log(items);
+            //log('msg', ar);
+            //buffer.push();
+            socket.emit('listChart',items);
+
+        }
+    });
 }
