@@ -10,6 +10,7 @@ import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Values;
 import org.apache.log4j.Logger;
 import redis.clients.jedis.Jedis;
+import storm.tpb.util.IntRandom;
 import storm.tpb.util.Properties;
 import storm.tpb.util.TupleHelpers;
 
@@ -17,6 +18,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -60,7 +62,19 @@ public class SecondsBolt implements IRichBolt {
         LOGGER.debug("Transactions summary");
 
         //jedis.set(transaction.getch_id() + "_seconds", transaction.getamount().toString());
+
         jedis.publish("real-time-" + transaction.getch_id(), transaction.getamount().toString());
+
+        jedis.rpush("listtest", IntRandom.randInt(1,9));
+        jedis.blpop(0, "listtest");
+
+//        List<String> list = jedis.lrange("listtest",0,9);
+//        int sum = 0;
+//        for(int i = 0; i < list.size(); i++)
+//        {
+//            sum = sum + Integer.parseInt(list.get(i));
+//        }
+//        jedis.set("10s", Integer.toString(sum));
         /*
         if (transaction.getch_id().equals("Branch 1"))
             jedis.append(transaction.getch_id(), transaction.getamount());
