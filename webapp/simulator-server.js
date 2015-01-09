@@ -70,20 +70,20 @@ var obj = {
     countmessage1: 0,
     countmessage2: 0,
     countmessage3: 0,
-    channel:'',
-    channel1:'',
-    channel2:'',
-    channel3:'',
-    product:'',
-    product1:'',
-    product2:'',
-    product3:'',
-    transactiontype:'',
-    transactiontype1:'',
-    transactiontype2:'',
-    transactiontype3:'',
-    a:5,
-    b:5
+    channel: '',
+    channel1: '',
+    channel2: '',
+    channel3: '',
+    product: '',
+    product1: '',
+    product2: '',
+    product3: '',
+    transactiontype: '',
+    transactiontype1: '',
+    transactiontype2: '',
+    transactiontype3: '',
+    a: 5,
+    b: 5
 }
 
 var cnt=-1;
@@ -93,63 +93,58 @@ var cnt3=-1;
 type='';
 function recursive()
 {
-        //console.log('conf1');
-        cnt++;
-        if(cnt>=obj.countmessage)
-        {
+
+    cnt++;
+        if (cnt >= obj.countmessage) {
             clearTimeout(recursive);
         }
-        else
-        {
-            setTimeout(recursive,obj.time);
-            send(GeneratorTransaction(obj.channal, obj.product, obj.transactionType, obj.countmessage));
+        else {
+            console.log('conf1'+obj.channel+':'+obj.countmessage);
+            setTimeout(recursive, obj.time);
+            send(GeneratorTransaction(obj.channel, obj.product, obj.transactiontype, cnt));
         }
 
 }
 function recursive1()
 {
-    //console.log('conf2');
-    cnt1++;
-    if(cnt1>=obj.countmessage1)
-    {
-        clearTimeout(recursive1);
-    }
-    else
-    {
-        setTimeout(recursive1,obj.time1);
-        send(GeneratorTransaction(obj.channal1, obj.product1, obj.transactionType1, obj.countmessage1));
-    }
 
+    cnt1++;
+        if (cnt1 >= obj.countmessage1) {
+            clearTimeout(recursive1);
+        }
+        else {
+            console.log('conf2'+obj.channel1+':'+obj.countmessage1);
+            setTimeout(recursive1, obj.time1);
+            send(GeneratorTransaction(obj.channel1, obj.product1, obj.transactiontype1, cnt1));
+        }
 }
 function recursive2()
 {
-    //console.log('conf3');
-    cnt2++;
-    if(cnt2>=obj.countmessage2)
-    {
-        clearTimeout(recursive2);
-    }
-    else
-    {
-        setTimeout(recursive2,obj.time2);
-        send(GeneratorTransaction(obj.channal2, obj.product2, obj.transactionType2, obj.countmessage2));
-    }
 
+    cnt2++;
+        if (cnt2 >= obj.countmessage2) {
+            clearTimeout(recursive2);
+        }
+        else {
+            console.log('conf3');
+            setTimeout(recursive2, obj.time2);
+            send(GeneratorTransaction(obj.channel2, obj.product2, obj.transactiontype2, cnt2));
+        }
 }
 function recursive3()
 {
-    //console.log('conf4');
-    cnt3++;
-    if(cnt3>=obj.countmessage3)
-    {
-        clearTimeout(recursive3);
-    }
-    else
-    {
-        setTimeout(recursive3,obj.time3);
-        send(GeneratorTransaction(obj.channal3, obj.product3, obj.transactionType3, obj.countmessage3));
-    }
 
+    cnt3++;
+        if(cnt3>=obj.countmessage3)
+        {
+            clearTimeout(recursive3);
+        }
+        else
+        {
+            console.log('conf4');
+            setTimeout(recursive3,obj.time3);
+            send(GeneratorTransaction(obj.channel3, obj.product3, obj.transactiontype3, cnt3));
+        }
 }
 
 //Ramdom Int
@@ -212,19 +207,20 @@ io.sockets.on('connection',function(socket){
             countmessage1: data.countmessage1,
             countmessage2: data.countmessage2,
             countmessage3: data.countmessage3,
-            channel:data.channel,
-            channel1:data.channel1,
-            channel2:data.channel2,
-            channel3:data.channel3,
-            product:data.product,
-            product1:data.product1,
-            product2:data.product2,
-            product3:data.product3,
-            transactiontype:data.transactiontype,
-            transactiontype2:data.transactiontype2,
-            transactiontype3:data.transactiontype3,
-            a:5,
-            b:5}
+            channel: data.channel,
+            channel1: data.channel1,
+            channel2: data.channel2,
+            channel3: data.channel3,
+            product: data.product,
+            product1: data.product1,
+            product2: data.product2,
+            product3: data.product3,
+            transactiontype: data.transactiontype,
+            transactiontype1: data.transactiontype1,
+            transactiontype2: data.transactiontype2,
+            transactiontype3: data.transactiontype3,
+            a: 5,
+            b: 5}
         cnt=-1;
         cnt1=-1;
         cnt2=-1;
@@ -233,7 +229,7 @@ io.sockets.on('connection',function(socket){
             recursive1();
             recursive2();
             recursive3();
-        //console.log('time:'+data.time+' - countmessage:'+data.countmessage+' - channel:'+data.channel+' - product:'+data.product+' - transactiontype:'+data.transactiontype);
+        console.log('time:'+obj.time+' - countmessage:'+obj.countmessage+' - channel:'+obj.channel+' - product:'+obj.product+' - transactiontype:'+obj.transactiontype);
 
 /*
         //Option 2
