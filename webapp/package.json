@@ -1,5 +1,5 @@
 {
-  "name" : "node.js kafka",
+  "name" : "nodejs kafka",
   "description" : "Realtime stats using node.js, socket.io and redis",
   "version" : "0.0.1",
   "author": {
@@ -7,10 +7,10 @@
     "email": ""
   },
   "dependencies" : {
-    "redis": "",
-    "socket.io": "",
-    "express": "",
-    "smoothie": "",
+    "redis": "lastest",
+    "socket.io": "lastest",
+    "express": "lastest",
+    "smoothie": "lastest",
     "kafka-node":"0.2.14"
   },
   "repository" : {
