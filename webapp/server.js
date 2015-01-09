@@ -44,7 +44,8 @@ if (!module.parent) {
 
         //log('msg',result);
 
-        redis_lrange('listtest');
+        redis_lrange('real-time-60s-Branch 1');
+        redis_lrange('real-time-60s-Branch 2');
 
         subscribe.on("message", function(channel, message) {
             client.send(channel, message);
@@ -101,7 +102,7 @@ function redis_lrange(key){
             //console.log(items);
             //log('msg', ar);
             //buffer.push();
-            socket.emit('listChart',items);
+            socket.emit('listChart-' + key,items);
 
         }
     });

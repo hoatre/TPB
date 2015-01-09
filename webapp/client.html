@@ -155,8 +155,9 @@
       }
       function createLineChart() {
           var socket1 = io.connect('http://localhost:3000/');
-              socket1.on('listChart',function(data1){
+              socket1.on('listChart-real-time-60s-Branch 1',function(data1){
                   //alert(data1);
+
                   var array = $.map(data1, function(value, index) {
                       //alert(value);
                       return [value];
@@ -188,6 +189,7 @@
 
               chartCD1.render();
               });
+
 
       }
 
