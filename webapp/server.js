@@ -86,8 +86,7 @@ function log(type, msg) {
 
     console.log(color + '   ' + type + '  - ' + reset + msg);
 }
-const redis1 = require('node-redis');
-const client1 = redis1.createClient();
+
 
 
 
