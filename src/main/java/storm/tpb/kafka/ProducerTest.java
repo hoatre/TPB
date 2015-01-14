@@ -51,7 +51,7 @@ public class ProducerTest  extends TimerTask {
 		if(firstArg != 0)
 		rangeTime = firstArg/secondArg;
 		
-		ProducerTest producertask = new ProducerTest(storm.tpb.util.Properties.getString("kafka.topic.name"),1000);
+		ProducerTest producertask = new ProducerTest(storm.tpb.util.Properties.getString("storm.kafka_topic"),1000);
 		new Timer().scheduleAtFixedRate(producertask,0, secondArg);
 	}
 	
