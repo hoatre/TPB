@@ -10,7 +10,7 @@ import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Values;
 import org.apache.log4j.Logger;
 import redis.clients.jedis.Jedis;
-import storm.tpb.util.IntRandom;
+//import storm.tpb.util.IntRandom;
 import storm.tpb.util.Properties;
 import storm.tpb.util.TupleHelpers;
 
@@ -65,8 +65,8 @@ public class SecondsBolt implements IRichBolt {
 
         jedis.publish("real-time-" + transaction.getch_id(), transaction.getamount().toString());
 
-        jedis.rpush("listtest", IntRandom.randInt(1,9));
-        jedis.blpop(0, "listtest");
+        jedis.rpush("real-time-60s-" + transaction.getch_id(), transaction.getamount().toString());
+        jedis.blpop(0, "real-time-60s-" + transaction.getch_id());
 
 //        List<String> list = jedis.lrange("listtest",0,9);
 //        int sum = 0;

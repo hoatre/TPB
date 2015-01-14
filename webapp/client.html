@@ -10,9 +10,8 @@
     <script type="text/javascript" src="http://localhost:3000/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="http://github.com/joewalnes/smoothie/raw/master/smoothie.js"></script>
     <script type="text/javascript" src="canvasjs.min.js"></script>
-
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script type="text/javascript">
-
       var socket = io.connect('http://localhost:3000/');
 
       socket.on('connect', function(data){
@@ -108,32 +107,44 @@
           return {min: min, max: max};
       }
       function createTimeline() {
-          var chart = new SmoothieChart();
+          var chart = new SmoothieChart({
+                      millisPerPixel: 50,
+                      grid: {
+                          fillStyle: 'transparent',
+                          strokeStyle: 'rgba(166,197,103,0.20)',
+                          sharpLines: true,
+                          millisPerLine: 5000,
+                          verticalSections: 8,
+                          borderVisible: false
+                      },
+                      labels: { fillStyle: '#000000' }
+                  }),canvas = document.getElementById('chart'),
+                  series = new TimeSeries();
           var chartminutes = new SmoothieChart();
 //          var ctx = document.getElementById("ChartCD").getContext("2d");
 //          var chartCD = new Chart(ctx).Line(data, options);
           //var chartCD = new SmoothieChart();
 
           chart.addTimeSeries(line1,
-                  { strokeStyle:'rgb(0, 255, 0)', fillStyle:'rgba(0, 255, 0, 0.4)', lineWidth:3 });
-          chart.addTimeSeries(line2,
-                  { strokeStyle:'rgb(255, 0, 255)', fillStyle:'rgba(255, 0, 255, 0.3)', lineWidth:3 });
-          chart.addTimeSeries(line3,
-                  { strokeStyle:'rgb(255, 255, 0)', fillStyle:'rgba(255, 255, 0, 0.4)', lineWidth:3 });
-          chart.addTimeSeries(line4,
-                  { strokeStyle:'rgb(0, 0, 255)', fillStyle:'rgba(0, 0, 255, 0.2)', lineWidth:3 });
+                  { strokeStyle: '#A6C567', fillStyle: 'rgba(166,197,103,0.20)', lineWidth:2 });
+//          chart.addTimeSeries(line2,
+//                  { strokeStyle:'rgb(255, 0, 255)', fillStyle:'rgba(255, 0, 255, 0.3)', lineWidth:3 });
+//          chart.addTimeSeries(line3,
+//                  { strokeStyle:'rgb(255, 255, 0)', fillStyle:'rgba(255, 255, 0, 0.4)', lineWidth:3 });
+//          chart.addTimeSeries(line4,
+//                  { strokeStyle:'rgb(0, 0, 255)', fillStyle:'rgba(0, 0, 255, 0.2)', lineWidth:3 });
           chart.streamTo(document.getElementById("chart"), 1000);
 
           //minutes
-          chartminutes.addTimeSeries(line5,
-                  { strokeStyle:'rgb(0, 255, 0)', fillStyle:'rgba(0, 255, 0, 0.4)', lineWidth:3 });
-          chartminutes.addTimeSeries(line6,
-                  { strokeStyle:'rgb(255, 0, 255)', fillStyle:'rgba(255, 0, 255, 0.3)', lineWidth:3 });
-          chartminutes.addTimeSeries(line7,
-                  { strokeStyle:'rgb(255, 255, 0)', fillStyle:'rgba(255, 255, 0, 0.4)', lineWidth:3 });
-          chartminutes.addTimeSeries(line8,
-                  { strokeStyle:'rgb(0, 0, 255)', fillStyle:'rgba(0, 0, 255, 0.2)', lineWidth:3 });
-          chartminutes.streamTo(document.getElementById("chartminutes"), 5000);
+//          chartminutes.addTimeSeries(line5,
+//                  { strokeStyle:'rgb(0, 255, 0)', fillStyle:'rgba(0, 255, 0, 0.4)', lineWidth:3 });
+//          chartminutes.addTimeSeries(line6,
+//                  { strokeStyle:'rgb(255, 0, 255)', fillStyle:'rgba(255, 0, 255, 0.3)', lineWidth:3 });
+//          chartminutes.addTimeSeries(line7,
+//                  { strokeStyle:'rgb(255, 255, 0)', fillStyle:'rgba(255, 255, 0, 0.4)', lineWidth:3 });
+//          chartminutes.addTimeSeries(line8,
+//                  { strokeStyle:'rgb(0, 0, 255)', fillStyle:'rgba(0, 0, 255, 0.2)', lineWidth:3 });
+          //chartminutes.streamTo(document.getElementById("chartminutes"), 5000);
 
           //chart co dinh
 //          chartCD.addTimeSeries(line1,
@@ -145,6 +156,7 @@
 //          chartCD.addTimeSeries(line4,
 //                  { strokeStyle:'rgb(0, 0, 255)', fillStyle:'rgba(0, 0, 255, 0.2)', lineWidth:3 });
 //          chartCD.streamTo(document.getElementById("chartCD"), 1000);
+
           createLineChart();
           //alert('1');
       }
@@ -154,43 +166,54 @@
           console.log('Connection Status : ' + msg);
       }
       function createLineChart() {
-          var socket1 = io.connect('http://localhost:3000/');
-              socket1.on('listChart',function(data1){
-                  //alert(data1);
-                  var array = $.map(data1, function(value, index) {
-                      //alert(value);
-                      return [value];
+          //alert('2');
+          //socket.on('connect',function(data) {
+              //subscribe.on("message", function(channel, message) {
+                  socket.on('listChart-real-time-60s-Branch 1',function(data1){
+                        //alert(data1);
+                      //alert('1');
+                      var array = $.map(data1, function(value, index) {
+                          //alert(value);
+                          return [value];
+                      });
+
+                      //var limit = 100000;    //increase number of dataPoints by increasing this
+
+                      var y = 0;
+                      var data = []; var dataSeries = { type: "line" };
+                      var dataPoints = [];
+                      for (var i = 0; i < array.length; i += 1) {
+                          //alert(array[i]);
+                          //y += 1;
+                          dataPoints.push({
+                              x: i + 1,
+                              y: parseInt(array[i])
+                          });
+                      }
+                      dataSeries.dataPoints = dataPoints;
+                      data.push(dataSeries);
+
+
+                  var chartCD1 = new CanvasJS.Chart("chartCD",
+                          {
+
+                              data: data  // random generator below
+
+                          });
+
+                  chartCD1.render();
                   });
+              //});
+          //});
 
-                  //var limit = 100000;    //increase number of dataPoints by increasing this
-
-                  var y = 0;
-                  var data = []; var dataSeries = { type: "line" };
-                  var dataPoints = [];
-                  for (var i = 0; i < array.length; i += 1) {
-                      //alert(array[i]);
-                      //y += 1;
-                      dataPoints.push({
-                          x: i + 1,
-                          y: parseInt(array[i])
-                      });
-                  }
-                  dataSeries.dataPoints = dataPoints;
-                  data.push(dataSeries);
-
-
-              var chartCD1 = new CanvasJS.Chart("chartCD",
-                      {
-
-                          data: data  // random generator below
-
-                      });
-
-              chartCD1.render();
-              });
 
       }
-
+      function ReloadBtn() {
+          //alert('1');
+          //socket.emit('reloadChart',"1");
+          createLineChart();
+          //alert('2');
+      }
     </script>
   </head>
 
@@ -204,22 +227,22 @@
           <canvas id="chart" width="1000px" height="200px"></canvas>
           </td>
       </tr>
-      <tr>
-          <td>Total transactions in 10 seconds</td>
-      </tr>
-      <tr>
-          <td>
-              <canvas id="chartminutes" width="1000px" height="200px"></canvas>
-          </td>
+      <!--<tr>-->
+          <!--<td>Total transactions in 10 seconds</td>-->
+      <!--</tr>-->
+      <!--<tr>-->
+          <!--<td>-->
+              <!--<canvas id="chartminutes" width="1000px" height="200px"></canvas>-->
+          <!--</td>-->
 
-      </tr>
+      <!--</tr>-->
       <tr>
-          <td>chart co dinh</td>
+          <td>Total value in 60s <button type="button" id="button" onclick="ReloadBtn()">Reload</button></td>
       </tr>
       <tr>
           <td>
               <!--<canvas id="chartCD" width="1000px" height="200px"></canvas>-->
-              <div id="chartCD" ></div>
+              <div id="chartCD" style="height: 300px; width: 1000px;"></div>
           </td>
 
       </tr>
