@@ -32,13 +32,13 @@
 				Time
 			</td>
 			<td>
-				<input id="txtTime" style="width:200px;"></input>
+				<input id="txtTime" style="width:200px;" onkeypress='return isNumberKey(event)'></input>
 			</td>
 			<td>
 				Time
 			</td>
 			<td>
-				<input id="txtTime1" style="width:200px;"></input>
+				<input id="txtTime1" style="width:200px;" onkeypress='return isNumberKey(event)'></input>
 			</td>
 		</tr>
 		<tr>
@@ -46,13 +46,13 @@
 				Message
 			</td>
 			<td>
-				<input id="txtCountMessage" style="width:200px;"></input>
+				<input id="txtCountMessage" style="width:200px;" onkeypress='return isNumberKey(event)'></input>
 			</td>
 			<td>
 				Message
 			</td>
 			<td>
-				<input id="txtCountMessage1" style="width:200px;"></input>
+				<input id="txtCountMessage1" style="width:200px;" onkeypress='return isNumberKey(event)'></input>
 			</td>
 		</tr>
 		<tr>
@@ -142,13 +142,13 @@
 				Time
 			</td>
 			<td>
-				<input id="txtTime2" style="width:200px;"></input>
+				<input id="txtTime2" style="width:200px;" onkeypress='return isNumberKey(event)'></input>
 			</td>
 			<td>
 				Time
 			</td>
 			<td>
-				<input id="txtTime3" style="width:200px;"></input>
+				<input id="txtTime3" style="width:200px;" onkeypress='return isNumberKey(event)'></input>
 			</td>
 		</tr>
 		<tr>
@@ -156,13 +156,13 @@
 				Message
 			</td>
 			<td>
-				<input id="txtCountMessage2" style="width:200px;"></input>
+				<input id="txtCountMessage2" style="width:200px;" onkeypress='return isNumberKey(event)'></input>
 			</td>
 			<td>
 				Message
 			</td>
 			<td>
-				<input id="txtCountMessage3" style="width:200px;"></input>
+				<input id="txtCountMessage3" style="width:200px;" onkeypress='return isNumberKey(event)'></input>
 			</td>
 		</tr>
 		<tr>
@@ -233,7 +233,7 @@
 		</tr>
 		<tr>
 			<td colspan='4' style = 'text-align:center'>
-				<input type="submit" id="btnConfigALL" value="Start..."></input>
+				<input type="submit" id="btnConfigALL" value="start..."></input>
 			</td>
 		</tr>
 	</table>
@@ -282,13 +282,33 @@
 			//socket.emit('send message',$txtSec.val());
 			//alert('submit');
 			var obj=setobj();
-			socket.emit('send message',obj);
 			$('#btnConfig1').val('stop');
 			$('#btnConfig1').val('stop');
 			$('#btnConfig2').val('stop');
 			$('#btnConfig3').val('stop');
 			$('#btnConfig4').val('stop');
-			//$('#btnConfigALL').val('stop...');
+			if($btnConfigALL.val()=='start...')
+			{
+				$('#btnConfigALL').val('stop...');
+
+			}
+			else if($btnConfigALL.val()=='stop...')
+			{
+
+				$('#btnConfigALL').val('start...');
+				obj.status='stop';
+				obj.status1='stop';
+				obj.status2='stop';
+				obj.status3='stop';
+
+				$('#btnConfig1').val('start');
+				$('#btnConfig1').val('start');
+				$('#btnConfig2').val('start');
+				$('#btnConfig3').val('start');
+				$('#btnConfig4').val('start');
+			}
+
+			socket.emit('send message',obj);
 		});
 
 		$('#btnConfig1').click( function() {
@@ -387,7 +407,12 @@
 		}
 	});
 
-
+	function isNumberKey(evt){
+		var charCode = (evt.which) ? evt.which : evt.keyCode;
+		if (charCode > 31 && (charCode < 48 || charCode > 57))
+			return false;
+		return true;
+	}
 </script>
 </body>
 </html>

@@ -99,7 +99,9 @@ function recursive()
 {
 
     cnt++;
-    if (cnt >= obj.countmessage) {
+    console.log('conf1 status:'+obj.status);
+    if (cnt >= obj.countmessage||obj.status=='stop') {
+        console.log('stop conf1');
         clearTimeout(t);
     }
     else {
@@ -113,7 +115,8 @@ function recursive1()
 {
 
     cnt1++;
-    if (cnt1 >= obj.countmessage1) {
+    if (cnt1 >= obj.countmessage1||obj.status1=='stop') {
+        console.log('stop conf2');
         clearTimeout(t1);
     }
     else {
@@ -126,11 +129,12 @@ function recursive2()
 {
 
     cnt2++;
-    if (cnt2 >= obj.countmessage2) {
+    if (cnt2 >= obj.countmessage2||obj.status2=='stop') {
+        console.log('stop conf3');
         clearTimeout(t2);
     }
     else {
-        console.log('conf3');
+        console.log('conf3'+obj.channel2+':'+obj.countmessage2);
         t2 = setTimeout(recursive2, obj.time2);
         send(GeneratorTransaction(obj.channel2, obj.product2, obj.transactiontype2, cnt2));
     }
@@ -139,13 +143,14 @@ function recursive3()
 {
 
     cnt3++;
-    if(cnt3>=obj.countmessage3)
+    if(cnt3>=obj.countmessage3||obj.status3=='stop')
     {
+        console.log('stop conf4');
         clearTimeout(t3);
     }
     else
     {
-        console.log('conf4');
+        console.log('conf4'+obj.channel3+':'+obj.countmessage3);
         t3 = setTimeout(recursive3,obj.time3);
         send(GeneratorTransaction(obj.channel3, obj.product3, obj.transactiontype3, cnt3));
     }
@@ -223,6 +228,10 @@ io.sockets.on('connection',function(socket){
             transactiontype1: data.transactiontype1,
             transactiontype2: data.transactiontype2,
             transactiontype3: data.transactiontype3,
+            status:data.status,
+            status1:data.status1,
+            status2:data.status2,
+            status3:data.status3,
             a: 5,
             b: 5}
         cnt=-1;
