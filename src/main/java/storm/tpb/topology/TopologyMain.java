@@ -1,24 +1,23 @@
 package storm.tpb.topology;
 import backtype.storm.StormSubmitter;
 import backtype.storm.generated.StormTopology;
-import backtype.storm.spout.MultiScheme;
+
 import backtype.storm.spout.SchemeAsMultiScheme;
 import backtype.storm.tuple.Values;
 import backtype.storm.utils.Utils;
 import org.apache.log4j.BasicConfigurator;
-import org.slf4j.LoggerFactory;
-import storm.kafka.SpoutConfig;
-import storm.kafka.StringScheme;
-import storm.kafka.ZkHosts;
+
+import org.json.simple.JSONValue;
+import storm.kafka.*;
 import storm.kafka.trident.OpaqueTridentKafkaSpout;
-import storm.kafka.trident.TransactionalTridentKafkaSpout;
+
 import storm.kafka.trident.TridentKafkaConfig;
-import storm.tpb.spouts.WordReader;
+
 import backtype.storm.Config;
 import backtype.storm.LocalCluster;
-import backtype.storm.topology.TopologyBuilder;
+
 import backtype.storm.tuple.Fields;
-import storm.tpb.bolts.WordCounter;
+
 import storm.tpb.bolts.FunctionRouter;
 import storm.trident.operation.*;
 import storm.tpb.util.Properties;
@@ -26,33 +25,27 @@ import storm.trident.Stream;
 import storm.trident.TridentTopology;
 import storm.trident.tuple.TridentTuple;
 import redis.clients.jedis.Jedis;
+
+import java.util.Map;
 import java.util.logging.Logger;
 
 public class TopologyMain {
+	private final org.apache.log4j.Logger LOGGER = org.apache.log4j.Logger.getLogger(this.getClass());
 	private static final String KAFKA_TOPIC =
 			Properties.getString("storm.kafka_topic");
 	public static final Jedis jedis=new Jedis(Properties.getString("redis.host"), Properties.getInt("redis.port"));;
 	public static void main(String[] args) throws Exception {
-		BasicConfigurator.configure();
-		if (args != null && args.length > 0)
-		{
-			StormSubmitter.submitTopology(
-					args[0],
-					createConfig(false),
-					createTopology());
-		}
-		else
-		{
+		Config conf = new Config();
+		conf.setMaxSpoutPending(5);
+		if (args.length == 0) {
 			LocalCluster cluster = new LocalCluster();
-			cluster.submitTopology(
-					"Transaction-Topology",
-					createConfig(true),
+			cluster.submitTopology("log-analysis", conf,
 					createTopology());
-			Thread.sleep(60000);
-			cluster.shutdown();
+		} else {
+			conf.setNumWorkers(3);
+			StormSubmitter.submitTopology(args[0], conf,
+					createTopology());
 		}
-		Utils.sleep(10000);
-
 	}
 
 	private static Config createConfig(boolean local)
@@ -68,19 +61,31 @@ public class TopologyMain {
 		return conf;
 	}
 	public static StormTopology createTopology() {
-		TridentTopology topology = new TridentTopology();
+		/*TridentTopology topology = new TridentTopology();
 		TridentKafkaConfig spoutConf = new TridentKafkaConfig(
 				new ZkHosts(Properties.getString("storm.zkhosts")) ,
 				KAFKA_TOPIC ,
 				"storm"
 		) ;
-		spoutConf. scheme = new SchemeAsMultiScheme( new StringScheme( ) ) ;
+		spoutConf. scheme = new SchemeAsMultiScheme( new StringScheme( ) ) ;*/
 
-		OpaqueTridentKafkaSpout spout = new OpaqueTridentKafkaSpout(spoutConf);
-		Stream spoutStream = topology.newStream("kafka-stream",spout);
+		TridentTopology topology = new TridentTopology();
+		/*BrokerHosts zk = new ZkHosts(Properties.getString("storm.zkhosts"));
+		TridentKafkaConfig spoutConf = new TridentKafkaConfig(zk,KAFKA_TOPIC);
+		spoutConf.scheme = new SchemeAsMultiScheme(new StringScheme());
+		OpaqueTridentKafkaSpout spout = new OpaqueTridentKafkaSpout(spoutConf);*/
+
+		SpoutConfig kafkaConf = new SpoutConfig(
+				new ZkHosts(Properties.getString("storm.zkhosts")),
+				KAFKA_TOPIC,
+				"/usr/local/zookeeper-3.3.3",
+				"Transaction-Topology");
+		kafkaConf.scheme = new SchemeAsMultiScheme(new StringScheme());
+
+		Stream spoutStream = topology.newStream("kafka-stream",new KafkaSpout(kafkaConf));
 		Fields jsonFields = new Fields("trx_id", "trx_code","ch_id","amount","acc_no","prd_id");
 		Stream parsedStream = spoutStream.each(new Fields(), new
-				FunctionRouter(), jsonFields);
+				JsonProjectFunction(jsonFields), jsonFields);
 		EWMA ewmasecond = new EWMA().sliding(1.0, EWMA.Time.SECONDS);
 		EWMA ewmaminutes = new EWMA().sliding(1.0, EWMA.Time.MINUTES);
 		EWMA ewmahours = new EWMA().sliding(1.0, EWMA.Time.HOURS);
@@ -191,11 +196,32 @@ public class TopologyMain {
 
 		return topology.build();
 	}
+
+	public static class JsonProjectFunction extends BaseFunction {
+		private Fields fields;
+		public JsonProjectFunction(Fields fields) {
+			this.fields = fields;
+		}
+		public void execute(TridentTuple tuple, TridentCollector
+				collector) {
+			String json = tuple.getString(0);
+			Map<String, Object> map = (Map<String, Object>)
+					JSONValue.parse(json);
+			Values values = new Values();
+			for (int i = 0; i < this.fields.size(); i++) {
+				values.add(map.get(this.fields.get(i)));
+			}
+			System.out.println(values + "DI DOI NHA MA");
+
+			collector.emit(values);
+		}
+	}
 	public static class FilterChannel extends BaseFilter {
 		private PARAM.Channel channel;
 		public FilterChannel(PARAM.Channel channel) {
 		}
 		public boolean isKeep(TridentTuple tuple) {
+			System.out.println( tuple.get(0) + "VINH BIET VINH BIET");
 			return tuple.get(0) == channel;
 		}
 	}
@@ -240,6 +266,7 @@ public class TopologyMain {
 			this.ewma.mark(tuple.getLong(0));
 			//	LOG.debug("Rate: {}", this.ewma.getAverageRatePer(this.emitRatePer));
 			//collector.emit(new Values(this.ewma.getAverageRatePer(this.emitRatePer)));
+			System.out.println(this.ewma.getCount(this.emitRatePer) + "TIEN NHAN");
 			collector.emit(new Values(this.ewma.getCount(this.emitRatePer)));
 		}
 	}
@@ -270,7 +297,7 @@ public class TopologyMain {
 		@Override
 		public void execute(TridentTuple tuple, TridentCollector
 				collector) {
-			this.ewma.mark(tuple.getLong(0));
+			this.ewma.mark();
 		//	LOG.debug("Rate: {}", this.ewma.getAverageRatePer(this.emitRatePer));
 			collector.emit(new Values(this.ewma.getAverageRatePer(this.emitRatePer)));
 		}
