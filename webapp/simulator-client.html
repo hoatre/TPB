@@ -17,12 +17,14 @@
 			</td>
 			<td style="width:40%">
 				<span style="font-size:18px;font-weight:bolder">config 1</span>
+				<input type="button" id="btnConfig1" value="start" />
 			</td>
 			<td style="width:10%">
 
 			</td>
 			<td style="width:40%;height:40px">
 				<span style="font-size:18px;font-weight:bolder">Config 2</span>
+				<input type="button" id="btnConfig2" value="start" />
 			</td>
 		</tr>
 		<tr>
@@ -30,13 +32,13 @@
 				Time
 			</td>
 			<td>
-				<input id="txtTime" style="width:200px;"></input>
+				<input id="txtTime" style="width:200px;" onkeypress='return isNumberKey(event)'></input>
 			</td>
 			<td>
 				Time
 			</td>
 			<td>
-				<input id="txtTime1" style="width:200px;"></input>
+				<input id="txtTime1" style="width:200px;" onkeypress='return isNumberKey(event)'></input>
 			</td>
 		</tr>
 		<tr>
@@ -44,13 +46,13 @@
 				Message
 			</td>
 			<td>
-				<input id="txtCountMessage" style="width:200px;"></input>
+				<input id="txtCountMessage" style="width:200px;" onkeypress='return isNumberKey(event)'></input>
 			</td>
 			<td>
 				Message
 			</td>
 			<td>
-				<input id="txtCountMessage1" style="width:200px;"></input>
+				<input id="txtCountMessage1" style="width:200px;" onkeypress='return isNumberKey(event)'></input>
 			</td>
 		</tr>
 		<tr>
@@ -125,12 +127,14 @@
 			</td>
 			<td style="width:40%">
 				<span style="font-size:18px;font-weight:bolder">config 3</span>
+				<input type="button" id="btnConfig3" value="start" />
 			</td>
 			<td style="width:10%">
 
 			</td>
 			<td style="width:40%;height:40px">
 				<span style="font-size:18px;font-weight:bolder">Config 4</span>
+				<input type="button" id="btnConfig4" value="start" />
 			</td>
 		</tr>
 		<tr>
@@ -138,13 +142,13 @@
 				Time
 			</td>
 			<td>
-				<input id="txtTime2" style="width:200px;"></input>
+				<input id="txtTime2" style="width:200px;" onkeypress='return isNumberKey(event)'></input>
 			</td>
 			<td>
 				Time
 			</td>
 			<td>
-				<input id="txtTime3" style="width:200px;"></input>
+				<input id="txtTime3" style="width:200px;" onkeypress='return isNumberKey(event)'></input>
 			</td>
 		</tr>
 		<tr>
@@ -152,13 +156,13 @@
 				Message
 			</td>
 			<td>
-				<input id="txtCountMessage2" style="width:200px;"></input>
+				<input id="txtCountMessage2" style="width:200px;" onkeypress='return isNumberKey(event)'></input>
 			</td>
 			<td>
 				Message
 			</td>
 			<td>
-				<input id="txtCountMessage3" style="width:200px;"></input>
+				<input id="txtCountMessage3" style="width:200px;" onkeypress='return isNumberKey(event)'></input>
 			</td>
 		</tr>
 		<tr>
@@ -229,7 +233,7 @@
 		</tr>
 		<tr>
 			<td colspan='4' style = 'text-align:center'>
-				<input type="submit" value="Start..."></input>
+				<input type="submit" id="btnConfigALL" value="start..."></input>
 			</td>
 		</tr>
 	</table>
@@ -239,10 +243,12 @@
 <script class="include" type="text/javascript" src="jquery.min.js"></script>
 
 <script>
-	var plot3;
-	var datachart=[0,0];
 	jQuery(function($){
 		var socket = io.connect('http://localhost:3001/');
+		var $btnConfig1 = $('#btnConfig1');
+		var $btnConfig2 = $('#btnConfig2');
+		var $btnConfig3 = $('#btnConfig3');
+		var $btnConfig4 = $('#btnConfig4');
 		var $messageForm = $('#send-message');
 		var $txtTime = $('#txtTime');
 		var $txtTime1 = $('#txtTime1');
@@ -265,10 +271,109 @@
 		var $cboTransactionType2 = $('#cboTransactionType2');
 		var $cboTransactionType3 = $('#cboTransactionType3');
 		var $chat = $('#chat');
+		var $btnConfig1 = $('#btnConfig1');
+		var $btnConfig2 = $('#btnConfig2');
+		var $btnConfig3 = $('#btnConfig3');
+		var $btnConfig4 = $('#btnConfig4');
+		var $btnConfigALL = $('#btnConfigALL');
 		$messageForm.submit(function(e){
 			e.preventDefault();
 			//-----------------------
 			//socket.emit('send message',$txtSec.val());
+			//alert('submit');
+			var obj=setobj();
+			$('#btnConfig1').val('stop');
+			$('#btnConfig1').val('stop');
+			$('#btnConfig2').val('stop');
+			$('#btnConfig3').val('stop');
+			$('#btnConfig4').val('stop');
+			if($btnConfigALL.val()=='start...')
+			{
+				$('#btnConfigALL').val('stop...');
+
+			}
+			else if($btnConfigALL.val()=='stop...')
+			{
+
+				$('#btnConfigALL').val('start...');
+				obj.status='stop';
+				obj.status1='stop';
+				obj.status2='stop';
+				obj.status3='stop';
+
+				$('#btnConfig1').val('start');
+				$('#btnConfig1').val('start');
+				$('#btnConfig2').val('start');
+				$('#btnConfig3').val('start');
+				$('#btnConfig4').val('start');
+			}
+
+			socket.emit('send message',obj);
+		});
+
+		$('#btnConfig1').click( function() {
+			//alert($txtCountMessage.val());
+			var obj=setobj();
+			if($btnConfig1.val()=='start')
+			{
+				$('#btnConfig1').val('stop');
+				obj.status='start';
+
+			}
+			else if($btnConfig1.val()=='stop')
+			{
+				$('#btnConfig1').val('start');
+				obj.status='stop';
+			}
+			socket.emit('btnConfig1',obj);
+		});
+		$('#btnConfig2').click( function() {
+			var obj=setobj();
+			if($btnConfig2.val()=='start')
+			{
+				$('#btnConfig2').val('stop');
+				obj.status1='start';
+
+			}
+			else if($btnConfig2.val()=='stop')
+			{
+				$('#btnConfig2').val('start');
+				obj.status1='stop';
+			}
+			socket.emit('btnConfig2',obj);
+		});
+		$('#btnConfig3').click( function() {
+			var obj=setobj();
+			if($btnConfig3.val()=='start')
+			{
+				$('#btnConfig3').val('stop');
+				obj.status2='start';
+
+			}
+			else if($btnConfig3.val()=='stop')
+			{
+				$('#btnConfig3').val('start');
+				obj.status2='stop';
+			}
+			socket.emit('btnConfig3',obj);
+		});
+		$('#btnConfig4').click( function() {
+			var obj=setobj();
+			if($btnConfig4.val()=='start')
+			{
+				$('#btnConfig4').val('stop');
+				obj.status3='start';
+
+			}
+			else if($btnConfig4.val()=='stop')
+			{
+				$('#btnConfig4').val('start');
+				obj.status3='stop';
+			}
+			socket.emit('btnConfig4',obj);
+		});
+		function setobj()
+		{
 			var obj = {
 				time: $txtTime.val(),
 				time1: $txtTime1.val(),
@@ -290,14 +395,24 @@
 				transactiontype1:$cboTransactionType1.val(),
 				transactiontype2:$cboTransactionType2.val(),
 				transactiontype3:$cboTransactionType3.val(),
+				status:$btnConfig1.val(),
+				status1:$btnConfig2.val(),
+				status2:$btnConfig3.val(),
+				status3:$btnConfig4.val(),
 				a:5,
 				b:5
 			}
-			socket.emit('send message',obj);
-		})
+
+			return obj;
+		}
 	});
 
-
+	function isNumberKey(evt){
+		var charCode = (evt.which) ? evt.which : evt.keyCode;
+		if (charCode > 31 && (charCode < 48 || charCode > 57))
+			return false;
+		return true;
+	}
 </script>
 </body>
 </html>

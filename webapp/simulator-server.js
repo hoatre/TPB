@@ -53,14 +53,14 @@ function send(message) {
 }
 
 /*
-var recursive = function (times, msgs, channal, product, transactionType) {
-    msgs = msgs || 10;
-    times = times || 1000;
-    send(GeneratorTransaction(channal, product, transactionType, msgs));
-    if (--msgs == 0) return;
-    setTimeout(recursive(times, msgs, channal, product, transactionType),times);
-}
-*/
+ var recursive = function (times, msgs, channal, product, transactionType) {
+ msgs = msgs || 10;
+ times = times || 1000;
+ send(GeneratorTransaction(channal, product, transactionType, msgs));
+ if (--msgs == 0) return;
+ setTimeout(recursive(times, msgs, channal, product, transactionType),times);
+ }
+ */
 var obj = {
     time: 0,
     time1: 0,
@@ -90,61 +90,70 @@ var cnt=-1;
 var cnt1=-1;
 var cnt2=-1;
 var cnt3=-1;
+var t;
+var t1;
+var t2;
+var t3;
 type='';
 function recursive()
 {
 
     cnt++;
-        if (cnt >= obj.countmessage) {
-            clearTimeout(recursive);
-        }
-        else {
-            console.log('conf1'+obj.channel+':'+obj.countmessage);
-            setTimeout(recursive, obj.time);
-            send(GeneratorTransaction(obj.channel, obj.product, obj.transactiontype, cnt));
-        }
+    console.log('conf1 status:'+obj.status);
+    if (cnt >= obj.countmessage||obj.status=='stop') {
+        console.log('stop conf1');
+        clearTimeout(t);
+    }
+    else {
+        console.log('conf1'+obj.channel+':'+obj.countmessage);
+        t = setTimeout(recursive, obj.time);
+        send(GeneratorTransaction(obj.channel, obj.product, obj.transactiontype, cnt));
+    }
 
 }
 function recursive1()
 {
 
     cnt1++;
-        if (cnt1 >= obj.countmessage1) {
-            clearTimeout(recursive1);
-        }
-        else {
-            console.log('conf2'+obj.channel1+':'+obj.countmessage1);
-            setTimeout(recursive1, obj.time1);
-            send(GeneratorTransaction(obj.channel1, obj.product1, obj.transactiontype1, cnt1));
-        }
+    if (cnt1 >= obj.countmessage1||obj.status1=='stop') {
+        console.log('stop conf2');
+        clearTimeout(t1);
+    }
+    else {
+        console.log('conf2'+obj.channel1+':'+obj.countmessage1);
+        t1 = setTimeout(recursive1, obj.time1);
+        send(GeneratorTransaction(obj.channel1, obj.product1, obj.transactiontype1, cnt1));
+    }
 }
 function recursive2()
 {
 
     cnt2++;
-        if (cnt2 >= obj.countmessage2) {
-            clearTimeout(recursive2);
-        }
-        else {
-            console.log('conf3');
-            setTimeout(recursive2, obj.time2);
-            send(GeneratorTransaction(obj.channel2, obj.product2, obj.transactiontype2, cnt2));
-        }
+    if (cnt2 >= obj.countmessage2||obj.status2=='stop') {
+        console.log('stop conf3');
+        clearTimeout(t2);
+    }
+    else {
+        console.log('conf3'+obj.channel2+':'+obj.countmessage2);
+        t2 = setTimeout(recursive2, obj.time2);
+        send(GeneratorTransaction(obj.channel2, obj.product2, obj.transactiontype2, cnt2));
+    }
 }
 function recursive3()
 {
 
     cnt3++;
-        if(cnt3>=obj.countmessage3)
-        {
-            clearTimeout(recursive3);
-        }
-        else
-        {
-            console.log('conf4');
-            setTimeout(recursive3,obj.time3);
-            send(GeneratorTransaction(obj.channel3, obj.product3, obj.transactiontype3, cnt3));
-        }
+    if(cnt3>=obj.countmessage3||obj.status3=='stop')
+    {
+        console.log('stop conf4');
+        clearTimeout(t3);
+    }
+    else
+    {
+        console.log('conf4'+obj.channel3+':'+obj.countmessage3);
+        t3 = setTimeout(recursive3,obj.time3);
+        send(GeneratorTransaction(obj.channel3, obj.product3, obj.transactiontype3, cnt3));
+    }
 }
 
 //Ramdom Int
@@ -219,56 +228,164 @@ io.sockets.on('connection',function(socket){
             transactiontype1: data.transactiontype1,
             transactiontype2: data.transactiontype2,
             transactiontype3: data.transactiontype3,
+            status:data.status,
+            status1:data.status1,
+            status2:data.status2,
+            status3:data.status3,
             a: 5,
             b: 5}
         cnt=-1;
         cnt1=-1;
         cnt2=-1;
         cnt3=-1;
-            recursive();
-            recursive1();
-            recursive2();
-            recursive3();
+        recursive();
+        recursive1();
+        recursive2();
+        recursive3();
         console.log('time:'+obj.time+' - countmessage:'+obj.countmessage+' - channel:'+obj.channel+' - product:'+obj.product+' - transactiontype:'+obj.transactiontype);
+    }),
+        socket.on('btnConfig1',function(data){
+            console.log('btnConfig1:'+data.status);
+            if(data.status=='start')
+            {
+                obj = {
+                    time: data.time,
+                    time1: data.time1,
+                    time2: data.time2,
+                    time3: data.time3,
+                    countmessage: data.countmessage,
+                    countmessage1: data.countmessage1,
+                    countmessage2: data.countmessage2,
+                    countmessage3: data.countmessage3,
+                    channel: data.channel,
+                    channel1: data.channel1,
+                    channel2: data.channel2,
+                    channel3: data.channel3,
+                    product: data.product,
+                    product1: data.product1,
+                    product2: data.product2,
+                    product3: data.product3,
+                    transactiontype: data.transactiontype,
+                    transactiontype1: data.transactiontype1,
+                    transactiontype2: data.transactiontype2,
+                    transactiontype3: data.transactiontype3,
+                    a: 5,
+                    b: 5}
+                cnt=-1;
 
-/*
-        //Option 2
-        for(var i1=0;i1<data.countmessage1;i1++) {
-            setInterval(recursive(
-                data.time1,//times
-                data.countmessage1,//msgs
-                data.channel1,//channal
-                data.product1,//product,
-                data.transactiontype1//transactionType
-            ), data.time1);
-        }
-        console.log('time1:'+data.time1+' - countmessage1:'+data.countmessage1+' - channel1:'+data.channel1+' - product1:'+data.product1+' - transactiontype1:'+data.transactiontype1);
+                recursive();
+            }
+            else if(data.status=='stop')
+            {
+                clearTimeout(t);
+            }
+        }),
+        socket.on('btnConfig2',function(data){
+            console.log('btnConfig2:'+data.status1);
+            if(data.status1=='start')
+            {
+                obj = {
+                    time: data.time,
+                    time1: data.time1,
+                    time2: data.time2,
+                    time3: data.time3,
+                    countmessage: data.countmessage,
+                    countmessage1: data.countmessage1,
+                    countmessage2: data.countmessage2,
+                    countmessage3: data.countmessage3,
+                    channel: data.channel,
+                    channel1: data.channel1,
+                    channel2: data.channel2,
+                    channel3: data.channel3,
+                    product: data.product,
+                    product1: data.product1,
+                    product2: data.product2,
+                    product3: data.product3,
+                    transactiontype: data.transactiontype,
+                    transactiontype1: data.transactiontype1,
+                    transactiontype2: data.transactiontype2,
+                    transactiontype3: data.transactiontype3,
+                    a: 5,
+                    b: 5}
+                cnt1=-1;
 
+                recursive1();
+            }
+            else if(data.status1=='stop')
+            {
+                clearTimeout(t1);
+            }
+        }),
+        socket.on('btnConfig3',function(data){
+            console.log('btnConfig3:'+data.status2);
+            if(data.status2=='start')
+            {
+                obj = {
+                    time: data.time,
+                    time1: data.time1,
+                    time2: data.time2,
+                    time3: data.time3,
+                    countmessage: data.countmessage,
+                    countmessage1: data.countmessage1,
+                    countmessage2: data.countmessage2,
+                    countmessage3: data.countmessage3,
+                    channel: data.channel,
+                    channel1: data.channel1,
+                    channel2: data.channel2,
+                    channel3: data.channel3,
+                    product: data.product,
+                    product1: data.product1,
+                    product2: data.product2,
+                    product3: data.product3,
+                    transactiontype: data.transactiontype,
+                    transactiontype1: data.transactiontype1,
+                    transactiontype2: data.transactiontype2,
+                    transactiontype3: data.transactiontype3,
+                    a: 5,
+                    b: 5}
+                cnt2=-1;
 
-        //Option 3
-        for(var i2=0;i2<data.countmessage2;i2++) {
-            setInterval(recursive(
-                data.time2,//times
-                data.countmessage2,//msgs
-                data.channel2,//channal
-                data.product2,//product,
-                data.transactiontype2//transactionType
-            ), data.time2);
-        }
-        console.log('time2:'+data.time2+' - countmessage2:'+data.countmessage2+' - channel2:'+data.channel2+' - product2:'+data.product2+' - transactiontype2:'+data.transactiontype2);
+                recursive2();
+            }
+            else if(data.status2=='stop')
+            {
+                clearTimeout(t2);
+            }
+        }),
+        socket.on('btnConfig4',function(data){
+            console.log('btnConfig4:'+data.status3);
+            if(data.status3=='start')
+            {
+                obj = {
+                    time: data.time,
+                    time1: data.time1,
+                    time2: data.time2,
+                    time3: data.time3,
+                    countmessage: data.countmessage,
+                    countmessage1: data.countmessage1,
+                    countmessage2: data.countmessage2,
+                    countmessage3: data.countmessage3,
+                    channel: data.channel,
+                    channel1: data.channel1,
+                    channel2: data.channel2,
+                    channel3: data.channel3,
+                    product: data.product,
+                    product1: data.product1,
+                    product2: data.product2,
+                    product3: data.product3,
+                    transactiontype: data.transactiontype,
+                    transactiontype1: data.transactiontype1,
+                    transactiontype2: data.transactiontype2,
+                    transactiontype3: data.transactiontype3,
+                    a: 5,
+                    b: 5}
+                cnt3=-1;
 
-
-        //Option 4
-        for(var i3=0;i3<data.countmessage3;i3++) {
-            setInterval(recursive(
-                data.time3,//times
-                data.countmessage3,//msgs
-                data.channel3,//channal
-                data.product3,//product,
-                data.transactiontype3//transactionType
-            ), data.time3);
-        }
-        console.log('time3:'+data.time3+' - countmessage3:'+data.countmessage3+' - channel3:'+data.channel3+' - product3:'+data.product3+' - transactiontype3:'+data.transactiontype3);
-*/
-    });
+                recursive3();
+            }
+            else if(data.status3=='stop')
+            {
+                clearTimeout(t3);
+            }
+        });
 });
