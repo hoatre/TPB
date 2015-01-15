@@ -187,6 +187,8 @@ var GeneratorTransaction = function(channal, product, transactionType, msgs)
     //Generate Amount
     var amount = randomInt(10000,100000);
 
+    var timestamp = new Date().getTime();
+
     var trans = {
         trx_id: trx_id,
         trx_code: transactionType,
@@ -194,6 +196,7 @@ var GeneratorTransaction = function(channal, product, transactionType, msgs)
         acc_no: acc_no,
         prd_id: product,
         amount: amount,
+        timestamp: timestamp,
         count: msgs
     };
     var msg = JSON.stringify(trans);
