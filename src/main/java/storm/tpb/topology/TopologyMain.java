@@ -33,7 +33,7 @@ public class TopologyMain {
 	private final org.apache.log4j.Logger LOGGER = org.apache.log4j.Logger.getLogger(this.getClass());
 	private static final String KAFKA_TOPIC =
 			Properties.getString("storm.kafka_topic");
-	public static final Jedis jedis=new Jedis(Properties.getString("redis.host"), Properties.getInt("redis.port"));;
+
 	public static void main(String[] args) throws Exception {
 		Config conf = new Config();
 		conf.setMaxSpoutPending(500);
@@ -80,8 +80,7 @@ public class TopologyMain {
 		Fields jsonFields = new Fields("trx_id", "trx_code","ch_id","amount","acc_no","prd_id");
 		Stream parsedStream = spoutStream.each(new Fields("str"), new
 				JsonProjectFunction(jsonFields), jsonFields);
-		EWMA ewmasecond = new EWMA().sliding(9.0, EWMA.Time.SECONDS).
-				withAlpha(EWMA.ONE_MINUTE_ALPHA);
+		EWMA ewmasecond = new EWMA().sliding(9.0, EWMA.Time.SECONDS);
 		EWMA ewmaminutes = new EWMA().sliding(1.0, EWMA.Time.MINUTES);
 		EWMA ewmahours = new EWMA().sliding(1.0, EWMA.Time.HOURS);
 		//Total--------------------------------------------------------
@@ -97,20 +96,19 @@ public class TopologyMain {
 		//Hours
 		Stream hoursStream = parsedStream.each(new
 				Fields(), new MovingCountFunction(ewmahours, EWMA.Time.HOURS), new
-				Fields("count"));
-*/
+				Fields("count"));*/
 		//Branch1---------------------------------------------------------------------------------
 		Stream streamBranch1  = parsedStream.each(new
 				Fields("ch_id"), new FilterChannel(PARAM.Channel.BRANCH1));
 		//Seconde
 
-		Stream secondStreambr1 = streamBranch1.each(new
-				Fields(), new MovingCountFunction(ewmasecond, EWMA.Time.MINUTES), new
+		/*Stream secondStreambr1 = streamBranch1.each(new
+				Fields(), new MovingCountFunction(ewmasecond, EWMA.Time.SECONDS), new
 				Fields("count"));
-		//secondStreambr1.each(new Fields("ch_id","count"),new FilterToJedis());
+		secondStreambr1.each(new Fields("ch_id","count"),new FilterToJedis());
 		//Minutes
 
-		/*Stream minutesStreambr1 = streamBranch1.each(new Fields("trx_id"),new MovingCountFunction(ewmaminutes, EWMA.Time.MINUTES), new
+		Stream minutesStreambr1 = streamBranch1.each(new Fields(),new MovingCountFunction(ewmaminutes, EWMA.Time.MINUTES), new
 				Fields("count"));
 		minutesStreambr1.each(new Fields("ch_id","count"),new FilterToJedis());*/
 		//Hours
@@ -119,13 +117,19 @@ public class TopologyMain {
 				Fields(), new MovingCountFunction(ewmahours, EWMA.Time.HOURS), new
 				Fields("count"));
 		hoursStreambr1.each(new Fields("ch_id","count"),new FilterToJedis());*/
-		/*//Branch2//--------------------------------------------------------------------------------
+		//TransCode//------------------------------------------------------------------------------
+		/*Stream streamDeposite = parsedStream.each(new Fields("ch_id"), new FilterTransCode(PARAM.TransCode.DEPOSIT))
+											.groupBy(new Fields("acc_no"))
+											.toStream();
+		Stream streamWithDrawl = parsedStream.each(new
+				Fields("ch_id"), new FilterTransCode(PARAM.TransCode.WITHDRAWAL));*/
+		//Branch2//--------------------------------------------------------------------------------
 		Stream streamBranch2  = parsedStream.each(new
 				Fields("ch_id"), new FilterChannel(PARAM.Channel.BRANCH2));
 		//Seconde
 
 		Stream secondStreambr2 = streamBranch2.each(new
-				Fields(), new MovingCountFunction(ewmasecond, EWMA.Time.MINUTES), new
+				Fields(), new MovingCountFunction(ewmasecond, EWMA.Time.SECONDS), new
 				Fields("count"));
 		secondStreambr2.each(new Fields("ch_id","count"),new FilterToJedis());
 		//Minutes
@@ -134,19 +138,19 @@ public class TopologyMain {
 				Fields(), new MovingCountFunction(ewmaminutes, EWMA.Time.MINUTES), new
 				Fields("count"));
 		minutesStreambr2.each(new Fields("ch_id","count"),new FilterToJedis());
-		//Hours
+		/*//Hours
 
 		Stream hoursStreambr2 = streamBranch2.each(new
 				Fields(), new MovingCountFunction(ewmahours, EWMA.Time.HOURS), new
 				Fields("count"));
-		hoursStreambr2.each(new Fields("ch_id","count"),new FilterToJedis());
+		hoursStreambr2.each(new Fields("ch_id","count"),new FilterToJedis());*/
 		//Branch3//--------------------------------------------------------------------------------
 		Stream streamBranch3  = parsedStream.each(new
 				Fields("ch_id"), new FilterChannel(PARAM.Channel.BRANCH3));
 		//Seconde
 
 		Stream secondStreambr3 = streamBranch3.each(new
-				Fields(), new MovingCountFunction(ewmasecond, EWMA.Time.MINUTES), new
+				Fields(), new MovingCountFunction(ewmasecond, EWMA.Time.SECONDS), new
 				Fields("count"));
 		secondStreambr3.each(new Fields("ch_id","count"),new FilterToJedis());
 		//Minutes
@@ -155,19 +159,19 @@ public class TopologyMain {
 				Fields(), new MovingCountFunction(ewmaminutes, EWMA.Time.MINUTES), new
 				Fields("count"));
 		minutesStreambr3.each(new Fields("ch_id","count"),new FilterToJedis());
-		//Hours
+		/*//Hours
 
 		Stream hoursStreambr3 = streamBranch3.each(new
 				Fields(), new MovingCountFunction(ewmahours, EWMA.Time.HOURS), new
 				Fields("count"));
-		hoursStreambr3.each(new Fields("ch_id","count"),new FilterToJedis());
+		hoursStreambr3.each(new Fields("ch_id","count"),new FilterToJedis());*/
 		//Branch4//--------------------------------------------------------------------------------
 		Stream streamBranch4  = parsedStream.each(new
 				Fields("ch_id"), new FilterChannel(PARAM.Channel.BRANCH4));
 		//Seconde
 
 		Stream secondStreambr4 = streamBranch4.each(new
-				Fields(), new MovingCountFunction(ewmasecond, EWMA.Time.MINUTES), new
+				Fields(), new MovingCountFunction(ewmasecond, EWMA.Time.SECONDS), new
 				Fields("count"));
 		secondStreambr4.each(new Fields("ch_id","count"),new FilterToJedis());
 		//Minutes
@@ -178,7 +182,7 @@ public class TopologyMain {
 		minutesStreambr4.each(new Fields("ch_id","count"),new FilterToJedis());
 		//Hours
 
-		Stream hoursStreambr4 = streamBranch4.each(new
+		/*Stream hoursStreambr4 = streamBranch4.each(new
 				Fields(), new MovingCountFunction(ewmahours, EWMA.Time.HOURS), new
 				Fields("count"));
 		hoursStreambr4.each(new Fields("ch_id","count"),new FilterToJedis());*/
@@ -222,6 +226,16 @@ public class TopologyMain {
 		}
 	}
 
+	public static class FilterTransCode extends BaseFilter {
+		private  PARAM.TransCode transCode;
+		public FilterTransCode(PARAM.TransCode transCode) {
+			this.transCode = transCode;
+		}
+		public boolean isKeep(TridentTuple tuple) {
+			return tuple.get(0).equals( transCode.getValue());
+		}
+	}
+
 	public static class Print1 extends BaseFilter {
 
 		public Print1() {
@@ -233,7 +247,6 @@ public class TopologyMain {
 			return true;
 		}
 	}
-
 
 	public static class Print extends BaseFilter {
 
@@ -250,12 +263,13 @@ public class TopologyMain {
 
 	public static class FilterToJedis extends BaseFilter {
 		//	private static final Logger LOG = LoggerFactory.getLogger(BaseFunction.class);
+		private Jedis jedis;
 		public FilterToJedis(){
-
+			this.jedis=new Jedis(Properties.getString("redis.host"), Properties.getInt("redis.port"));
 		}
 		@Override
 		public boolean isKeep(TridentTuple tuple){
-			TopologyMain.jedis.publish("real-time-" + tuple.getString(0), tuple.getLong(1).toString());
+			this.jedis.publish("real-time-" + tuple.getString(0), tuple.getLong(1).toString());
 			return true;
 			//TopologyMain.jedis.rpush("real-time-60s-" + transaction.getch_id(), transaction.getamount().toString());
 			//TopologyMain.jedis.blpop(0, "real-time-60s-" + transaction.getch_id());
@@ -276,40 +290,10 @@ public class TopologyMain {
 			this.ewma.mark();
 			//	LOG.debug("Rate: {}", this.ewma.getAverageRatePer(this.emitRatePer));
 			//collector.emit(new Values(this.ewma.getAverageRatePer(this.emitRatePer)));
-			System.out.println(this.ewma.getCount(this.emitRatePer) + "TIEN NHAN");
-			collector.emit(new Values(this.ewma.getCount(this.emitRatePer)));
+			System.out.println(this.ewma.getCount() + "TIEN NHAN");
+			collector.emit(new Values(this.ewma.getCount()));
 		}
 	}
 
-	public static class PublishToRedis extends BaseFunction {
-		//	private static final Logger LOG = LoggerFactory.getLogger(BaseFunction.class);
-		public PublishToRedis(){
 
-		}
-		@Override
-		public void execute(TridentTuple tuple, TridentCollector
-				collector) {
-			TopologyMain.jedis.publish("real-time-" + tuple.getString(0), tuple.getLong(1).toString());
-
-			//TopologyMain.jedis.rpush("real-time-60s-" + transaction.getch_id(), transaction.getamount().toString());
-			//TopologyMain.jedis.blpop(0, "real-time-60s-" + transaction.getch_id());
-		}
-	}
-
-	public static class MovingAverageFunction extends BaseFunction {
-		//	private static final Logger LOG = LoggerFactory.getLogger(BaseFunction.class);
-		private EWMA ewma;
-		private EWMA.Time emitRatePer;
-		public MovingAverageFunction(EWMA ewma, EWMA.Time emitRatePer){
-			this.ewma = ewma;
-			this.emitRatePer = emitRatePer;
-		}
-		@Override
-		public void execute(TridentTuple tuple, TridentCollector
-				collector) {
-			this.ewma.mark();
-			//	LOG.debug("Rate: {}", this.ewma.getAverageRatePer(this.emitRatePer));
-			collector.emit(new Values(this.ewma.getAverageRatePer(this.emitRatePer)));
-		}
-	}
 }

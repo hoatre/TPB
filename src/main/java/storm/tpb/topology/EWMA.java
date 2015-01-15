@@ -1,11 +1,14 @@
 package storm.tpb.topology;
 
 import java.io.Serializable;
-
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 /**
  * Created by Administrator on 1/13/2015.
  */
 public class EWMA implements Serializable {
+
     public static enum Time {
         MILLISECONDS(1), SECONDS(1000), MINUTES(SECONDS.getTime() *
                 60), HOURS(MINUTES.getTime() * 60), DAYS(HOURS
@@ -27,16 +30,13 @@ public class EWMA implements Serializable {
             / 60d / 15d);
     private long window;
     private long alphaWindow;
-    private long last;
+    private long last=0;
     private double average;
     private double alpha = -1D;
     private boolean sliding = false;
     private long count=0;
-
-    private long countBranch1 =0;
-    private long countBranch2 =0;
-    private long countBranch3 =0;
-    private long countBranch4 =0;
+    //private Map<Long , Object> dataCache = new HashMap<Long, Object>();
+    ArrayList<Long> cacheTime = new ArrayList<Long>();
     public EWMA() {
     }
     public EWMA sliding(double count, Time time) {
@@ -47,55 +47,33 @@ public class EWMA implements Serializable {
         this.window = window;
         return this;
     }
-    public EWMA withAlpha(double alpha) {
-        if (!(alpha > 0.0D && alpha <= 1.0D)) {
-            throw new IllegalArgumentException("Alpha must be between 0.0 and 1.0");
-        }
-        this.alpha = alpha;
-        return this;
-    }
-    public EWMA withAlphaWindow(long alphaWindow) {
-        this.alpha = -1;
-        this.alphaWindow = alphaWindow;
-        return this;
-    }
-    public EWMA withAlphaWindow(double count, Time time) {
-        return this.withAlphaWindow((long) (time.getTime() * count));
-    }
+
     public void mark() {
         mark(System.currentTimeMillis());
     }
     public synchronized void mark(long time) {
+        cacheTime.add(time);
         if (this.sliding) {
-            if (time - this.last > this.window) {
-                // reset the sliding window
-                this.last = 0;
+            if ((time - this.last) > this.window) {
+                    this.last = time-this.window;
             }
         }
-        if (this.last == 0) {
-            this.average = 0;
-            this.last = time;
+        Integer a=0;
+        System.out.println("time " + String.valueOf(time) + " last " + String.valueOf(last) + " get0 " + String.valueOf(cacheTime.get(0)));
+        while (cacheTime.get(0) < this.last) {
+            a++;
+            cacheTime.remove(0);
+            System.out.println("XOA" + a.toString());
         }
-        long diff = time - this.last;
-        //double alpha = this.alpha != -1.0 ? this.alpha : Math.exp(-1.0
-        //        * ((double) diff / this.alphaWindow));
-        count++;
-       // this.average = (1.0 - alpha) * diff + alpha * this.average;
-        this.last = time;
-    }
-    public double getAverage() {
-        return this.average;
-    }
-    public double getAverageIn(Time time) {
-        return this.average == 0.0 ? this.average : this.average /
-                time.getTime();
-    }
-    public double getAverageRatePer(Time time) {
-        return this.average == 0.0 ? this.average : time.getTime() /
-                this.average;
+        String str="";
+
+        count = cacheTime.size();
+
+        this.last = cacheTime.get(0);
     }
 
-    public long getCount(Time time) {
+
+    public long getCount() {
         return this.count;
     }
 }

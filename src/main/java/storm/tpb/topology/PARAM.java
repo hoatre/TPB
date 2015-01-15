@@ -12,5 +12,19 @@ public class PARAM implements Serializable  {
         private Channel(String value) {
             this.value = value;
         }
+        public String getValue() {
+            return value;
+        }
+    }
+
+    public static enum TransCode {
+        DEPOSIT("Deposit"), WITHDRAWAL("Withdrawal"), TRANSFERFROM("Transfer From"), TRANSFERTO("Transfer To"),BALANCE("Balance Inquiryo");
+        private String value;
+        private TransCode(String value) {
+            this.value = value;
+        }
+        public String getValue() {
+            return value;
+        }
     }
 }
