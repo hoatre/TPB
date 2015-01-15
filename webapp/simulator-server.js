@@ -166,7 +166,7 @@ function recursive3()
 
 //Ramdom Int
 function randomInt (low, high) {
-    return Math.floor(Math.random() * (high - low) + low);
+    return Math.floor(Math.random() * (parseInt(high) - parseInt(low)) + parseInt(low));
 }
 
 
@@ -192,8 +192,10 @@ var GeneratorTransaction = function(amountto,amountfrom,channal, product, transa
     var acc_nos = ["100-121-12121212", "200-555-12313123", "100-643-10231323", "400-223-32424234", "500-123-23313443"];
     var acc_no = acc_nos[randomInt(0,acc_nos.length)];
 
+    console.log('amountfrom: '+ amountfrom);
+    console.log('amountto: '+ amountto);
     //Generate Amount
-    var amount = randomInt(amountto,amountfrom);
+    var amount = randomInt(amountto, amountfrom);
 
     var timestamp = new Date().getTime();
 
