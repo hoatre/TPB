@@ -36,7 +36,7 @@ public class TopologyMain {
 	public static final Jedis jedis=new Jedis(Properties.getString("redis.host"), Properties.getInt("redis.port"));;
 	public static void main(String[] args) throws Exception {
 		Config conf = new Config();
-		conf.setMaxSpoutPending(5);
+		conf.setMaxSpoutPending(500);
 		if (args.length == 0) {
 			LocalCluster cluster = new LocalCluster();
 			cluster.submitTopology("log-analysis", conf,
@@ -70,23 +70,18 @@ public class TopologyMain {
 		spoutConf. scheme = new SchemeAsMultiScheme( new StringScheme( ) ) ;*/
 
 		TridentTopology topology = new TridentTopology();
-		/*BrokerHosts zk = new ZkHosts(Properties.getString("storm.zkhosts"));
+		BrokerHosts zk = new ZkHosts(Properties.getString("storm.zkhosts"));
 		TridentKafkaConfig spoutConf = new TridentKafkaConfig(zk,KAFKA_TOPIC);
 		spoutConf.scheme = new SchemeAsMultiScheme(new StringScheme());
-		OpaqueTridentKafkaSpout spout = new OpaqueTridentKafkaSpout(spoutConf);*/
+		OpaqueTridentKafkaSpout spout = new OpaqueTridentKafkaSpout(spoutConf);
 
-		SpoutConfig kafkaConf = new SpoutConfig(
-				new ZkHosts(Properties.getString("storm.zkhosts")),
-				KAFKA_TOPIC,
-				"/usr/local/zookeeper-3.3.3",
-				"Transaction-Topology");
-		kafkaConf.scheme = new SchemeAsMultiScheme(new StringScheme());
 
-		Stream spoutStream = topology.newStream("kafka-stream",new KafkaSpout(kafkaConf));
+		Stream spoutStream = topology.newStream("kafka-stream",spout);
 		Fields jsonFields = new Fields("trx_id", "trx_code","ch_id","amount","acc_no","prd_id");
-		Stream parsedStream = spoutStream.each(new Fields(), new
+		Stream parsedStream = spoutStream.each(new Fields("str"), new
 				JsonProjectFunction(jsonFields), jsonFields);
-		EWMA ewmasecond = new EWMA().sliding(1.0, EWMA.Time.SECONDS);
+		EWMA ewmasecond = new EWMA().sliding(9.0, EWMA.Time.SECONDS).
+				withAlpha(EWMA.ONE_MINUTE_ALPHA);
 		EWMA ewmaminutes = new EWMA().sliding(1.0, EWMA.Time.MINUTES);
 		EWMA ewmahours = new EWMA().sliding(1.0, EWMA.Time.HOURS);
 		//Total--------------------------------------------------------
@@ -110,22 +105,21 @@ public class TopologyMain {
 		//Seconde
 
 		Stream secondStreambr1 = streamBranch1.each(new
-						Fields(), new MovingCountFunction(ewmasecond, EWMA.Time.MINUTES), new
-						Fields("count"));
-		secondStreambr1.each(new Fields("ch_id","count"),new FilterToJedis());
+				Fields(), new MovingCountFunction(ewmasecond, EWMA.Time.MINUTES), new
+				Fields("count"));
+		//secondStreambr1.each(new Fields("ch_id","count"),new FilterToJedis());
 		//Minutes
 
-		Stream minutesStreambr1 = streamBranch1.each(new
-				Fields(), new MovingCountFunction(ewmaminutes, EWMA.Time.MINUTES), new
+		/*Stream minutesStreambr1 = streamBranch1.each(new Fields("trx_id"),new MovingCountFunction(ewmaminutes, EWMA.Time.MINUTES), new
 				Fields("count"));
-		minutesStreambr1.each(new Fields("ch_id","count"),new FilterToJedis());
+		minutesStreambr1.each(new Fields("ch_id","count"),new FilterToJedis());*/
 		//Hours
 
-		Stream hoursStreambr1 = streamBranch1.each(new
+	/*	Stream hoursStreambr1 = streamBranch1.each(new
 				Fields(), new MovingCountFunction(ewmahours, EWMA.Time.HOURS), new
 				Fields("count"));
-		hoursStreambr1.each(new Fields("ch_id","count"),new FilterToJedis());
-		//Branch2//--------------------------------------------------------------------------------
+		hoursStreambr1.each(new Fields("ch_id","count"),new FilterToJedis());*/
+		/*//Branch2//--------------------------------------------------------------------------------
 		Stream streamBranch2  = parsedStream.each(new
 				Fields("ch_id"), new FilterChannel(PARAM.Channel.BRANCH2));
 		//Seconde
@@ -187,7 +181,7 @@ public class TopologyMain {
 		Stream hoursStreambr4 = streamBranch4.each(new
 				Fields(), new MovingCountFunction(ewmahours, EWMA.Time.HOURS), new
 				Fields("count"));
-		hoursStreambr4.each(new Fields("ch_id","count"),new FilterToJedis());
+		hoursStreambr4.each(new Fields("ch_id","count"),new FilterToJedis());*/
 
 
 		//topology.newStream("spoutkafka1" , new TransactionalTridentKafkaSpout(spoutConf)).shuffle()
@@ -217,20 +211,36 @@ public class TopologyMain {
 		}
 	}
 	public static class FilterChannel extends BaseFilter {
-		private PARAM.Channel channel;
+		private  PARAM.Channel channel;
 		public FilterChannel(PARAM.Channel channel) {
+			this.channel = channel;
 		}
 		public boolean isKeep(TridentTuple tuple) {
 			System.out.println( tuple.get(0) + "VINH BIET VINH BIET");
-			return tuple.get(0) == channel;
+
+			return tuple.get(0).equals( channel.getValue());
 		}
 	}
+
+	public static class Print1 extends BaseFilter {
+
+		public Print1() {
+
+		}
+		@Override
+		public boolean isKeep(TridentTuple tuple) {
+			System.out.println(tuple.get(0) + "VI THE TOI QUEN");
+			return true;
+		}
+	}
+
 
 	public static class Print extends BaseFilter {
 
 		public Print() {
+			System.out.println("DOI TOI VO CUNG BUON");
 		}
-
+		@Override
 		public boolean isKeep(TridentTuple tuple) {
 			System.out.println(tuple.get(0) + "TIEN NHAN");
 			return true;
@@ -263,7 +273,7 @@ public class TopologyMain {
 		@Override
 		public void execute(TridentTuple tuple, TridentCollector
 				collector) {
-			this.ewma.mark(tuple.getLong(0));
+			this.ewma.mark();
 			//	LOG.debug("Rate: {}", this.ewma.getAverageRatePer(this.emitRatePer));
 			//collector.emit(new Values(this.ewma.getAverageRatePer(this.emitRatePer)));
 			System.out.println(this.ewma.getCount(this.emitRatePer) + "TIEN NHAN");
@@ -287,7 +297,7 @@ public class TopologyMain {
 	}
 
 	public static class MovingAverageFunction extends BaseFunction {
-	//	private static final Logger LOG = LoggerFactory.getLogger(BaseFunction.class);
+		//	private static final Logger LOG = LoggerFactory.getLogger(BaseFunction.class);
 		private EWMA ewma;
 		private EWMA.Time emitRatePer;
 		public MovingAverageFunction(EWMA ewma, EWMA.Time emitRatePer){
@@ -298,7 +308,7 @@ public class TopologyMain {
 		public void execute(TridentTuple tuple, TridentCollector
 				collector) {
 			this.ewma.mark();
-		//	LOG.debug("Rate: {}", this.ewma.getAverageRatePer(this.emitRatePer));
+			//	LOG.debug("Rate: {}", this.ewma.getAverageRatePer(this.emitRatePer));
 			collector.emit(new Values(this.ewma.getAverageRatePer(this.emitRatePer)));
 		}
 	}
