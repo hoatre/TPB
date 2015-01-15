@@ -57,6 +57,22 @@
 		</tr>
 		<tr>
 			<td>
+				Amount
+			</td>
+			<td>
+				<input id="txtAmountTo" style="width:90px;" onkeypress='return isNumberKey(event)'></input>---
+				<input id="txtAmountFrom" style="width:90px;" onkeypress='return isNumberKey(event)'></input>
+			</td>
+			<td>
+				Amount
+			</td>
+			<td>
+				<input id="txtAmountTo1" style="width:90px;" onkeypress='return isNumberKey(event)'></input>---
+				<input id="txtAmountFrom1" style="width:90px;" onkeypress='return isNumberKey(event)'></input>
+			</td>
+		</tr>
+		<tr>
+			<td>
 				Channel
 			</td>
 			<td>
@@ -64,7 +80,7 @@
 					<option value="Branch 1" selected >Branch 1</option>
 					<option value="Branch 2">Branch 2 </option>
 					<option value="Branch 3">Branch 3</option>
-					<option value="Branch 4">Branch 4</option>
+					<option value="Contact Center">Contact Center</option>
 				</select>
 			</td>
 			<td>
@@ -75,7 +91,7 @@
 					<option value="Branch 1" selected >Branch 1</option>
 					<option value="Branch 2">Branch 2 </option>
 					<option value="Branch 3">Branch 3</option>
-					<option value="Branch 4">Branch 4</option>
+					<option value="Contact Center">Contact Center</option>
 				</select>
 			</td>
 		</tr>
@@ -167,6 +183,22 @@
 		</tr>
 		<tr>
 			<td>
+				Amount
+			</td>
+			<td>
+				<input id="txtAmountTo2" style="width:90px;" onkeypress='return isNumberKey(event)'></input>---
+				<input id="txtAmountFrom2" style="width:90px;" onkeypress='return isNumberKey(event)'></input>
+			</td>
+			<td>
+				Amount
+			</td>
+			<td>
+				<input id="txtAmountTo3" style="width:90px;" onkeypress='return isNumberKey(event)'></input>---
+				<input id="txtAmountFrom3" style="width:90px;" onkeypress='return isNumberKey(event)'></input>
+			</td>
+		</tr>
+		<tr>
+			<td>
 				Channel
 			</td>
 			<td>
@@ -174,7 +206,7 @@
 					<option value="Branch 1" selected >Branch 1</option>
 					<option value="Branch 2">Branch 2 </option>
 					<option value="Branch 3">Branch 3</option>
-					<option value="Branch 4">Branch 4</option>
+					<option value="Contact Center">Contact Center</option>
 				</select>
 			</td>
 			<td>
@@ -185,7 +217,7 @@
 					<option value="Branch 1" selected >Branch 1</option>
 					<option value="Branch 2">Branch 2 </option>
 					<option value="Branch 3">Branch 3</option>
-					<option value="Branch 4">Branch 4</option>
+					<option value="Contact Center">Contact Center</option>
 				</select>
 			</td>
 		</tr>
@@ -258,6 +290,14 @@
 		var $txtCountMessage1 = $('#txtCountMessage1');
 		var $txtCountMessage2 = $('#txtCountMessage2');
 		var $txtCountMessage3 = $('#txtCountMessage3');
+		var $txtAmountTo = $('#txtAmountTo');
+		var $txtAmountTo1 = $('#txtAmountTo1');
+		var $txtAmountTo2 = $('#txtAmountTo2');
+		var $txtAmountTo3 = $('#txtAmountTo3');
+		var $txtAmountFrom = $('#txtAmountFrom');
+		var $txtAmountFrom1 = $('#txtAmountFrom1');
+		var $txtAmountFrom2 = $('#txtAmountFrom2');
+		var $txtAmountFrom3 = $('#txtAmountFrom3');
 		var $cboChannel = $('#cboChannel');
 		var $cboChannel1 = $('#cboChannel1');
 		var $cboChannel2 = $('#cboChannel2');
@@ -374,6 +414,7 @@
 		});
 		function setobj()
 		{
+			alert($txtAmountTo.val());
 			var obj = {
 				time: $txtTime.val(),
 				time1: $txtTime1.val(),
@@ -383,6 +424,14 @@
 				countmessage1: $txtCountMessage1.val(),
 				countmessage2: $txtCountMessage2.val(),
 				countmessage3: $txtCountMessage3.val(),
+				amountto: $txtAmountTo.val(),
+				amountto1: $txtAmountTo1.val(),
+				amountto2: $txtAmountTo2.val(),
+				amountto3: $txtAmountTo3.val(),
+				amountfrom: $txtAmountFrom.val(),
+				amountfrom1: $txtAmountFrom1.val(),
+				amountfrom2: $txtAmountFrom2.val(),
+				amountfrom3: $txtAmountFrom3.val(),
 				channel:$cboChannel.val(),
 				channel1:$cboChannel1.val(),
 				channel2:$cboChannel2.val(),
