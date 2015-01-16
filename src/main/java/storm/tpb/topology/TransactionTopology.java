@@ -98,14 +98,14 @@ public class TransactionTopology
         topology.setBolt(summaryAccountDeposit, new RollingAccountSummaryBolt(60, 5, "Deposit"), 4).fieldsGrouping(routerId, new Fields("acc_no"));
         topology.setBolt(intermediateRankerDepositId, new IntermediateRankingsBolt(TOP_N), 4).fieldsGrouping(summaryAccountDeposit, new Fields("obj"));
         topology.setBolt(totalRankerDepositId, new TotalRankingsBolt(TOP_N)).globalGrouping(intermediateRankerDepositId);
-        topology.setBolt(totalRedisRankerDepositBolt, new MinutesBolt(), 4).fieldsGrouping(totalRankerDepositId, new Fields("rankings"));
+        topology.setBolt(totalRedisRankerDepositBolt, new MinutesBolt("Depsits"), 4).fieldsGrouping(totalRankerDepositId, new Fields("rankings"));
 
 
         //ranking Withdrawal
         topology.setBolt(summaryAccountWithdrawal, new RollingAccountSummaryBolt(60, 5, "Withdrawal"), 4).fieldsGrouping(routerId, new Fields("acc_no"));
         topology.setBolt(intermediateRankerWithdrawalId, new IntermediateRankingsBolt(TOP_N), 4).fieldsGrouping(summaryAccountWithdrawal, new Fields("obj"));
         topology.setBolt(totalRankerWithdrawalId, new TotalRankingsBolt(TOP_N)).globalGrouping(intermediateRankerWithdrawalId);
-        topology.setBolt(totalRedisRankerWithdrawalBolt, new MinutesBolt(), 4).fieldsGrouping(totalRankerWithdrawalId, new Fields("rankings"));
+        topology.setBolt(totalRedisRankerWithdrawalBolt, new MinutesBolt("Withdrawals"), 4).fieldsGrouping(totalRankerWithdrawalId, new Fields("rankings"));
 
         return topology.createTopology();
     }

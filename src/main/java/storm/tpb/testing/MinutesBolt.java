@@ -32,6 +32,12 @@ public class MinutesBolt implements IRichBolt {
     String host;
     int port;
 
+    String TransactionType;
+
+    public MinutesBolt(String TransactionType){
+        this.TransactionType = TransactionType;
+    }
+
     public void prepare(Map stormConf, TopologyContext context,
                         OutputCollector collector) {
         this.host = Properties.getString("redis.host");
@@ -56,13 +62,13 @@ public class MinutesBolt implements IRichBolt {
         LOGGER.debug("Ranking summary");
         Rankings rankingsToBeMerged = (Rankings) input.getValue(0);
         List<Rankable> list = rankingsToBeMerged.getRankings();
-        for (int i=0; i<rankingsToBeMerged.size(); i++)
+        for (int i=0; i< rankingsToBeMerged.size(); i++)
         {
             Rankable rankable = list.get(i);
             Map<String, String> map = new HashMap<String, String>();
             map.put("Acc" , rankable.getObject().toString());
             map.put("Amount" , Long.toString(rankable.getCount()));
-            jedis.hmset("TopTenDeposits-Top"+i, map);
+            jedis.hmset("TopTen"+TransactionType+"-Top" + i + 1, map);
         }
     }
 

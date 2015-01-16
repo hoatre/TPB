@@ -65,8 +65,8 @@ public class SecondsBolt implements IRichBolt {
 
         jedis.set("real-time-" + transaction.getch_id(), transaction.getamount().toString());
 
-        jedis.rpush("real-time-60s-" + transaction.getch_id(), transaction.getamount().toString());
-        jedis.blpop(0, "real-time-60s-" + transaction.getch_id());
+//        jedis.rpush("real-time-60s-" + transaction.getch_id(), transaction.getamount().toString());
+//        jedis.blpop(0, "real-time-60s-" + transaction.getch_id());
 
 //        List<String> list = jedis.lrange("listtest",0,9);
 //        int sum = 0;
