@@ -90,7 +90,8 @@ log('info', 'connected to redis server');
 
         //log('msg','aaaa');
 
-        redis_lrange('real-time-60s-Branch 1');
+        //redis_lrange('real-time-60s-Branch 1');
+
         //redis_lrange('real-time-60s-Branch 2');
         //client.on("message", function(msg) {
         //    client1.lrange('real-time-60s-Branch 1', 0, 59, function(err, items) {
@@ -152,19 +153,68 @@ function log(type, msg) {
     console.log(color + '   ' + type + '  - ' + reset + msg);
 }
 
-
-
-
-function redis_lrange(key){
-    client1.lrange(key, 0, 59, function(err, items) {
+function redis_get(key){
+    client1.get(key, function(err, items) {
         if (err) {
             log('error', "error");
         } else {
-            socket.emit('listChart-' + key,items);
-            log('info', items);
+            socket.emit('CountChart-' + key,items);
+            log('info', "CountChart-" + key + " : " + items);
         }
     });
 }
+function redis_get_total(key){
+    client1.get(key, function(err, items) {
+        if (err) {
+            log('error', "error");
+        } else {
+            socket.emit('Total-' + key,items);
+            log('info', "Total-" + key + " : " + items);
+        }
+    });
+}
+function redis_hmget_top(key){
+    client1.hmget(key, "Acc", "Amount", function(err, items) {
+        if (err) {
+            log('error', "error");
+        } else {
+            socket.emit('Top-' + key,items);
+            log('info', "Top-" + key + " : " + items);
+        }
+    });
+}
+setInterval(function() {
+    redis_get('real-time-Branch 1');
+    redis_get('real-time-Branch 2');
+    redis_get('real-time-Branch 3');
+    redis_get('real-time-Contact Center');
+    redis_get_total('TotalNoTran');
+    redis_get_total('TotalAmount');
+    redis_hmget_top('TopTenDepsits-Top1');
+    redis_hmget_top('TopTenDepsits-Top2');
+    redis_hmget_top('TopTenDepsits-Top3');
+    redis_hmget_top('TopTenWithdrawals-Top1');
+    redis_hmget_top('TopTenWithdrawals-Top2');
+    redis_hmget_top('TopTenWithdrawals-Top3');
+}, 1000);
+
+//setInterval(function() {
+//    redis_lrange('real-time-60s-Branch 1');
+//    //redis_lrange('real-time-60s-Branch 2');
+//    //redis_lrange('real-time-60s-Branch 3');
+//    //redis_lrange('real-time-60s-Contact Center');
+//}, 10000);
+
+//function redis_lrange(key){
+//    client1.lrange(key, 0, 59, function(err, items) {
+//        if (err) {
+//            log('error', "error");
+//        } else {
+//            socket.emit('listChart-' + key,items);
+//            log('info', items);
+//        }
+//    });
+//}
 //setInterval(function(){
 //    client1.lrange('real-time-60s-Branch 1', 0, 59, function(err, items) {
 //        if (err) {

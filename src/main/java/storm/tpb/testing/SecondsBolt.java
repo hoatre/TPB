@@ -63,7 +63,7 @@ public class SecondsBolt implements IRichBolt {
 
         //jedis.set(transaction.getch_id() + "_seconds", transaction.getamount().toString());
 
-        jedis.publish("real-time-" + transaction.getch_id(), transaction.getamount().toString());
+        jedis.set("real-time-" + transaction.getch_id(), transaction.getamount().toString());
 
         jedis.rpush("real-time-60s-" + transaction.getch_id(), transaction.getamount().toString());
         jedis.blpop(0, "real-time-60s-" + transaction.getch_id());
