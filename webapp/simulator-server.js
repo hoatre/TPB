@@ -203,9 +203,9 @@ var GeneratorTransaction = function(amountto,amountfrom,channal, product, transa
         trx_id: trx_id,
         trx_code: transactionType,
         ch_id: channal,
+        amount: amount,
         acc_no: acc_no,
         prd_id: product,
-        amount: amount,
         timestamp: timestamp,
         count: msgs
     };
