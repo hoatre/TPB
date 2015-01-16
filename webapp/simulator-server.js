@@ -70,6 +70,14 @@ var obj = {
     countmessage1: 0,
     countmessage2: 0,
     countmessage3: 0,
+    amountto: 0,
+    amountto1: 0,
+    amountto2: 0,
+    amountto3: 0,
+    amountfrom: 0,
+    amountfrom1: 0,
+    amountfrom2: 0,
+    amountfrom3: 0,
     channel: '',
     channel1: '',
     channel2: '',
@@ -105,9 +113,9 @@ function recursive()
         clearTimeout(t);
     }
     else {
-        console.log('conf1'+obj.channel+':'+obj.countmessage);
+        console.log('conf1'+obj.channel+':'+obj.countmessage+'-'+obj.amountto+':'+obj.amountfrom);
         t = setTimeout(recursive, obj.time);
-        send(GeneratorTransaction(obj.channel, obj.product, obj.transactiontype, cnt));
+        send(GeneratorTransaction(obj.amountto,obj.amountfrom,obj.channel, obj.product, obj.transactiontype, cnt));
     }
 
 }
@@ -120,9 +128,9 @@ function recursive1()
         clearTimeout(t1);
     }
     else {
-        console.log('conf2'+obj.channel1+':'+obj.countmessage1);
+        console.log('conf2'+obj.channel1+':'+obj.countmessage1+'-'+obj.amountto1+':'+obj.amountfrom1);
         t1 = setTimeout(recursive1, obj.time1);
-        send(GeneratorTransaction(obj.channel1, obj.product1, obj.transactiontype1, cnt1));
+        send(GeneratorTransaction(obj.amountto1,obj.amountfrom1,obj.channel1, obj.product1, obj.transactiontype1, cnt1));
     }
 }
 function recursive2()
@@ -134,9 +142,9 @@ function recursive2()
         clearTimeout(t2);
     }
     else {
-        console.log('conf3'+obj.channel2+':'+obj.countmessage2);
+        console.log('conf3'+obj.channel2+':'+obj.countmessage2+'-'+obj.amountto2+':'+obj.amountfrom2);
         t2 = setTimeout(recursive2, obj.time2);
-        send(GeneratorTransaction(obj.channel2, obj.product2, obj.transactiontype2, cnt2));
+        send(GeneratorTransaction(obj.amountto2,obj.amountfrom2,obj.channel2, obj.product2, obj.transactiontype2, cnt2));
     }
 }
 function recursive3()
@@ -150,20 +158,20 @@ function recursive3()
     }
     else
     {
-        console.log('conf4'+obj.channel3+':'+obj.countmessage3);
+        console.log('conf4'+obj.channel3+':'+obj.countmessage3+'-'+obj.amountto3+':'+obj.amountfrom3);
         t3 = setTimeout(recursive3,obj.time3);
-        send(GeneratorTransaction(obj.channel3, obj.product3, obj.transactiontype3, cnt3));
+        send(GeneratorTransaction(obj.amountto3,obj.amountfrom3,obj.channel3, obj.product3, obj.transactiontype3, cnt3));
     }
 }
 
 //Ramdom Int
 function randomInt (low, high) {
-    return Math.floor(Math.random() * (high - low) + low);
+    return Math.floor(Math.random() * (parseInt(high) - parseInt(low)) + parseInt(low));
 }
 
 
 //Generator transaction
-var GeneratorTransaction = function(channal, product, transactionType, msgs)
+var GeneratorTransaction = function(amountto,amountfrom,channal, product, transactionType, msgs)
 {
     //ID
     var trx_id = randomInt(1,9999999);
@@ -184,16 +192,21 @@ var GeneratorTransaction = function(channal, product, transactionType, msgs)
     var acc_nos = ["100-121-12121212", "200-555-12313123", "100-643-10231323", "400-223-32424234", "500-123-23313443"];
     var acc_no = acc_nos[randomInt(0,acc_nos.length)];
 
+    console.log('amountfrom: '+ amountfrom);
+    console.log('amountto: '+ amountto);
     //Generate Amount
-    var amount = randomInt(10000,100000);
+    var amount = randomInt(amountto, amountfrom);
+
+    var timestamp = new Date().getTime();
 
     var trans = {
         trx_id: trx_id,
         trx_code: transactionType,
         ch_id: channal,
+        amount: amount,
         acc_no: acc_no,
         prd_id: product,
-        amount: amount,
+        timestamp: timestamp,
         count: msgs
     };
     var msg = JSON.stringify(trans);
@@ -224,6 +237,14 @@ io.sockets.on('connection',function(socket){
             product1: data.product1,
             product2: data.product2,
             product3: data.product3,
+            amountto: data.amountto,
+            amountto1: data.amountto1,
+            amountto2: data.amountto2,
+            amountto3: data.amountto3,
+            amountfrom: data.amountfrom,
+            amountfrom1: data.amountfrom1,
+            amountfrom2: data.amountfrom2,
+            amountfrom3: data.amountfrom3,
             transactiontype: data.transactiontype,
             transactiontype1: data.transactiontype1,
             transactiontype2: data.transactiontype2,
@@ -242,7 +263,7 @@ io.sockets.on('connection',function(socket){
         recursive1();
         recursive2();
         recursive3();
-        console.log('time:'+obj.time+' - countmessage:'+obj.countmessage+' - channel:'+obj.channel+' - product:'+obj.product+' - transactiontype:'+obj.transactiontype);
+        console.log('time:'+obj.time+' - countmessage:'+obj.countmessage+' - channel:'+obj.channel+' - product:'+obj.product+' - transactiontype:'+obj.transactiontype+' - amountto:'+obj.amountto+' - amountfrom:'+obj.amountfrom);
     }),
         socket.on('btnConfig1',function(data){
             console.log('btnConfig1:'+data.status);
@@ -257,6 +278,14 @@ io.sockets.on('connection',function(socket){
                     countmessage1: data.countmessage1,
                     countmessage2: data.countmessage2,
                     countmessage3: data.countmessage3,
+                    amountto: data.amountto,
+                    amountto1: data.amountto1,
+                    amountto2: data.amountto2,
+                    amountto3: data.amountto3,
+                    amountfrom: data.amountfrom,
+                    amountfrom1: data.amountfrom1,
+                    amountfrom2: data.amountfrom2,
+                    amountfrom3: data.amountfrom3,
                     channel: data.channel,
                     channel1: data.channel1,
                     channel2: data.channel2,
@@ -293,6 +322,14 @@ io.sockets.on('connection',function(socket){
                     countmessage1: data.countmessage1,
                     countmessage2: data.countmessage2,
                     countmessage3: data.countmessage3,
+                    amountto: data.amountto,
+                    amountto1: data.amountto1,
+                    amountto2: data.amountto2,
+                    amountto3: data.amountto3,
+                    amountfrom: data.amountfrom,
+                    amountfrom1: data.amountfrom1,
+                    amountfrom2: data.amountfrom2,
+                    amountfrom3: data.amountfrom3,
                     channel: data.channel,
                     channel1: data.channel1,
                     channel2: data.channel2,
@@ -329,6 +366,14 @@ io.sockets.on('connection',function(socket){
                     countmessage1: data.countmessage1,
                     countmessage2: data.countmessage2,
                     countmessage3: data.countmessage3,
+                    amountto: data.amountto,
+                    amountto1: data.amountto1,
+                    amountto2: data.amountto2,
+                    amountto3: data.amountto3,
+                    amountfrom: data.amountfrom,
+                    amountfrom1: data.amountfrom1,
+                    amountfrom2: data.amountfrom2,
+                    amountfrom3: data.amountfrom3,
                     channel: data.channel,
                     channel1: data.channel1,
                     channel2: data.channel2,
@@ -365,6 +410,14 @@ io.sockets.on('connection',function(socket){
                     countmessage1: data.countmessage1,
                     countmessage2: data.countmessage2,
                     countmessage3: data.countmessage3,
+                    amountto: data.amountto,
+                    amountto1: data.amountto1,
+                    amountto2: data.amountto2,
+                    amountto3: data.amountto3,
+                    amountfrom: data.amountfrom,
+                    amountfrom1: data.amountfrom1,
+                    amountfrom2: data.amountfrom2,
+                    amountfrom3: data.amountfrom3,
                     channel: data.channel,
                     channel1: data.channel1,
                     channel2: data.channel2,

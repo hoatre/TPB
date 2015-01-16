@@ -57,14 +57,30 @@
 		</tr>
 		<tr>
 			<td>
+				Amount
+			</td>
+			<td>
+				<input id="txtAmountTo" style="width:90px;" onkeypress='return isNumberKey(event)'></input>---
+				<input id="txtAmountFrom" style="width:90px;" onkeypress='return isNumberKey(event)'></input>
+			</td>
+			<td>
+				Amount
+			</td>
+			<td>
+				<input id="txtAmountTo1" style="width:90px;" onkeypress='return isNumberKey(event)'></input>---
+				<input id="txtAmountFrom1" style="width:90px;" onkeypress='return isNumberKey(event)'></input>
+			</td>
+		</tr>
+		<tr>
+			<td>
 				Channel
 			</td>
 			<td>
 				<select id="cboChannel" style="width:200px;">
-					<option value="Branch1" selected >Branch1</option>
-					<option value="Branch2">Branch2 </option>
-					<option value="Branch3">Branch3</option>
-					<option value="Branch4">Branch4</option>
+					<option value="Branch 1" selected >Branch 1</option>
+					<option value="Branch 2">Branch 2 </option>
+					<option value="Branch 3">Branch 3</option>
+					<option value="Contact Center">Contact Center</option>
 				</select>
 			</td>
 			<td>
@@ -72,10 +88,10 @@
 			</td>
 			<td>
 				<select id="cboChannel1" style="width:200px;">
-					<option value="Branch1" selected >Branch1</option>
-					<option value="Branch2">Branch2 </option>
-					<option value="Branch3">Branch3</option>
-					<option value="Branch4">Branch4</option>
+					<option value="Branch 1" selected >Branch 1</option>
+					<option value="Branch 2">Branch 2 </option>
+					<option value="Branch 3">Branch 3</option>
+					<option value="Contact Center">Contact Center</option>
 				</select>
 			</td>
 		</tr>
@@ -104,9 +120,10 @@
 			<td>
 				<select id="cboTransactionType" style="width:200px;">
 					<option value="Deposit" selected >Deposit</option>
-					<option value="Transfer form" selected >Transfer Form</option>
-					<option value="Transfer to" selected >Transfer To</option>
-					<option value="Balance" selected >Balance...</option>
+					<option value="Withdrawal" selected >Withdrawal</option>
+					<option value="Transfer From" selected >Transfer Form</option>
+					<option value="Transfer To" selected >Transfer To</option>
+					<option value="Balance Inquiry" selected >Balance Inquiry</option>
 				</select>
 			</td>
 			<td>
@@ -115,9 +132,10 @@
 			<td>
 				<select id="cboTransactionType1" style="width:200px;">
 					<option value="Deposit" selected >Deposit</option>
-					<option value="Transfer form" selected >Transfer Form</option>
-					<option value="Transfer to" selected >Transfer To</option>
-					<option value="Balance" selected >Balance...</option>
+					<option value="Withdrawal" selected >Withdrawal</option>
+					<option value="Transfer From" selected >Transfer Form</option>
+					<option value="Transfer To" selected >Transfer To</option>
+					<option value="Balance Inquiry" selected >Balance Inquiry</option>
 				</select>
 			</td>
 		</tr>
@@ -167,14 +185,30 @@
 		</tr>
 		<tr>
 			<td>
+				Amount
+			</td>
+			<td>
+				<input id="txtAmountTo2" style="width:90px;" onkeypress='return isNumberKey(event)'></input>---
+				<input id="txtAmountFrom2" style="width:90px;" onkeypress='return isNumberKey(event)'></input>
+			</td>
+			<td>
+				Amount
+			</td>
+			<td>
+				<input id="txtAmountTo3" style="width:90px;" onkeypress='return isNumberKey(event)'></input>---
+				<input id="txtAmountFrom3" style="width:90px;" onkeypress='return isNumberKey(event)'></input>
+			</td>
+		</tr>
+		<tr>
+			<td>
 				Channel
 			</td>
 			<td>
 				<select id="cboChannel2" style="width:200px;">
-					<option value="Branch1" selected >Branch1</option>
-					<option value="Branch2">Branch2 </option>
-					<option value="Branch3">Branch3</option>
-					<option value="Branch4">Branch4</option>
+					<option value="Branch 1" selected >Branch 1</option>
+					<option value="Branch 2">Branch 2 </option>
+					<option value="Branch 3">Branch 3</option>
+					<option value="Contact Center">Contact Center</option>
 				</select>
 			</td>
 			<td>
@@ -182,10 +216,10 @@
 			</td>
 			<td>
 				<select id="cboChannel3" style="width:200px;">
-					<option value="Branch1" selected >Branch1</option>
-					<option value="Branch2">Branch2 </option>
-					<option value="Branch3">Branch3</option>
-					<option value="Branch4">Branch4</option>
+					<option value="Branch 1" selected >Branch 1</option>
+					<option value="Branch 2">Branch 2 </option>
+					<option value="Branch 3">Branch 3</option>
+					<option value="Contact Center">Contact Center</option>
 				</select>
 			</td>
 		</tr>
@@ -214,9 +248,10 @@
 			<td>
 				<select id="cboTransactionType2" style="width:200px;">
 					<option value="Deposit" selected >Deposit</option>
-					<option value="Transfer form" selected >Transfer Form</option>
-					<option value="Transfer to" selected >Transfer To</option>
-					<option value="Balance" selected >Balance...</option>
+					<option value="Withdrawal" selected >Withdrawal</option>
+					<option value="Transfer From" selected >Transfer Form</option>
+					<option value="Transfer To" selected >Transfer To</option>
+					<option value="Balance Inquiry" selected >Balance Inquiry</option>
 				</select>
 			</td>
 			<td>
@@ -225,9 +260,10 @@
 			<td>
 				<select id="cboTransactionType3" style="width:200px;">
 					<option value="Deposit" selected >Deposit</option>
-					<option value="Transfer form" selected >Transfer Form</option>
-					<option value="Transfer to" selected >Transfer To</option>
-					<option value="Balance" selected >Balance...</option>
+					<option value="Withdrawal" selected >Withdrawal</option>
+					<option value="Transfer From" selected >Transfer Form</option>
+					<option value="Transfer To" selected >Transfer To</option>
+					<option value="Balance Inquiry" selected >Balance Inquiry</option>
 				</select>
 			</td>
 		</tr>
@@ -258,6 +294,14 @@
 		var $txtCountMessage1 = $('#txtCountMessage1');
 		var $txtCountMessage2 = $('#txtCountMessage2');
 		var $txtCountMessage3 = $('#txtCountMessage3');
+		var $txtAmountTo = $('#txtAmountTo');
+		var $txtAmountTo1 = $('#txtAmountTo1');
+		var $txtAmountTo2 = $('#txtAmountTo2');
+		var $txtAmountTo3 = $('#txtAmountTo3');
+		var $txtAmountFrom = $('#txtAmountFrom');
+		var $txtAmountFrom1 = $('#txtAmountFrom1');
+		var $txtAmountFrom2 = $('#txtAmountFrom2');
+		var $txtAmountFrom3 = $('#txtAmountFrom3');
 		var $cboChannel = $('#cboChannel');
 		var $cboChannel1 = $('#cboChannel1');
 		var $cboChannel2 = $('#cboChannel2');
@@ -383,6 +427,14 @@
 				countmessage1: $txtCountMessage1.val(),
 				countmessage2: $txtCountMessage2.val(),
 				countmessage3: $txtCountMessage3.val(),
+				amountto: $txtAmountTo.val(),
+				amountto1: $txtAmountTo1.val(),
+				amountto2: $txtAmountTo2.val(),
+				amountto3: $txtAmountTo3.val(),
+				amountfrom: $txtAmountFrom.val(),
+				amountfrom1: $txtAmountFrom1.val(),
+				amountfrom2: $txtAmountFrom2.val(),
+				amountfrom3: $txtAmountFrom3.val(),
 				channel:$cboChannel.val(),
 				channel1:$cboChannel1.val(),
 				channel2:$cboChannel2.val(),
