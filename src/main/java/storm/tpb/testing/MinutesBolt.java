@@ -7,13 +7,16 @@ import backtype.storm.topology.OutputFieldsDeclarer;
 import backtype.storm.tuple.Tuple;
 import org.apache.log4j.Logger;
 import redis.clients.jedis.Jedis;
+import storm.tpb.tools.Rankable;
+import storm.tpb.tools.RankableObjectWithFields;
+import storm.tpb.tools.Rankings;
 import storm.tpb.util.Properties;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by HieuLD on 12/26/14.
@@ -31,7 +34,7 @@ public class MinutesBolt implements IRichBolt {
 
     public void prepare(Map stormConf, TopologyContext context,
                         OutputCollector collector) {
-        this.host = Properties.getString("redis.host");;
+        this.host = Properties.getString("redis.host");
         this.port = Properties.getInt("redis.port");
         this.collector=collector;
         reconnect();
@@ -50,30 +53,17 @@ public class MinutesBolt implements IRichBolt {
 
     public void execute(Tuple input)
     {
-        Transaction transaction = new Transaction();
-        transaction.setch_id(input.getValue(0).toString());
-        transaction.setamount(Integer.parseInt(input.getValue(1).toString()));
-        LOGGER.debug("Transactions summary");
-
-        //jedis.append(transaction.getch_id() + "_minutes", transaction.getamount().toString() +",");
-        jedis.publish("real-time-minutes-" + transaction.getch_id(), transaction.getamount().toString());
-        /*
-        if (transaction.getch_id().equals("Branch 1"))
-            jedis.append(transaction.getch_id(), transaction.getamount());
-        else if (transaction.getch_id().equals("Contact Center"))
-            jedis.append(transaction.getch_id(), transaction.getamount());
-        else if (transaction.getch_id().equals("Branch 2"))
-            jedis.append(transaction.getch_id(), transaction.getamount());
-        else if (transaction.getch_id().equals("Branch 3"))
-            jedis.append(transaction.getch_id(), transaction.getamount());
-
-        secondsBucket.enqueue(transaction);
-            Transaction _transaction = secondsBucket.dequeue();
-            //insert(_transaction.getch_id(), _transaction.getamount());
-            collector.ack(input);
-        */
-        //Transaction _transaction = Utils.GetTransactionFromJSon(input);
-        //collector.emit(new Values("total", _transaction.gettrx_id(), _transaction.gettrx_code(), _transaction.getch_id(), _transaction.getamount(), _transaction.getacc_no(), _transaction.getprd_id()));
+        LOGGER.debug("Ranking summary");
+        Rankings rankingsToBeMerged = (Rankings) input.getValue(0);
+        List<Rankable> list = rankingsToBeMerged.getRankings();
+        for (int i=0; i<rankingsToBeMerged.size(); i++)
+        {
+            Rankable rankable = list.get(i);
+            Map<String, String> map = new HashMap<String, String>();
+            map.put("Acc" , rankable.getObject().toString());
+            map.put("Amount" , Long.toString(rankable.getCount()));
+            jedis.hmset("TopTenDeposits-Top"+i, map);
+        }
     }
 
     static Connection conn; // Create a static global variable

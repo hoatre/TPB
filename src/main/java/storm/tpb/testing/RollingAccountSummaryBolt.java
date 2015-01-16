@@ -17,9 +17,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by HieuLD on 12/25/14.
+ * Created by HieuLD on 1/13/15.
  */
-
 
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -59,7 +58,7 @@ import java.util.Map;
  * counts are initially "loaded up". You can safely ignore this warning during startup (e.g. you will see this warning
  * during the first ~ five minutes of startup time if the window length is set to five minutes).
  */
-public class RollingChannelSummaryBolt extends BaseRichBolt {
+public class RollingAccountSummaryBolt extends BaseRichBolt {
 
     private static final long serialVersionUID = 5537727428628598519L;
     private static final Logger LOG = Logger.getLogger(RollingChannelSummaryBolt.class);
@@ -70,20 +69,22 @@ public class RollingChannelSummaryBolt extends BaseRichBolt {
             "Actual window length is %d seconds when it should be %d seconds"
                     + " (you can safely ignore this warning during the startup phase)";
 
-    private final SlidingWindowCounter<Object> counter;
+    private final SlidingWindowSummary<Transaction> counter;
     private final int windowLengthInSeconds;
     private final int emitFrequencyInSeconds;
     private OutputCollector collector;
     private NthLastModifiedTimeTracker lastModifiedTracker;
+    private String TransactionType;
 
-    public RollingChannelSummaryBolt() {
-        this(DEFAULT_SLIDING_WINDOW_IN_SECONDS, DEFAULT_EMIT_FREQUENCY_IN_SECONDS);
+    public RollingAccountSummaryBolt() {
+        this(DEFAULT_SLIDING_WINDOW_IN_SECONDS, DEFAULT_EMIT_FREQUENCY_IN_SECONDS, "All");
     }
 
-    public RollingChannelSummaryBolt(int windowLengthInSeconds, int emitFrequencyInSeconds) {
+    public RollingAccountSummaryBolt(int windowLengthInSeconds, int emitFrequencyInSeconds, String TransactionType) {
         this.windowLengthInSeconds = windowLengthInSeconds;
         this.emitFrequencyInSeconds = emitFrequencyInSeconds;
-        counter = new SlidingWindowCounter<Object>(deriveNumWindowChunksFrom(this.windowLengthInSeconds,
+        this.TransactionType = TransactionType;
+        counter = new SlidingWindowSummary<Transaction>(deriveNumWindowChunksFrom(this.windowLengthInSeconds,
                 this.emitFrequencyInSeconds));
     }
 
@@ -99,16 +100,19 @@ public class RollingChannelSummaryBolt extends BaseRichBolt {
     }
 
     public void execute(Tuple tuple) {
+
         if (TupleHelpers.isTickTuple(tuple)) {
             LOG.debug("Received tick tuple, triggering emit of current window counts");
-            emitCurrentWindowCounts();
-        } else {
-            countObjAndAck(tuple);
+                emitCurrentWindowSummary();
+        }
+        else {
+            if (tuple.getString(1).equals(TransactionType))
+                sumObjAndAck(tuple);
         }
     }
 
-    private void emitCurrentWindowCounts() {
-        Map<Object, Long> counts = counter.getCountsThenAdvanceWindow();
+    private void emitCurrentWindowSummary() {
+        Map<Transaction, Long> counts = counter.getCountsThenAdvanceWindow();
         int actualWindowLengthInSeconds = lastModifiedTracker.secondsSinceOldestModification();
         lastModifiedTracker.markAsModified();
         if (actualWindowLengthInSeconds != windowLengthInSeconds) {
@@ -117,17 +121,21 @@ public class RollingChannelSummaryBolt extends BaseRichBolt {
         emit(counts, actualWindowLengthInSeconds);
     }
 
-    private void emit(Map<Object, Long> counts, int actualWindowLengthInSeconds) {
-        for (Map.Entry<Object, Long> entry : counts.entrySet()) {
-            Object obj = entry.getKey();
+    private void emit(Map<Transaction, Long> counts, int actualWindowLengthInSeconds) {
+        for (Map.Entry<Transaction, Long> entry : counts.entrySet()) {
+            Transaction obj = entry.getKey();
             Long count = entry.getValue();
-            collector.emit(new Values(obj, count, actualWindowLengthInSeconds));
+            collector.emit(new Values(obj.getacc_no(), count, actualWindowLengthInSeconds));
         }
     }
 
-    private void countObjAndAck(Tuple tuple) {
-        Object obj = tuple.getValue(2);
-        counter.incrementCount(obj);
+    private void sumObjAndAck(Tuple tuple) {
+        //Transaction _transaction = Utils.GetTransactionFromJSon(tuple);
+        Transaction obj = new Transaction();
+        obj.setacc_no(tuple.getValue(4).toString());
+        obj.setamount(tuple.getInteger(3));
+        obj.settrx_code(tuple.getString(1));
+        counter.incrementSummary(obj);
         collector.ack(tuple);
     }
 
