@@ -196,6 +196,10 @@ setInterval(function() {
     redis_hmget_top('TopTenWithdrawals-Top1');
     redis_hmget_top('TopTenWithdrawals-Top2');
     redis_hmget_top('TopTenWithdrawals-Top3');
+    redis_hmget_top('TopTenDepsits-Top4');
+    redis_hmget_top('TopTenDepsits-Top5');
+    redis_hmget_top('TopTenWithdrawals-Top4');
+    redis_hmget_top('TopTenWithdrawals-Top5');
 }, 1000);
 
 //setInterval(function() {

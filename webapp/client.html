@@ -156,6 +156,10 @@
           TopTen('TopTenWithdrawals-Top1');
           TopTen('TopTenWithdrawals-Top2');
           TopTen('TopTenWithdrawals-Top3');
+          TopTen('TopTenDepsits-Top4');
+          TopTen('TopTenDepsits-Top5');
+          TopTen('TopTenWithdrawals-Top4');
+          TopTen('TopTenWithdrawals-Top5');
       }, 10000);
       var chart = new SmoothieChart({
                   millisPerPixel: 50,
@@ -182,6 +186,10 @@
           TopTen('TopTenWithdrawals-Top1');
           TopTen('TopTenWithdrawals-Top2');
           TopTen('TopTenWithdrawals-Top3');
+          TopTen('TopTenDepsits-Top4');
+          TopTen('TopTenDepsits-Top5');
+          TopTen('TopTenWithdrawals-Top4');
+          TopTen('TopTenWithdrawals-Top5');
 
           chart.addTimeSeries(line1,
                   { strokeStyle: '#A6C567', fillStyle: 'rgba(166,197,103,0.20)', lineWidth:3 });
@@ -203,106 +211,7 @@
       function setStatus(msg) {
           console.log('Connection Status : ' + msg);
       }
-//      function createChart(){
 
-//      }
-//      function createLineChart() {
-//          //alert('2');
-//          //socket.on('connect',function(data) {
-//              //subscribe.on("message", function(channel, message) {
-//                  socket.on('listChart-real-time-60s-Branch 1',function(data1){
-////                      socket.on('listChart-real-time-60s-Branch 2',function(data2){
-////                          socket.on('listChart-real-time-60s-Branch 3',function(data3){
-////                              socket.on('listChart-real-time-60s-Contact Center',function(data4){
-//
-//                                  var array = $.map(data1, function(value, index) {
-//                                      //alert(value);
-//                                      return [value];
-//                                  });
-////                                  var array2 = $.map(data2, function(value, index) {
-////                                      //alert(value);
-////                                      return [value];
-////                                  });
-////                                  var array3 = $.map(data3, function(value, index) {
-////                                      //alert(value);
-////                                      return [value];
-////                                  });
-////                                  var array4 = $.map(data4, function(value, index) {
-////                                      //alert(value);
-////                                      return [value];
-////                                  });
-//
-//                      //var limit = 100000;    //increase number of dataPoints by increasing this
-//
-//                                  var y = 0;
-//                                  var data = []; var dataSeries1 = { type: "line" };
-////                                  var dataSeries4 = { type: "line" };
-////                                  var dataSeries2 = { type: "line" };
-////                                  var dataSeries3 = { type: "line" };
-//
-//                                  var dataPoints1 = [];
-////                                  var dataPoints4 = [];
-////                                  var dataPoints2 = [];
-////                                  var dataPoints3 = [];
-//                                  for (var i = 0; i < array.length; i += 1) {
-//                                      //alert(array[i]);
-//                                      //y += 1;
-//                                      dataPoints1.push({
-//                                          x: i + 1,
-//                                          y: parseInt(array[i])
-//                                      });
-//                                  }
-////                                  for (var i = 0; i < array2.length; i += 1) {
-////                                      //alert(array[i]);
-////                                      //y += 1;
-////                                      dataPoints2.push({
-////                                          x: i + 1,
-////                                          y: parseInt(array2[i])
-////                                      });
-////                                  }
-////                                  for (var i = 0; i < array3.length; i += 1) {
-////                                      //alert(array[i]);
-////                                      //y += 1;
-////                                      dataPoints1.push({
-////                                          x: i + 1,
-////                                          y: parseInt(array3[i])
-////                                      });
-////                                  }
-////                                  for (var i = 0; i < array4.length; i += 1) {
-////                                      //alert(array[i]);
-////                                      //y += 1;
-////                                      dataPoints1.push({
-////                                          x: i + 1,
-////                                          y: parseInt(array4[i])
-////                                      });
-////                                  }
-//                                  dataSeries1.dataPoints = dataPoints1;
-////                                  dataSeries2.dataPoints = dataPoints2;
-////                                  dataSeries3.dataPoints = dataPoints3;
-////                                  dataSeries4.dataPoints = dataPoints4;
-//                                  data.push(dataSeries1);
-////                                  data.push(dataSeries2);
-////                                  data.push(dataSeries3);
-////                                  data.push(dataSeries4);
-//
-//
-//                      var chartCD1 = new CanvasJS.Chart("chartCD",
-//                              {
-//
-//                                  data: data  // random generator below
-//
-//                              });
-//
-//                      chartCD1.render();
-//                      });
-////                          });
-////                      });
-////                  });
-//              //});
-//          //});
-//
-//
-//      }
 
       function line11() {
           if($('#line11').is(':checked'))
@@ -374,12 +283,12 @@
       </tr>
       <tr>
           <td colspan="2">
-              Top Ten Deposits
+              Top five Deposits
           </td>
 
 
           <td colspan="2">
-              Top Ten Withdrawals
+              Top five Withdrawals
           </td>
 
 
@@ -448,6 +357,38 @@
           </td>
 
       </tr>
+        <tr>
+            <td>
+                <label type="text" id="TopTenDepsits-Top4-Account"></label>
+            </td>
+            <td>
+                <label type="text" id="TopTenDepsits-Top4-Amount"></label>
+            </td>
+
+            <td>
+                <label type="text" id="TopTenWithdrawals-Top4-Account"></label>
+            </td>
+            <td>
+                <label type="text" id="TopTenWithdrawals-Top4-Amount"></label>
+            </td>
+
+        </tr>
+        <tr>
+            <td>
+                <label type="text" id="TopTenDepsits-Top5-Account"></label>
+            </td>
+            <td>
+                <label type="text" id="TopTenDepsits-Top5-Amount"></label>
+            </td>
+
+            <td>
+                <label type="text" id="TopTenWithdrawals-Top5-Account"></label>
+            </td>
+            <td>
+                <label type="text" id="TopTenWithdrawals-Top5-Amount"></label>
+            </td>
+
+        </tr>
   </table>
 
   </body>
