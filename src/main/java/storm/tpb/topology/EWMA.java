@@ -1,8 +1,11 @@
 package storm.tpb.topology;
 
+import storm.tpb.testing.Transaction;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 /**
  * Created by Administrator on 1/13/2015.
@@ -35,7 +38,9 @@ public class EWMA implements Serializable {
     private double alpha = -1D;
     private boolean sliding = false;
     private long count=0;
-    //private Map<Long , Object> dataCache = new HashMap<Long, Object>();
+    private long sum=0;
+    List<Transaction> listTrans = new ArrayList<Transaction>();
+   // Map<String,Long> ranking
     ArrayList<Long> cacheTime = new ArrayList<Long>();
     public EWMA() {
     }
@@ -48,11 +53,16 @@ public class EWMA implements Serializable {
         return this;
     }
 
-    public void mark() {
-        mark(System.currentTimeMillis());
+    public void mark(int amount) {
+        mark(System.currentTimeMillis(),amount);
+
     }
-    public synchronized void mark(long time) {
+    public synchronized void mark(long time,int amount) {
         cacheTime.add(time);
+        Transaction tran = new Transaction();
+        tran.settimetamp(time);
+        tran.setamount(amount);
+        listTrans.add(tran);
         if (this.sliding) {
             if ((time - this.last) > this.window) {
                     this.last = time-this.window;
@@ -60,21 +70,35 @@ public class EWMA implements Serializable {
         }
         Integer a=0;
         System.out.println("time " + String.valueOf(time) + " last " + String.valueOf(last) + " get0 " + String.valueOf(cacheTime.get(0)));
-        while (cacheTime.get(0) < this.last) {
+        while (listTrans.get(0).gettimetamp() < this.last) {
+            a++;
+            listTrans.remove(0);
+            System.out.println("XOA" + a.toString());
+        }
+
+     /*   while (cacheTime.get(0) < this.last) {
             a++;
             cacheTime.remove(0);
             System.out.println("XOA" + a.toString());
+        }*/
+
+
+        count = listTrans.size();
+        for (int j=0; j< count;j++)
+        {
+            if(listTrans.get(j).getamount() > 0 && listTrans.get(j).getamount() != null )
+                sum = sum + listTrans.get(j).getamount();
         }
-        String str="";
-
-        count = cacheTime.size();
-
-        this.last = cacheTime.get(0);
+        this.last = listTrans.get(0).gettimetamp();
     }
 
 
     public long getCount() {
         return this.count;
+    }
+
+    public long getSum() {
+        return this.sum;
     }
 }
 

@@ -7,7 +7,7 @@ import java.io.Serializable;
  */
 public class PARAM implements Serializable  {
     public static enum Channel {
-        BRANCH1("Branch 1"), BRANCH2("Branch 2"), BRANCH3("Branch 3"), BRANCH4("Contact Center");
+        BRANCH1("Branch 1"), BRANCH2("Branch 2"), BRANCH3("Branch 3"), BRANCH4("Contact Center"), TOTAL("Total");
         private String value;
         private Channel(String value) {
             this.value = value;
