@@ -68,7 +68,7 @@ public class MinutesBolt implements IRichBolt {
             Map<String, String> map = new HashMap<String, String>();
             map.put("Acc" , rankable.getObject().toString());
             map.put("Amount" , Long.toString(rankable.getCount()));
-            jedis.hmset("TopTen"+TransactionType+"-Top" + i + 1, map);
+            jedis.hmset("TopTen"+TransactionType+"-Top" + Integer.toString(i + 1), map);
         }
     }
 

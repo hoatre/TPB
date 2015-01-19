@@ -126,7 +126,7 @@ public class RollingChannelSummaryBolt extends BaseRichBolt {
     }
 
     private void countObjAndAck(Tuple tuple) {
-        Object obj = tuple.getValue(2);
+        Object obj = tuple.getValueByField("ch_id");
         counter.incrementCount(obj);
         collector.ack(tuple);
     }
