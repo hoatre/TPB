@@ -106,7 +106,7 @@ public class RollingAccountSummaryBolt extends BaseRichBolt {
                 emitCurrentWindowSummary();
         }
         else {
-            if (tuple.getString(1).equals(TransactionType))
+            if (tuple.getValueByField("trx_code").equals(TransactionType))
                 sumObjAndAck(tuple);
         }
     }
@@ -132,9 +132,9 @@ public class RollingAccountSummaryBolt extends BaseRichBolt {
     private void sumObjAndAck(Tuple tuple) {
         //Transaction _transaction = Utils.GetTransactionFromJSon(tuple);
         Transaction obj = new Transaction();
-        obj.setacc_no(tuple.getValue(4).toString());
-        obj.setamount(tuple.getInteger(3));
-        obj.settrx_code(tuple.getString(1));
+        obj.setacc_no(tuple.getStringByField("acc_no"));
+        obj.setamount(tuple.getIntegerByField("amount"));
+        obj.settrx_code(tuple.getStringByField("trx_code"));
         counter.incrementSummary(obj);
         collector.ack(tuple);
     }

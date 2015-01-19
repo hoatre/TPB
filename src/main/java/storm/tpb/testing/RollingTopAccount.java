@@ -79,8 +79,8 @@ public class RollingTopAccount {
         builder.setBolt(routerId, new RouterBolt(), 4).fieldsGrouping(spoutId, new Fields("obj_transaction"));
         builder.setBolt(counterSeconds, new RollingChannelSummaryBolt(1, 1), 4).fieldsGrouping(routerId, new Fields("ch_id"));
         builder.setBolt(totalSecondsRankerId, new SecondsBolt(), 4).globalGrouping(counterSeconds);
-        builder.setBolt(counterMinutes, new RollingChannelSummaryBolt(60, 1), 4).fieldsGrouping(routerId, new Fields("ch_id"));
-        builder.setBolt(totalMinutesRankerId, new MinutesBolt(), 4).globalGrouping(counterMinutes);
+//        builder.setBolt(counterMinutes, new RollingChannelSummaryBolt(60, 1), 4).fieldsGrouping(routerId, new Fields("ch_id"));
+//        builder.setBolt(totalMinutesRankerId, new MinutesBolt(), 4).globalGrouping(counterMinutes);
 
         //builder.setBolt(intermediateRankerId, new PrinterBolt()).fieldsGrouping(counterId, new Fields("obj"));
         //builder.setBolt(intermediateRankerId, new IntermediateRankingsBolt(TOP_N), 4).fieldsGrouping(counterId, new Fields("obj"));
