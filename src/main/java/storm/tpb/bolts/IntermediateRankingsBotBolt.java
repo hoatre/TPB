@@ -29,27 +29,27 @@ import storm.tpb.tools.RankableObjectWithFields;
  * It assumes the input tuples to adhere to the following format: (object, object_count, additionalField1,
  * additionalField2, ..., additionalFieldN).
  */
-public final class IntermediateRankingsBolt extends AbstractRankerBolt {
+public final class IntermediateRankingsBotBolt extends AbstractRankerBolt {
 
   private static final long serialVersionUID = -1369800530256637409L;
-  private static final Logger LOG = Logger.getLogger(IntermediateRankingsBolt.class);
+  private static final Logger LOG = Logger.getLogger(IntermediateRankingsBotBolt.class);
 
-  public IntermediateRankingsBolt() {
+  public IntermediateRankingsBotBolt() {
     super();
   }
 
-  public IntermediateRankingsBolt(int topN) {
+  public IntermediateRankingsBotBolt(int topN) {
     super(topN);
   }
 
-  public IntermediateRankingsBolt(int topN, int emitFrequencyInSeconds) {
+  public IntermediateRankingsBotBolt(int topN, int emitFrequencyInSeconds) {
     super(topN, emitFrequencyInSeconds);
   }
 
   @Override
   void updateRankingsWithTuple(Tuple tuple) {
-    Rankable rankable = RankableObjectWithFields.from(tuple);
-    super.getRankings().updateWith(rankable);
+    Rankable rankableBot = RankableBotObjectWithFields.from(tuple);
+    super.getRankings().updateWith(rankableBot);
   }
 
   @Override

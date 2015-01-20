@@ -200,32 +200,24 @@ setInterval(function() {
     redis_hmget_top('TopTenDepsits-Top5');
     redis_hmget_top('TopTenWithdrawals-Top4');
     redis_hmget_top('TopTenWithdrawals-Top5');
+    redis_hmget_top('TopTenDepsits-Bot1');
+    redis_hmget_top('TopTenDepsits-Bot2');
+    redis_hmget_top('TopTenDepsits-Bot3');
+    redis_hmget_top('TopTenDepsits-Bot4');
+    redis_hmget_top('TopTenDepsits-Bot5');
+    redis_hmget_top('TopTenWithdrawals-Bot1');
+    redis_hmget_top('TopTenWithdrawals-Bot2');
+    redis_hmget_top('TopTenWithdrawals-Bot3');
+    redis_hmget_top('TopTenWithdrawals-Bot4');
+    redis_hmget_top('TopTenWithdrawals-Bot5');
+    redis_hmget_top('TopTenTransferFrom-Bot1');
+    redis_hmget_top('TopTenTransferFrom-Bot2');
+    redis_hmget_top('TopTenTransferFrom-Bot3');
+    redis_hmget_top('TopTenTransferFrom-Bot4');
+    redis_hmget_top('TopTenTransferFrom-Bot5');
+    redis_hmget_top('TopTenTransferFrom-Top1');
+    redis_hmget_top('TopTenTransferFrom-Top2');
+    redis_hmget_top('TopTenTransferFrom-Top3');
+    redis_hmget_top('TopTenTransferFrom-Top4');
+    redis_hmget_top('TopTenTransferFrom-Top5');
 }, 1000);
-
-//setInterval(function() {
-//    redis_lrange('real-time-60s-Branch 1');
-//    //redis_lrange('real-time-60s-Branch 2');
-//    //redis_lrange('real-time-60s-Branch 3');
-//    //redis_lrange('real-time-60s-Contact Center');
-//}, 10000);
-
-//function redis_lrange(key){
-//    client1.lrange(key, 0, 59, function(err, items) {
-//        if (err) {
-//            log('error', "error");
-//        } else {
-//            socket.emit('listChart-' + key,items);
-//            log('info', items);
-//        }
-//    });
-//}
-//setInterval(function(){
-//    client1.lrange('real-time-60s-Branch 1', 0, 59, function(err, items) {
-//        if (err) {
-//            log('error', "error");
-//        } else {
-//            socket.emit('listChart-' + 'real-time-60s-Branch 1',items);
-//            log('info', items);
-//        }
-//    });
-//}, 1000);
