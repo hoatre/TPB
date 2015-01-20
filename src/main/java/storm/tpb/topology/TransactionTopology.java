@@ -14,11 +14,9 @@ import storm.kafka.KafkaSpout;
 import storm.kafka.SpoutConfig;
 import storm.kafka.StringScheme;
 import storm.kafka.ZkHosts;
-import storm.tpb.bolts.IntermediateRankingsBolt;
-import storm.tpb.bolts.IntermediateRankingsBotBolt;
-import storm.tpb.bolts.PrinterBolt;
-import storm.tpb.bolts.TotalRankingsBolt;
+import storm.tpb.bolts.*;
 import storm.tpb.testing.*;
+import storm.tpb.testing.RouterBolt;
 import storm.tpb.util.Properties;
 
 /**
@@ -31,6 +29,7 @@ public class TransactionTopology
     private static final String KAFKA_TOPIC =
             Properties.getString("storm.kafka_topic");
     private static final int TOP_N = 5;
+    private static final int BOT_N = 5;
 
     public static void main(String[] args) throws Exception
     {
@@ -107,48 +106,48 @@ public class TransactionTopology
 
         TopologyBuilder topology = new TopologyBuilder();
 
-        topology.setSpout(spoutId, new KafkaSpout(kafkaConf), 99);
+        topology.setSpout(spoutId, new KafkaSpout(kafkaConf));
 
-        topology.setBolt(routerId, new RouterBolt(), 99).noneGrouping(spoutId);
-        topology.setBolt(counterSeconds, new RollingChannelSummaryBolt(1, 1), 99).fieldsGrouping(routerId, new Fields("ch_id"));
-        topology.setBolt(totalSecondsRankerId, new SecondsBolt(), 99).globalGrouping(counterSeconds);
+        topology.setBolt(routerId, new RouterBolt()).noneGrouping(spoutId);
+        topology.setBolt(counterSeconds, new RollingChannelSummaryBolt(1, 1)).fieldsGrouping(routerId, new Fields("ch_id"));
+        topology.setBolt(totalSecondsRankerId, new SecondsBolt()).globalGrouping(counterSeconds);
 
 
         //ranking Deposit
-        topology.setBolt(summaryAccountDeposit, new RollingAccountSummaryBolt(30, 5, "Deposit"), 99).fieldsGrouping(routerId, new Fields("acc_no"));
-        topology.setBolt(intermediateRankerDepositId, new IntermediateRankingsBolt(TOP_N), 99).fieldsGrouping(summaryAccountDeposit, new Fields("obj"));
+        topology.setBolt(summaryAccountDeposit, new RollingAccountSummaryBolt(30, 5, "Deposit")).fieldsGrouping(routerId, new Fields("acc_no"));
+        topology.setBolt(intermediateRankerDepositId, new IntermediateRankingsBolt(TOP_N)).fieldsGrouping(summaryAccountDeposit, new Fields("obj"));
         topology.setBolt(totalRankerDepositId, new TotalRankingsBolt(TOP_N)).globalGrouping(intermediateRankerDepositId);
-        topology.setBolt(totalRedisRankerDepositBolt, new MinutesBolt("Depsits"), 99).fieldsGrouping(totalRankerDepositId, new Fields("rankings"));
+        topology.setBolt(totalRedisRankerDepositBolt, new MinutesBolt("Depsits")).fieldsGrouping(totalRankerDepositId, new Fields("rankings"));
 
         //ranking Deposit Bot
         //topology.setBolt(summaryAccountDepositBot, new RollingAccountSummaryBolt(60, 5, "Deposit"), 4).fieldsGrouping(routerId, new Fields("acc_no"));
-        topology.setBolt(intermediateRankerDepositIdBot, new IntermediateRankingsBotBolt(TOP_N), 99).fieldsGrouping(summaryAccountDeposit, new Fields("obj"));
-        topology.setBolt(totalRankerDepositIdBot, new TotalRankingsBolt(TOP_N)).globalGrouping(intermediateRankerDepositIdBot);
-        topology.setBolt(totalRedisRankerDepositBoltBot, new MinutesBotBolt("Depsits"), 99).fieldsGrouping(totalRankerDepositIdBot, new Fields("rankings"));
+        topology.setBolt(intermediateRankerDepositIdBot, new IntermediateRankingsBotBolt(BOT_N)).fieldsGrouping(summaryAccountDeposit, new Fields("obj"));
+        topology.setBolt(totalRankerDepositIdBot, new TotalRankingsBotBolt(BOT_N)).globalGrouping(intermediateRankerDepositIdBot);
+        topology.setBolt(totalRedisRankerDepositBoltBot, new MinutesBotBolt("Depsits")).fieldsGrouping(totalRankerDepositIdBot, new Fields("rankings"));
 
         //ranking Withdrawal
-        topology.setBolt(summaryAccountWithdrawal, new RollingAccountSummaryBolt(30, 5, "Withdrawal"), 99).fieldsGrouping(routerId, new Fields("acc_no"));
-        topology.setBolt(intermediateRankerWithdrawalId, new IntermediateRankingsBolt(TOP_N), 99).fieldsGrouping(summaryAccountWithdrawal, new Fields("obj"));
+        topology.setBolt(summaryAccountWithdrawal, new RollingAccountSummaryBolt(30, 5, "Withdrawal")).fieldsGrouping(routerId, new Fields("acc_no"));
+        topology.setBolt(intermediateRankerWithdrawalId, new IntermediateRankingsBolt(TOP_N)).fieldsGrouping(summaryAccountWithdrawal, new Fields("obj"));
         topology.setBolt(totalRankerWithdrawalId, new TotalRankingsBolt(TOP_N)).globalGrouping(intermediateRankerWithdrawalId);
-        topology.setBolt(totalRedisRankerWithdrawalBolt, new MinutesBolt("Withdrawals"), 99).fieldsGrouping(totalRankerWithdrawalId, new Fields("rankings"));
+        topology.setBolt(totalRedisRankerWithdrawalBolt, new MinutesBolt("Withdrawals")).fieldsGrouping(totalRankerWithdrawalId, new Fields("rankings"));
 
         //ranking Withdrawal Bot
         //topology.setBolt(summaryAccountWithdrawalBot, new RollingAccountSummaryBolt(60, 5, "Withdrawal"), 4).fieldsGrouping(routerId, new Fields("acc_no"));
-        topology.setBolt(intermediateRankerWithdrawalIdBot, new IntermediateRankingsBotBolt(TOP_N), 99).fieldsGrouping(summaryAccountWithdrawal, new Fields("obj"));
-        topology.setBolt(totalRankerWithdrawalIdBot, new TotalRankingsBolt(TOP_N)).globalGrouping(intermediateRankerWithdrawalIdBot);
-        topology.setBolt(totalRedisRankerWithdrawalBoltBot, new MinutesBotBolt("Withdrawals"), 99).fieldsGrouping(totalRankerWithdrawalIdBot, new Fields("rankings"));
+        topology.setBolt(intermediateRankerWithdrawalIdBot, new IntermediateRankingsBotBolt(BOT_N)).fieldsGrouping(summaryAccountWithdrawal, new Fields("obj"));
+        topology.setBolt(totalRankerWithdrawalIdBot, new TotalRankingsBotBolt(BOT_N)).globalGrouping(intermediateRankerWithdrawalIdBot);
+        topology.setBolt(totalRedisRankerWithdrawalBoltBot, new MinutesBotBolt("Withdrawals")).fieldsGrouping(totalRankerWithdrawalIdBot, new Fields("rankings"));
 
         //ranking Transfer
-        topology.setBolt(summaryAccountTransferFrom, new RollingAccountSummaryBolt(30, 5, "Transfer From"), 99).fieldsGrouping(routerId, new Fields("acc_no"));
-        topology.setBolt(intermediateRankerTransferFromId, new IntermediateRankingsBolt(TOP_N), 99).fieldsGrouping(summaryAccountTransferFrom, new Fields("obj"));
+        topology.setBolt(summaryAccountTransferFrom, new RollingAccountSummaryBolt(30, 5, "Transfer From")).fieldsGrouping(routerId, new Fields("acc_no"));
+        topology.setBolt(intermediateRankerTransferFromId, new IntermediateRankingsBolt(TOP_N)).fieldsGrouping(summaryAccountTransferFrom, new Fields("obj"));
         topology.setBolt(totalRankerTransferFromId, new TotalRankingsBolt(TOP_N)).globalGrouping(intermediateRankerTransferFromId);
-        topology.setBolt(totalRedisRankerTransferFromBolt, new MinutesBolt("TransferFrom"), 99).fieldsGrouping(totalRankerTransferFromId, new Fields("rankings"));
+        topology.setBolt(totalRedisRankerTransferFromBolt, new MinutesBolt("TransferFrom")).fieldsGrouping(totalRankerTransferFromId, new Fields("rankings"));
 
         //ranking Transfer Bot
         //topology.setBolt(summaryAccountWithdrawalBot, new RollingAccountSummaryBolt(60, 5, "Withdrawal"), 4).fieldsGrouping(routerId, new Fields("acc_no"));
-        topology.setBolt(intermediateRankerTransferFromIdBot, new IntermediateRankingsBotBolt(TOP_N), 99).fieldsGrouping(summaryAccountTransferFrom, new Fields("obj"));
-        topology.setBolt(totalRankerTransferFromIdBot, new TotalRankingsBolt(TOP_N)).globalGrouping(intermediateRankerTransferFromIdBot);
-        topology.setBolt(totalRedisRankerTransferFromBoltBot, new MinutesBotBolt("TransferFrom"), 99).fieldsGrouping(totalRankerTransferFromIdBot, new Fields("rankings"));
+        topology.setBolt(intermediateRankerTransferFromIdBot, new IntermediateRankingsBotBolt(BOT_N)).fieldsGrouping(summaryAccountTransferFrom, new Fields("obj"));
+        topology.setBolt(totalRankerTransferFromIdBot, new TotalRankingsBotBolt(BOT_N)).globalGrouping(intermediateRankerTransferFromIdBot);
+        topology.setBolt(totalRedisRankerTransferFromBoltBot, new MinutesBotBolt("TransferFrom")).fieldsGrouping(totalRankerTransferFromIdBot, new Fields("rankings"));
 
         return topology.createTopology();
     }

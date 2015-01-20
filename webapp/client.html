@@ -63,37 +63,7 @@
           var max = 10;
           return {min: min, max: max};
       }
-//      setInterval(function() {
-//          socket.on('CountChart-real-time-Branch 1', function (data1) {
-//              line1.append(new Date().getTime(), data1);
-//          });
-//          socket.on('CountChart-real-time-Branch 2', function (data1) {
-//              line2.append(new Date().getTime(), data1);
-//          });
-//          socket.on('CountChart-real-time-Branch 3', function (data1) {
-//              line3.append(new Date().getTime(), data1);
-//          });
-//          socket.on('CountChart-real-time-Contact Center', function (data1) {
-//              line4.append(new Date().getTime(), data1);
-//          });
-//          socket.on('Total-TotalNoTran', function (data1) {
-//              var TotalNoTran = document.getElementById("TotalNoTran");
-//              TotalNoTran.innerHTML = data1.toString();
-//          });
-//          socket.on('Total-TotalAmount', function (data1) {
-//              var TotalAmount = document.getElementById("TotalAmount");
-//              TotalAmount.innerHTML = data1.toString();
-//          });
-//          socket.on('Total-TotalAmount', function (data1) {
-//              var TotalAmount = document.getElementById("TotalAmount");
-//              TotalAmount.innerHTML = data1.toString();
-//          });
-//          socket.on('Total-TotalAmount', function (data1) {
-//              var TotalAmount = document.getElementById("TotalAmount");
-//              TotalAmount.innerHTML = data1.toString();
-//          });
-//
-//      }, 1000);
+
       function TopTen(Top){
           socket.on('Top-' + Top, function (data1) {
               var array = $.map(data1, function(value, index) {

@@ -29,7 +29,7 @@ import java.util.List;
  * <p/>
  * This class can be used, for instance, to track the number of occurrences of an object in a Storm topology.
  */
-public class RankableBotObjectWithFields implements Rankable, Serializable {
+public class RankableBotObjectWithFields implements RankableBot, Serializable {
 
   private static final long serialVersionUID = -9102878650001058090L;
   private static final String toStringSeparator = "|";
@@ -84,7 +84,7 @@ public class RankableBotObjectWithFields implements Rankable, Serializable {
     return fields;
   }
 
-  public int compareTo(Rankable other) {
+  public int compareTo(RankableBot other) {
     long delta = other.getCount() - this.getCount();
     if (delta > 0) {
       return 1;
@@ -139,7 +139,7 @@ public class RankableBotObjectWithFields implements Rankable, Serializable {
    * @return
    */
  
-  public Rankable copy() {
+  public RankableBot copy() {
     List<Object> shallowCopyOfFields = ImmutableList.copyOf(getFields());
     return new RankableBotObjectWithFields(getObject(), getCount(), shallowCopyOfFields);
   }

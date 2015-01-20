@@ -8,7 +8,9 @@ import backtype.storm.tuple.Tuple;
 import org.apache.log4j.Logger;
 import redis.clients.jedis.Jedis;
 import storm.tpb.tools.Rankable;
+import storm.tpb.tools.RankableBot;
 import storm.tpb.tools.Rankings;
+import storm.tpb.tools.RankingsBot;
 import storm.tpb.util.Properties;
 
 import java.sql.Connection;
@@ -59,16 +61,16 @@ public class MinutesBotBolt implements IRichBolt {
     public void execute(Tuple input)
     {
         LOGGER.debug("Ranking summary");
-        Rankings rankingsToBeMerged = (Rankings) input.getValue(0);
+        RankingsBot rankingsToBeMerged = (RankingsBot) input.getValue(0);
 
-        List<Rankable> list = rankingsToBeMerged.getRankings();
+        List<RankableBot> list = rankingsToBeMerged.getRankingsBot();
 //        Collections.sort(list, new Rankable().);
 //        Collections.reverse(list);
 
         int j = 5;
         for (int i=rankingsToBeMerged.size() - 1; i>=0; i--, j--)
         {
-            Rankable rankable = list.get(i);
+            RankableBot rankable = list.get(i);
             Map<String, String> map = new HashMap<String, String>();
             map.put("Acc" , rankable.getObject().toString());
             map.put("Amount" , Long.toString(rankable.getCount()));
