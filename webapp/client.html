@@ -8,9 +8,11 @@
     <!--Load the AJAX API-->
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
     <script type="text/javascript" src="http://localhost:3000/socket.io/socket.io.js"></script>
-    <script type="text/javascript" src="http://github.com/joewalnes/smoothie/raw/master/smoothie.js"></script>
+    <!--<script type="text/javascript" src="smoothie.js"></script>-->
+      <script type="text/javascript" src="http://github.com/joewalnes/smoothie/raw/master/smoothie.js"></script>
     <script type="text/javascript" src="canvasjs.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
     <script type="text/javascript">
       var socket = io.connect('http://localhost:3000/');
 
@@ -33,40 +35,7 @@
         setStatus('reconnecting');
       });
 
-      socket.on('message', function (channel, data) {
-        console.log('received a message: ', data);
-          switch(channel) {
-              case 'real-time-Branch 1':
-                  line1.append(new Date().getTime(), data);
-                  break;
-              case 'real-time-Branch 2':
-                  line2.append(new Date().getTime(), data);
-                  break;
-              case 'real-time-Branch 3':
-                  line3.append(new Date().getTime(), data);
-                  break;
-              case 'real-time-Contact Center':
-                  line4.append(new Date().getTime(), data);
-                  break;
-              case 'real-time-minutes-Branch 1':
-                  line5.append(new Date().getTime(), data);
-                  break;
-              case 'real-time-minutes-Branch 2':
-                  line6.append(new Date().getTime(), data);
-                  break;
-              case 'real-time-minutes-Branch 3':
-                  line7.append(new Date().getTime(), data);
-                  break;
-              case 'real-time-minutes-Contact Center':
-                  line8.append(new Date().getTime(), data);
-                  break;
-              default:
-                    break;
-          }
 
-        createTimeline();
-        //addMessage(data);
-      });
 
       function addMessage(data) {
           $('#online').html(data);
@@ -86,19 +55,7 @@
       var line6 = new TimeSeries();
       var line7 = new TimeSeries();
       var line8 = new TimeSeries();
-      //var chartCD =  [2, 0, 4, 2, 5, 6, 7, 8, 4, 2, 0, 8];
-      setInterval(function() {
-          var socket = io.connect();
 
-          socket.on('connect',function(data){
-              //line1.append(new Date().getTime(), data);
-              //line2.append(new Date().getTime(), data);
-              //line3.append(new Date().getTime(), data);
-              //line4.append(new Date().getTime(), data);
-              createTimeline();
-          });
-
-      }, 1000);
 
       function myYRangeFunction(range) {
           // TODO implement your calculation using range.min and range.max
@@ -106,113 +63,154 @@
           var max = 10;
           return {min: min, max: max};
       }
-      function createTimeline() {
-          var chart = new SmoothieChart({
-                      millisPerPixel: 50,
-                      grid: {
-                          fillStyle: 'transparent',
-                          strokeStyle: 'rgba(166,197,103,0.20)',
-                          sharpLines: true,
-                          millisPerLine: 5000,
-                          verticalSections: 8,
-                          borderVisible: false
-                      },
-                      labels: { fillStyle: '#000000' }
-                  }),canvas = document.getElementById('chart'),
-                  series = new TimeSeries();
-          var chartminutes = new SmoothieChart();
-//          var ctx = document.getElementById("ChartCD").getContext("2d");
-//          var chartCD = new Chart(ctx).Line(data, options);
-          //var chartCD = new SmoothieChart();
 
+      function TopTen(Top){
+          socket.on('Top-' + Top, function (data1) {
+              var array = $.map(data1, function(value, index) {
+                  return [value];
+              });
+              var TopTenDepsitsTop1Acc = document.getElementById(Top + "-Account");
+              TopTenDepsitsTop1Acc.innerHTML = array[0];
+              var TopTenDepsitsTop1Amount = document.getElementById(Top + "-Amount");
+              TopTenDepsitsTop1Amount.innerHTML = array[1];
+          });
+      }
+      var chart = new SmoothieChart({
+                  millisPerPixel: 50,
+                  grid: {
+                      fillStyle: 'transparent',
+                      strokeStyle: 'rgba(166,197,103,0.20)',
+                      //sharpLines: true,
+                      //millisPerLine: 5000,
+                      verticalSections: 8,
+                      borderVisible: false
+                  },
+                  labels: { fillStyle: '#000000' }
+              }),canvas = document.getElementById('chart'),
+              series = new TimeSeries();
+      function createTimeline() {
+          $('#line11').on('click', line11);
+          $('#line21').on('click', line21);
+          $('#line31').on('click', line31);
+          $('#line41').on('click', line41);
+
+          TopTen('TopTenDepsits-Top1');
+          TopTen('TopTenDepsits-Top2');
+          TopTen('TopTenDepsits-Top3');
+          TopTen('TopTenWithdrawals-Top1');
+          TopTen('TopTenWithdrawals-Top2');
+          TopTen('TopTenWithdrawals-Top3');
+          TopTen('TopTenDepsits-Top4');
+          TopTen('TopTenDepsits-Top5');
+          TopTen('TopTenWithdrawals-Top4');
+          TopTen('TopTenWithdrawals-Top5');
+
+          TopTen('TopTenDepsits-Bot1');
+          TopTen('TopTenDepsits-Bot2');
+          TopTen('TopTenDepsits-Bot3');
+          TopTen('TopTenWithdrawals-Bot1');
+          TopTen('TopTenWithdrawals-Bot2');
+          TopTen('TopTenWithdrawals-Bot3');
+          TopTen('TopTenDepsits-Bot4');
+          TopTen('TopTenDepsits-Bot5');
+          TopTen('TopTenWithdrawals-Bot5');
+          TopTen('TopTenWithdrawals-Bot4');
+
+          TopTen('TopTenTransferFrom-Bot1');
+          TopTen('TopTenTransferFrom-Bot2');
+          TopTen('TopTenTransferFrom-Bot3');
+          TopTen('TopTenTransferFrom-Bot4');
+          TopTen('TopTenTransferFrom-Bot5');
+          TopTen('TopTenTransferFrom-Top1');
+          TopTen('TopTenTransferFrom-Top2');
+          TopTen('TopTenTransferFrom-Top3');
+          TopTen('TopTenTransferFrom-Top4');
+          TopTen('TopTenTransferFrom-Top5');
+
+          socket.on('CountChart-real-time-Branch 1', function (data1) {
+              line1.append(new Date().getTime(), data1);
+          });
+          socket.on('CountChart-real-time-Branch 2', function (data1) {
+              line2.append(new Date().getTime(), data1);
+          });
+          socket.on('CountChart-real-time-Branch 3', function (data1) {
+              line3.append(new Date().getTime(), data1);
+          });
+          socket.on('CountChart-real-time-Contact Center', function (data1) {
+              line4.append(new Date().getTime(), data1);
+          });
+          socket.on('Total-TotalNoTran', function (data1) {
+              var TotalNoTran = document.getElementById("TotalNoTran");
+              TotalNoTran.innerHTML = data1.toString();
+          });
+          socket.on('Total-TotalAmount', function (data1) {
+              var TotalAmount = document.getElementById("TotalAmount");
+              TotalAmount.innerHTML = data1.toString();
+          });
+          socket.on('Total-TotalAmount', function (data1) {
+              var TotalAmount = document.getElementById("TotalAmount");
+              TotalAmount.innerHTML = data1.toString();
+          });
+          socket.on('Total-TotalAmount', function (data1) {
+              var TotalAmount = document.getElementById("TotalAmount");
+              TotalAmount.innerHTML = data1.toString();
+          });
           chart.addTimeSeries(line1,
-                  { strokeStyle: '#A6C567', fillStyle: 'rgba(166,197,103,0.20)', lineWidth:2 });
-//          chart.addTimeSeries(line2,
-//                  { strokeStyle:'rgb(255, 0, 255)', fillStyle:'rgba(255, 0, 255, 0.3)', lineWidth:3 });
-//          chart.addTimeSeries(line3,
-//                  { strokeStyle:'rgb(255, 255, 0)', fillStyle:'rgba(255, 255, 0, 0.4)', lineWidth:3 });
-//          chart.addTimeSeries(line4,
-//                  { strokeStyle:'rgb(0, 0, 255)', fillStyle:'rgba(0, 0, 255, 0.2)', lineWidth:3 });
+                  { strokeStyle: '#A6C567', lineWidth:3 });
+          chart.addTimeSeries(line2,
+                  { strokeStyle:'#0000FF', lineWidth:3 });
+          chart.addTimeSeries(line3,
+                  { strokeStyle:'#DC143C', lineWidth:3 });
+          chart.addTimeSeries(line4,
+                  { strokeStyle:'#FFD700', lineWidth:3 });
+
           chart.streamTo(document.getElementById("chart"), 1000);
 
-          //minutes
-//          chartminutes.addTimeSeries(line5,
-//                  { strokeStyle:'rgb(0, 255, 0)', fillStyle:'rgba(0, 255, 0, 0.4)', lineWidth:3 });
-//          chartminutes.addTimeSeries(line6,
-//                  { strokeStyle:'rgb(255, 0, 255)', fillStyle:'rgba(255, 0, 255, 0.3)', lineWidth:3 });
-//          chartminutes.addTimeSeries(line7,
-//                  { strokeStyle:'rgb(255, 255, 0)', fillStyle:'rgba(255, 255, 0, 0.4)', lineWidth:3 });
-//          chartminutes.addTimeSeries(line8,
-//                  { strokeStyle:'rgb(0, 0, 255)', fillStyle:'rgba(0, 0, 255, 0.2)', lineWidth:3 });
-          //chartminutes.streamTo(document.getElementById("chartminutes"), 5000);
 
-          //chart co dinh
-//          chartCD.addTimeSeries(line1,
-//                  { strokeStyle:'rgb(0, 255, 0)', fillStyle:'rgba(0, 255, 0, 0.4)', lineWidth:3 });
-//          chartCD.addTimeSeries(line2,
-//                  { strokeStyle:'rgb(255, 0, 255)', fillStyle:'rgba(255, 0, 255, 0.3)', lineWidth:3 });
-//          chartCD.addTimeSeries(line3,
-//                  { strokeStyle:'rgb(255, 255, 0)', fillStyle:'rgba(255, 255, 0, 0.4)', lineWidth:3 });
-//          chartCD.addTimeSeries(line4,
-//                  { strokeStyle:'rgb(0, 0, 255)', fillStyle:'rgba(0, 0, 255, 0.2)', lineWidth:3 });
-//          chartCD.streamTo(document.getElementById("chartCD"), 1000);
 
-          createLineChart();
-          //alert('1');
       }
 
 
       function setStatus(msg) {
           console.log('Connection Status : ' + msg);
       }
-      function createLineChart() {
-          //alert('2');
-          //socket.on('connect',function(data) {
-              //subscribe.on("message", function(channel, message) {
-                  socket.on('listChart-real-time-60s-Branch 1',function(data1){
-                        //alert(data1);
-                      //alert('1');
-                      var array = $.map(data1, function(value, index) {
-                          //alert(value);
-                          return [value];
-                      });
-
-                      //var limit = 100000;    //increase number of dataPoints by increasing this
-
-                      var y = 0;
-                      var data = []; var dataSeries = { type: "line" };
-                      var dataPoints = [];
-                      for (var i = 0; i < array.length; i += 1) {
-                          //alert(array[i]);
-                          //y += 1;
-                          dataPoints.push({
-                              x: i + 1,
-                              y: parseInt(array[i])
-                          });
-                      }
-                      dataSeries.dataPoints = dataPoints;
-                      data.push(dataSeries);
 
 
-                  var chartCD1 = new CanvasJS.Chart("chartCD",
-                          {
-
-                              data: data  // random generator below
-
-                          });
-
-                  chartCD1.render();
-                  });
-              //});
-          //});
-
-
+      function line11() {
+          if($('#line11').is(':checked'))
+              chart.addTimeSeries(line1,
+                      { strokeStyle: '#A6C567', lineWidth:3 });
+          else{
+              chart.removeTimeSeries(line1);
+          }
       }
-      function ReloadBtn() {
-          //alert('1');
-          //socket.emit('reloadChart',"1");
-          createLineChart();
-          //alert('2');
+
+
+      function line21() {
+          if($('#line21').is(':checked'))
+              chart.addTimeSeries(line2,
+                      { strokeStyle:'#0000FF', lineWidth:3 });
+          else{
+              chart.removeTimeSeries(line2);
+          }
+      }
+
+      function line31() {
+          if($('#line31').is(':checked'))
+              chart.addTimeSeries(line3,
+                      { strokeStyle:'#DC143C', lineWidth:3 });
+          else{
+              chart.removeTimeSeries(line3);
+          }
+      }
+
+      function line41() {
+          if($('#line41').is(':checked'))
+              chart.addTimeSeries(line4,
+                      { strokeStyle:'#FFD700', lineWidth:3 });
+          else{
+              chart.removeTimeSeries(line4);
+          }
       }
     </script>
   </head>
@@ -224,28 +222,335 @@
       </tr>
       <tr>
           <td>
-          <canvas id="chart" width="1000px" height="200px"></canvas>
+          <canvas id="chart" width="1500px" height="200px"></canvas>
           </td>
       </tr>
-      <!--<tr>-->
-          <!--<td>Total transactions in 10 seconds</td>-->
-      <!--</tr>-->
-      <!--<tr>-->
-          <!--<td>-->
-              <!--<canvas id="chartminutes" width="1000px" height="200px"></canvas>-->
-          <!--</td>-->
-
-      <!--</tr>-->
+      <ul>
+          <li><input type="checkbox" id="line11" name="Line11" checked="true" /><font  color="#A6C567"><b>real-time-Branch 1  </b></font> </li>
+          <li><input type="checkbox" id="line21" name="Line21" checked="true"/><font  color="#0000FF"><b>real-time-Branch 2  </b></font> </li>
+          <li><input type="checkbox" id="line31" name="Line31" checked="true"/><font  color="#DC143C"><b>real-time-Branch 3  </b></font> </li>
+          <li><input type="checkbox" id="line41" name="Line41" checked="true"/><font  color="#FFD700"><b>real-time-Contact Center  </b></font> </li>
+      </ul>
+  </table>
+    <table width="1500px">
+        <colgroup>
+            <col width="25%">
+        </colgroup>
       <tr>
-          <td>Total value in 60s <button type="button" id="button" onclick="ReloadBtn()">Reload</button></td>
+          <td colspan="3">
+              <i>Total No. of Transactions : </i><label id="TotalNoTran"></label>
+          </td>
+
+          <td colspan="3"> <i>Total Amount : </i><label id="TotalAmount"></label> </td>
+
+      </tr>
+      <tr>
+          <th colspan="2">
+              Top five Deposits
+          </th>
+
+
+          <th colspan="2">
+              Top five Withdrawals
+          </th>
+
+          <th colspan="2">
+              Top five Transfer
+          </th>
+
+      </tr>
+      <tr>
+          <th>
+              <b>Account</b>
+          </th>
+          <th>
+              <b>Amount</b>
+          </th>
+
+          <th>
+              <b>Account</b>
+          </th>
+          <th>
+              <b>Amount</b>
+          </th>
+
+          <th>
+              <b>Account</b>
+          </th>
+          <th>
+              <b>Amount</b>
+          </th>
+
       </tr>
       <tr>
           <td>
-              <!--<canvas id="chartCD" width="1000px" height="200px"></canvas>-->
-              <div id="chartCD" style="height: 300px; width: 1000px;"></div>
+              <label id="TopTenDepsits-Top1-Account"></label>
+          </td>
+          <td>
+              <label id="TopTenDepsits-Top1-Amount"></label>
+          </td>
+
+          <td>
+              <label id="TopTenWithdrawals-Top1-Account"></label>
+          </td>
+          <td>
+              <label id="TopTenWithdrawals-Top1-Amount"></label>
+          </td>
+
+          <td>
+              <label id="TopTenTransferFrom-Top1-Account"></label>
+          </td>
+          <td>
+              <label id="TopTenTransferFrom-Top1-Amount"></label>
           </td>
 
       </tr>
+      <tr>
+          <td>
+              <label type="text" id="TopTenDepsits-Top2-Account"></label>
+          </td>
+          <td>
+              <label type="text" id="TopTenDepsits-Top2-Amount"></label>
+          </td>
+
+          <td>
+              <label type="text" id="TopTenWithdrawals-Top2-Account"></label>
+          </td>
+          <td>
+              <label type="text" id="TopTenWithdrawals-Top2-Amount"></label>
+          </td>
+
+          <td>
+              <label type="text" id="TopTenTransferFrom-Top2-Account"></label>
+          </td>
+          <td>
+              <label type="text" id="TopTenTransferFrom-Top2-Amount"></label>
+          </td>
+
+      </tr>
+      <tr>
+          <td>
+              <label type="text" id="TopTenDepsits-Top3-Account"></label>
+          </td>
+          <td>
+              <label type="text" id="TopTenDepsits-Top3-Amount"></label>
+          </td>
+
+          <td>
+              <label type="text" id="TopTenWithdrawals-Top3-Account"></label>
+          </td>
+          <td>
+              <label type="text" id="TopTenWithdrawals-Top3-Amount"></label>
+          </td>
+
+          <td>
+              <label type="text" id="TopTenTransferFrom-Top3-Account"></label>
+          </td>
+          <td>
+              <label type="text" id="TopTenTransferFrom-Top3-Amount"></label>
+          </td>
+
+      </tr>
+        <tr>
+            <td>
+                <label type="text" id="TopTenDepsits-Top4-Account"></label>
+            </td>
+            <td>
+                <label type="text" id="TopTenDepsits-Top4-Amount"></label>
+            </td>
+
+            <td>
+                <label type="text" id="TopTenWithdrawals-Top4-Account"></label>
+            </td>
+            <td>
+                <label type="text" id="TopTenWithdrawals-Top4-Amount"></label>
+            </td>
+
+            <td>
+                <label type="text" id="TopTenTransferFrom-Top4-Account"></label>
+            </td>
+            <td>
+                <label type="text" id="TopTenTransferFrom-Top4-Amount"></label>
+            </td>
+
+        </tr>
+        <tr>
+            <td>
+                <label type="text" id="TopTenDepsits-Top5-Account"></label>
+            </td>
+            <td>
+                <label type="text" id="TopTenDepsits-Top5-Amount"></label>
+            </td>
+
+            <td>
+                <label type="text" id="TopTenWithdrawals-Top5-Account"></label>
+            </td>
+            <td>
+                <label type="text" id="TopTenWithdrawals-Top5-Amount"></label>
+            </td>
+
+            <td>
+                <label type="text" id="TopTenTransferFrom-Top5-Account"></label>
+            </td>
+            <td>
+                <label type="text" id="TopTenTransferFrom-Top5-Amount"></label>
+            </td>
+
+        </tr>
+        <tr>
+            <th colspan="2">
+                Bot five Deposits
+            </th>
+
+
+            <th colspan="2">
+                Bot five Withdrawals
+            </th>
+
+            <th colspan="2">
+                Bot five Transfer
+            </th>
+
+
+        </tr>
+        <tr>
+            <th>
+                Account
+            </th>
+            <th>
+                Amount
+            </th>
+
+            <th>
+                Account
+            </th>
+            <th>
+                Amount
+            </th>
+
+            <th>
+                Account
+            </th>
+            <th>
+                Amount
+            </th>
+
+        </tr>
+        <tr>
+            <td>
+                <label id="TopTenDepsits-Bot5-Account"></label>
+            </td>
+            <td>
+                <label id="TopTenDepsits-Bot5-Amount"></label>
+            </td>
+
+            <td>
+                <label id="TopTenWithdrawals-Bot5-Account"></label>
+            </td>
+            <td>
+                <label id="TopTenWithdrawals-Bot5-Amount"></label>
+            </td>
+
+            <td>
+                <label id="TopTenTransferFrom-Bot5-Account"></label>
+            </td>
+            <td>
+                <label id="TopTenTransferFrom-Bot5-Amount"></label>
+            </td>
+
+        </tr>
+        <tr>
+            <td>
+                <label type="text" id="TopTenDepsits-Bot4-Account"></label>
+            </td>
+            <td>
+                <label type="text" id="TopTenDepsits-Bot4-Amount"></label>
+            </td>
+
+            <td>
+                <label type="text" id="TopTenWithdrawals-Bot4-Account"></label>
+            </td>
+            <td>
+                <label type="text" id="TopTenWithdrawals-Bot4-Amount"></label>
+            </td>
+
+            <td>
+                <label type="text" id="TopTenTransferFrom-Bot4-Account"></label>
+            </td>
+            <td>
+                <label type="text" id="TopTenTransferFrom-Bot4-Amount"></label>
+            </td>
+
+        </tr>
+        <tr>
+            <td>
+                <label type="text" id="TopTenDepsits-Bot3-Account"></label>
+            </td>
+            <td>
+                <label type="text" id="TopTenDepsits-Bot3-Amount"></label>
+            </td>
+
+            <td>
+                <label type="text" id="TopTenWithdrawals-Bot3-Account"></label>
+            </td>
+            <td>
+                <label type="text" id="TopTenWithdrawals-Bot3-Amount"></label>
+            </td>
+
+            <td>
+                <label type="text" id="TopTenTransferFrom-Bot3-Account"></label>
+            </td>
+            <td>
+                <label type="text" id="TopTenTransferFrom-Bot3-Amount"></label>
+            </td>
+
+        </tr>
+        <tr>
+            <td>
+                <label type="text" id="TopTenDepsits-Bot2-Account"></label>
+            </td>
+            <td>
+                <label type="text" id="TopTenDepsits-Bot2-Amount"></label>
+            </td>
+
+            <td>
+                <label type="text" id="TopTenWithdrawals-Bot2-Account"></label>
+            </td>
+            <td>
+                <label type="text" id="TopTenWithdrawals-Bot2-Amount"></label>
+            </td>
+
+            <td>
+                <label type="text" id="TopTenTransferFrom-Bot2-Account"></label>
+            </td>
+            <td>
+                <label type="text" id="TopTenTransferFrom-Bot2-Amount"></label>
+            </td>
+
+        </tr>
+        <tr>
+            <td>
+                <label type="text" id="TopTenDepsits-Bot1-Account"></label>
+            </td>
+            <td>
+                <label type="text" id="TopTenDepsits-Bot1-Amount"></label>
+            </td>
+
+            <td>
+                <label type="text" id="TopTenWithdrawals-Bot1-Account"></label>
+            </td>
+            <td>
+                <label type="text" id="TopTenWithdrawals-Bot1-Amount"></label>
+            </td>
+
+            <td>
+                <label type="text" id="TopTenTransferFrom-Bot1-Account"></label>
+            </td>
+            <td>
+                <label type="text" id="TopTenTransferFrom-Bot1-Amount"></label>
+            </td>
+
+        </tr>
   </table>
 
   </body>

@@ -24,13 +24,12 @@ import com.google.common.collect.Lists;
 import java.io.Serializable;
 import java.util.List;
 
-
 /**
  * This class wraps an objects and its associated count, including any additional data fields.
  * <p/>
  * This class can be used, for instance, to track the number of occurrences of an object in a Storm topology.
  */
-public class RankableObjectWithFields implements Rankable, Serializable {
+public class RankableBotObjectWithFields implements RankableBot, Serializable {
 
   private static final long serialVersionUID = -9102878650001058090L;
   private static final String toStringSeparator = "|";
@@ -39,7 +38,7 @@ public class RankableObjectWithFields implements Rankable, Serializable {
   private final long count;
   private final ImmutableList<Object> fields;
 
-  public RankableObjectWithFields(Object obj, long count, Object... otherFields) {
+  public RankableBotObjectWithFields(Object obj, long count, Object... otherFields) {
     if (obj == null) {
       throw new IllegalArgumentException("The object must not be null");
     }
@@ -57,17 +56,17 @@ public class RankableObjectWithFields implements Rankable, Serializable {
    * <p/>
    * This method expects the object to be ranked in the first field (index 0) of the provided tuple, and the number of
    * occurrences of the object (its count) in the second field (index 1). Any further fields in the tuple will be
-   * extracted and tracked, too. These fields can be accessed via {@link RankableObjectWithFields#getFields()}.
+   * extracted and tracked, too. These fields can be accessed via {@link storm.tpb.tools.RankableBotObjectWithFields#getFields()}.
    *
    * @param tuple
    *
    * @return new instance based on the provided tuple
    */
-  public static RankableObjectWithFields from(Tuple tuple) {
+  public static RankableBotObjectWithFields from(Tuple tuple) {
     List<Object> otherFields = Lists.newArrayList(tuple.getValues());
     Object obj = otherFields.remove(0);
     Long count = (Long) otherFields.remove(0);
-    return new RankableObjectWithFields(obj, count, otherFields.toArray());
+    return new RankableBotObjectWithFields(obj, count, otherFields.toArray());
   }
 
   public Object getObject() {
@@ -85,12 +84,12 @@ public class RankableObjectWithFields implements Rankable, Serializable {
     return fields;
   }
 
-  public int compareTo(Rankable other) {
-    long delta = this.getCount() - other.getCount();
+  public int compareTo(RankableBot other) {
+    long delta = other.getCount() - this.getCount();
     if (delta > 0) {
       return 1;
     }
-    else if (delta < 0) {
+    else if (delta < 0){
       return -1;
     }
     else {
@@ -103,10 +102,10 @@ public class RankableObjectWithFields implements Rankable, Serializable {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof RankableObjectWithFields)) {
+    if (!(o instanceof RankableBotObjectWithFields)) {
       return false;
     }
-    RankableObjectWithFields other = (RankableObjectWithFields) o;
+    RankableBotObjectWithFields other = (RankableBotObjectWithFields) o;
     return obj.equals(other.obj) && count == other.count;
   }
 
@@ -140,9 +139,9 @@ public class RankableObjectWithFields implements Rankable, Serializable {
    * @return
    */
  
-  public Rankable copy() {
+  public RankableBot copy() {
     List<Object> shallowCopyOfFields = ImmutableList.copyOf(getFields());
-    return new RankableObjectWithFields(getObject(), getCount(), shallowCopyOfFields);
+    return new RankableBotObjectWithFields(getObject(), getCount(), shallowCopyOfFields);
   }
 
 }
