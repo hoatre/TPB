@@ -7,14 +7,14 @@
 
     <!--Load the AJAX API-->
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="http://localhost:3000/socket.io/socket.io.js"></script>
     <!--<script type="text/javascript" src="smoothie.js"></script>-->
       <script type="text/javascript" src="http://github.com/joewalnes/smoothie/raw/master/smoothie.js"></script>
     <script type="text/javascript" src="canvasjs.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 
     <script type="text/javascript">
-      var socket = io.connect('http://10.20.252.201:3000/');
+      var socket = io.connect('http://localhost:3000/');
 
       // Data
       var line1 = new TimeSeries();
@@ -29,11 +29,8 @@
       var line7 = new TimeSeries();
       var line8 = new TimeSeries();
 
-      function TopTen(Top,Topmax) {
-          for (var z = 1; z <= Topmax; z++)
-          {
-
-          socket.on('Top-' + Top + z.toString(), function (data1) {
+      function TopTen(Top) {
+          socket.on('Top-' + Top, function (data1) {
               var array = $.map(data1, function (value, index) {
                   return [value];
               });
@@ -42,7 +39,6 @@
               var TopTenDepsitsTop1Amount = document.getElementById(Top + "-Amount");
               TopTenDepsitsTop1Amount.innerHTML = array[1];
           });
-      }
       }
       var chart = new SmoothieChart({
                   millisPerPixel: 50,
@@ -62,13 +58,14 @@
           $('#line21').on('click', line21);
           $('#line31').on('click', line31);
           $('#line41').on('click', line41);
-
-          TopTen('TopTenDepsits-Top', 5);
-          TopTen('TopTenDepsits-Bot', 5);
-          TopTen('TopTenWithdrawals-Top', 5);
-          TopTen('TopTenWithdrawals-Bot', 5);
-          TopTen('TopTenTransferFrom-Top', 5);
-          TopTen('TopTenTransferFrom-Bot', 5);
+          for(z = 1;z<=5;z++) {
+              TopTen('TopTenDepsits-Top' + z.toString());
+              TopTen('TopTenDepsits-Bot' + z.toString());
+              TopTen('TopTenWithdrawals-Top' + z.toString());
+              TopTen('TopTenWithdrawals-Bot' + z.toString());
+              TopTen('TopTenTransferFrom-Top' + z.toString());
+              TopTen('TopTenTransferFrom-Bot' + z.toString());
+          }
 
           socket.on('CountChart-real-time-Branch 1', function (data1) {
               line1.append(new Date().getTime(), data1);

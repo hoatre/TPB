@@ -67,17 +67,15 @@ function redis_get_total(key){
         }
     });
 }
-function redis_hmget_top(key, keyMax){
-    for(var i = 1;i <= keyMax; i++) {
-        client1.hmget(key + i.toString(), "Acc", "Amount", function (err, items) {
-            if (err) {
-                log('error', "error");
-            } else {
-                socket.emit('Top-' + key, items);
-                log('info', "Top-" + key + " : " + items);
-            }
-        });
-    }
+function redis_hmget_top(key){
+    client1.hmget(key, "Acc", "Amount", function (err, items) {
+        if (err) {
+            log('error', "error");
+        } else {
+            socket.emit('Top-' + key, items);
+            log('info', "Top-" + key + " : " + items);
+        }
+    });
 }
 setInterval(function() {
     redis_get('real-time-Branch 1');
@@ -86,10 +84,12 @@ setInterval(function() {
     redis_get('real-time-Contact Center');
     redis_get_total('TotalNoTran');
     redis_get_total('TotalAmount');
-    redis_hmget_top('TopTenDepsits-Top', 5);
-    redis_hmget_top('TopTenWithdrawals-Top', 5);
-    redis_hmget_top('TopTenDepsits-Bot', 5);
-    redis_hmget_top('TopTenWithdrawals-Bot', 5);
-    redis_hmget_top('TopTenTransferFrom-Bot', 5);
-    redis_hmget_top('TopTenTransferFrom-Top', 5);
+    for(z=1; z <= 5; z++) {
+        redis_hmget_top('TopTenDepsits-Top' + z.toString());
+        redis_hmget_top('TopTenWithdrawals-Top' + z.toString());
+        redis_hmget_top('TopTenDepsits-Bot' + z.toString());
+        redis_hmget_top('TopTenWithdrawals-Bot' + z.toString());
+        redis_hmget_top('TopTenTransferFrom-Bot' + z.toString());
+        redis_hmget_top('TopTenTransferFrom-Top' + z.toString());
+    }
 }, 1000);
