@@ -83,7 +83,7 @@ public class TestTransactionSpout extends BaseRichSpout {
         final String acc_no = acc_nos[rand.nextInt(acc_nos.length)];
         //Generate Amount
         final Integer amount = randomGenerator.nextInt(200);
-        Transaction tran = new  Transaction(trx_id,trx_code,ch_id,amount,acc_no,"Savings");
+        Transaction tran = new  Transaction(trx_id,trx_code,ch_id,amount,acc_no,"Savings",System.currentTimeMillis());
         return tran;
     }
 
