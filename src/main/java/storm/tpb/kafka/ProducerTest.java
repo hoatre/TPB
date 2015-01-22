@@ -95,7 +95,7 @@ public class ProducerTest  extends TimerTask {
         final String acc_no = acc_nos[rand.nextInt(acc_nos.length)];
         //Generate Amount
         final Integer amount = randomGenerator.nextInt(200);
-        storm.tpb.testing.Transaction tran = new storm.tpb.testing.Transaction(trx_id,trx_code,ch_id,amount,acc_no,"Savings");
+        storm.tpb.testing.Transaction tran = new storm.tpb.testing.Transaction(trx_id,trx_code,ch_id,amount,acc_no,"Savings",System.currentTimeMillis());
         return tran;
     }
 	
