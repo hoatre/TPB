@@ -81,6 +81,6 @@ public class Transaction {
 		}
 		public void settimetamp(Long timetamp)
 		{
-			this.timestamp = timestamp;
+			this.timestamp = timetamp;
 		}
 }
