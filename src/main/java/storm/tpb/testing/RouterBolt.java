@@ -31,14 +31,14 @@ public class RouterBolt extends BaseRichBolt {
 
     public void declareOutputFields(OutputFieldsDeclarer declarer)
     {
-        declarer.declare(new Fields("trx_id", "trx_code", "ch_id", "amount", "acc_no", "prd_id"));
+        declarer.declare(new Fields("trx_id", "trx_code", "ch_id", "amount", "acc_no", "prd_id", "timestamp"));
     }
 
     public void execute(Tuple input)
     {
         LOGGER.debug("Filtering incoming Transaction");
         Transaction _transaction = Utils.GetTransactionFromJSon(input);
-        collector.emit(new Values(_transaction.gettrx_id(), _transaction.gettrx_code(), _transaction.getch_id(), _transaction.getamount(), _transaction.getacc_no(), _transaction.getprd_id()));
+        collector.emit(new Values(_transaction.gettrx_id(), _transaction.gettrx_code(), _transaction.getch_id(), _transaction.getamount(), _transaction.getacc_no(), _transaction.getprd_id(), _transaction.gettimetamp()));
 
     }
 

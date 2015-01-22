@@ -100,7 +100,9 @@ public class TransactionTopology
         String totalRankerTransferFromIdBot ="totalRankerTransferFromIdBot";
         String totalRedisRankerTransferFromBoltBot ="totalRedisRankerTransferFromBoltBot";
 
-                String printBolt = "printBolt";
+        String totalTrancounterSeconds = "totalTrancounterSeconds";
+        String totalTranSecondsRankerId = "totalTranSecondsRanker";
+        String printBolt = "printBolt";
 
         kafkaConf.scheme = new SchemeAsMultiScheme(new StringScheme());
 
@@ -112,6 +114,10 @@ public class TransactionTopology
         topology.setBolt(counterSeconds, new RollingChannelSummaryBolt(1, 1)).fieldsGrouping(routerId, new Fields("ch_id"));
         topology.setBolt(totalSecondsRankerId, new SecondsBolt()).globalGrouping(counterSeconds);
 
+        //Total tran and amount
+        SlidingWindow sliding5SECONDS = new SlidingWindow().sliding(30.0, SlidingWindow.Time.SECONDS);
+        topology.setBolt(totalTrancounterSeconds, new TotalBolt(sliding5SECONDS,SlidingWindow.Time.SECONDS)).fieldsGrouping(routerId, new Fields("amount","timestamp"));
+        topology.setBolt(totalTranSecondsRankerId, new SecondsTotalBolt()).globalGrouping(totalTrancounterSeconds);
 
         //ranking Deposit
         topology.setBolt(summaryAccountDeposit, new RollingAccountSummaryBolt(30, 5, "Deposit")).fieldsGrouping(routerId, new Fields("acc_no"));

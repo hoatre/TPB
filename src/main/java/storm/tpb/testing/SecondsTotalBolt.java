@@ -7,22 +7,21 @@ import backtype.storm.topology.OutputFieldsDeclarer;
 import backtype.storm.tuple.Tuple;
 import org.apache.log4j.Logger;
 import redis.clients.jedis.Jedis;
-import storm.tpb.tools.Rankable;
-import storm.tpb.tools.RankableObjectWithFields;
-import storm.tpb.tools.Rankings;
 import storm.tpb.util.Properties;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.*;
+import java.util.Map;
+
+//import storm.tpb.util.IntRandom;
 
 /**
  * Created by HieuLD on 12/26/14.
  */
 
-public class MinutesBolt implements IRichBolt {
+public class SecondsTotalBolt implements IRichBolt {
     private static final long serialVersionUID = 42L;
     private static final Logger LOGGER =
             Logger.getLogger(RouterBolt.class);
@@ -32,15 +31,9 @@ public class MinutesBolt implements IRichBolt {
     String host;
     int port;
 
-    String TransactionType;
-
-    public MinutesBolt(String TransactionType){
-        this.TransactionType = TransactionType;
-    }
-
     public void prepare(Map stormConf, TopologyContext context,
                         OutputCollector collector) {
-        this.host = Properties.getString("redis.host");
+        this.host = Properties.getString("redis.host");;
         this.port = Properties.getInt("redis.port");
         this.collector=collector;
         reconnect();
@@ -59,26 +52,43 @@ public class MinutesBolt implements IRichBolt {
 
     public void execute(Tuple input)
     {
-        LOGGER.debug("Ranking summary");
-        Rankings rankingsToBeMerged = (Rankings) input.getValue(0);
-        List<Rankable> list = rankingsToBeMerged.getRankings();
-//        Collections.sort(list);
-//        Collections.reverse(list);
-        for (int i=0; i< rankingsToBeMerged.size(); i++)
-        {
-            Rankable rankable = list.get(i);
-            Map<String, String> map = new HashMap<String, String>();
-            map.put("Acc", rankable.getObject().toString());
-            map.put("Amount", Long.toString(rankable.getCount()));
-            jedis.hmset("TopTen" + TransactionType + "-Top" + Integer.toString(i + 1), map);
-        }
-        if(rankingsToBeMerged.size() < 5) {
-            for(int z = 5; z >= 5 - rankingsToBeMerged.size(); z--)
-            {
-                jedis.hdel("TopTen" + TransactionType + "-Top" + Integer.toString(z), "Acc","Amount");
-            }
-        }
-        //collector.ack(input);
+        Transaction transaction = new Transaction();
+        transaction.setamount(Integer.parseInt(input.getValue(0).toString()));
+        transaction.settimetamp(Long.parseLong(input.getValue(1).toString()));
+        LOGGER.debug("Transactions summary");
+
+        //jedis.set(transaction.getch_id() + "_seconds", transaction.getamount().toString());
+
+        jedis.set("TotalNoTran", transaction.getamount().toString());
+        jedis.set("TotalAmount", transaction.gettimetamp().toString());
+
+//        jedis.rpush("real-time-60s-" + transaction.getch_id(), transaction.getamount().toString());
+//        jedis.blpop(0, "real-time-60s-" + transaction.getch_id());
+
+//        List<String> list = jedis.lrange("listtest",0,9);
+//        int sum = 0;
+//        for(int i = 0; i < list.size(); i++)
+//        {
+//            sum = sum + Integer.parseInt(list.get(i));
+//        }
+//        jedis.set("10s", Integer.toString(sum));
+        /*
+        if (transaction.getch_id().equals("Branch 1"))
+            jedis.append(transaction.getch_id(), transaction.getamount());
+        else if (transaction.getch_id().equals("Contact Center"))
+            jedis.append(transaction.getch_id(), transaction.getamount());
+        else if (transaction.getch_id().equals("Branch 2"))
+            jedis.append(transaction.getch_id(), transaction.getamount());
+        else if (transaction.getch_id().equals("Branch 3"))
+            jedis.append(transaction.getch_id(), transaction.getamount());
+
+        secondsBucket.enqueue(transaction);
+            Transaction _transaction = secondsBucket.dequeue();
+            //insert(_transaction.getch_id(), _transaction.getamount());
+            collector.ack(input);
+        */
+        //Transaction _transaction = Utils.GetTransactionFromJSon(input);
+        //collector.emit(new Values("total", _transaction.gettrx_id(), _transaction.gettrx_code(), _transaction.getch_id(), _transaction.getamount(), _transaction.getacc_no(), _transaction.getprd_id()));
     }
 
     static Connection conn; // Create a static global variable

@@ -190,8 +190,6 @@ setInterval(function() {
     redis_get('real-time-Contact Center');
     redis_get_total('TotalNoTran');
     redis_get_total('TotalAmount');
-}, 1000);
-setInterval(function() {
     redis_hmget_top('TopTenDepsits-Top1');
     redis_hmget_top('TopTenDepsits-Top2');
     redis_hmget_top('TopTenDepsits-Top3');
