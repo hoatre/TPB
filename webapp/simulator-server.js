@@ -8,14 +8,14 @@ server.listen(3001);
 app.get('/',function(req,res){
     res.sendFile(__dirname+'/simulator-client.html')
 });
-console.log('Server running at http://127.0.0.1:3001/');
+console.log('Server running at http://10.20.252.201:3001/');
 app.use(express.static(__dirname + '/lib'));
 
 
 var kafka = require('kafka-node'),
     Producer = kafka.Producer,
     Client = kafka.Client,
-    client = new Client('localhost:2181');
+    client = new Client('10.20.252.201:2181');
 
 //Topic
 var topic = 'TransactionTopic';
