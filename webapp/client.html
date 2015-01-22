@@ -16,33 +16,6 @@
     <script type="text/javascript">
       var socket = io.connect('http://10.20.252.201:3000/');
 
-      socket.on('connect', function(data){
-        setStatus('connected');
-        socket.emit('subscribe-1', {channel:'real-time-Branch 1'});
-          socket.emit('subscribe-2', {channel:'real-time-Branch 2'});
-          socket.emit('subscribe-3', {channel:'real-time-Branch 3'});
-          socket.emit('subscribe-4', {channel:'real-time-Contact Center'});
-          
-          //minutes
-
-          socket.emit('subscribe-5', {channel:'real-time-minutes-Branch 1'});
-          socket.emit('subscribe-6', {channel:'real-time-minutes-Branch 2'});
-          socket.emit('subscribe-7', {channel:'real-time-minutes-Branch 3'});
-          socket.emit('subscribe-8', {channel:'real-time-minutes-Contact Center'});
-      });
-
-      socket.on('reconnecting', function(data){
-        setStatus('reconnecting');
-      });
-
-
-
-      function addMessage(data) {
-          $('#online').html(data);
-      }
-
-      // Randomly add a data point every 500ms
-      var random = new TimeSeries();
       // Data
       var line1 = new TimeSeries();
       var line2 = new TimeSeries();
@@ -56,17 +29,12 @@
       var line7 = new TimeSeries();
       var line8 = new TimeSeries();
 
+      function TopTen(Top,Topmax) {
+          for (var z = 1; z <= Topmax; z++)
+          {
 
-      function myYRangeFunction(range) {
-          // TODO implement your calculation using range.min and range.max
-          var min = 0;
-          var max = 10;
-          return {min: min, max: max};
-      }
-
-      function TopTen(Top){
-          socket.on('Top-' + Top, function (data1) {
-              var array = $.map(data1, function(value, index) {
+          socket.on('Top-' + Top + z.toString(), function (data1) {
+              var array = $.map(data1, function (value, index) {
                   return [value];
               });
               var TopTenDepsitsTop1Acc = document.getElementById(Top + "-Account");
@@ -74,6 +42,7 @@
               var TopTenDepsitsTop1Amount = document.getElementById(Top + "-Amount");
               TopTenDepsitsTop1Amount.innerHTML = array[1];
           });
+      }
       }
       var chart = new SmoothieChart({
                   millisPerPixel: 50,
@@ -94,38 +63,12 @@
           $('#line31').on('click', line31);
           $('#line41').on('click', line41);
 
-          TopTen('TopTenDepsits-Top1');
-          TopTen('TopTenDepsits-Top2');
-          TopTen('TopTenDepsits-Top3');
-          TopTen('TopTenWithdrawals-Top1');
-          TopTen('TopTenWithdrawals-Top2');
-          TopTen('TopTenWithdrawals-Top3');
-          TopTen('TopTenDepsits-Top4');
-          TopTen('TopTenDepsits-Top5');
-          TopTen('TopTenWithdrawals-Top4');
-          TopTen('TopTenWithdrawals-Top5');
-
-          TopTen('TopTenDepsits-Bot1');
-          TopTen('TopTenDepsits-Bot2');
-          TopTen('TopTenDepsits-Bot3');
-          TopTen('TopTenWithdrawals-Bot1');
-          TopTen('TopTenWithdrawals-Bot2');
-          TopTen('TopTenWithdrawals-Bot3');
-          TopTen('TopTenDepsits-Bot4');
-          TopTen('TopTenDepsits-Bot5');
-          TopTen('TopTenWithdrawals-Bot5');
-          TopTen('TopTenWithdrawals-Bot4');
-
-          TopTen('TopTenTransferFrom-Bot1');
-          TopTen('TopTenTransferFrom-Bot2');
-          TopTen('TopTenTransferFrom-Bot3');
-          TopTen('TopTenTransferFrom-Bot4');
-          TopTen('TopTenTransferFrom-Bot5');
-          TopTen('TopTenTransferFrom-Top1');
-          TopTen('TopTenTransferFrom-Top2');
-          TopTen('TopTenTransferFrom-Top3');
-          TopTen('TopTenTransferFrom-Top4');
-          TopTen('TopTenTransferFrom-Top5');
+          TopTen('TopTenDepsits-Top', 5);
+          TopTen('TopTenDepsits-Bot', 5);
+          TopTen('TopTenWithdrawals-Top', 5);
+          TopTen('TopTenWithdrawals-Bot', 5);
+          TopTen('TopTenTransferFrom-Top', 5);
+          TopTen('TopTenTransferFrom-Bot', 5);
 
           socket.on('CountChart-real-time-Branch 1', function (data1) {
               line1.append(new Date().getTime(), data1);
@@ -147,14 +90,6 @@
               var TotalAmount = document.getElementById("TotalAmount");
               TotalAmount.innerHTML = data1.toString();
           });
-          socket.on('Total-TotalAmount', function (data1) {
-              var TotalAmount = document.getElementById("TotalAmount");
-              TotalAmount.innerHTML = data1.toString();
-          });
-          socket.on('Total-TotalAmount', function (data1) {
-              var TotalAmount = document.getElementById("TotalAmount");
-              TotalAmount.innerHTML = data1.toString();
-          });
           chart.addTimeSeries(line1,
                   { strokeStyle: '#A6C567', lineWidth:3 });
           chart.addTimeSeries(line2,
@@ -169,12 +104,6 @@
 
 
       }
-
-
-      function setStatus(msg) {
-          console.log('Connection Status : ' + msg);
-      }
-
 
       function line11() {
           if($('#line11').is(':checked'))
