@@ -41,20 +41,20 @@
           });
       }
       var chart = new SmoothieChart({
-                  millisPerPixel: 50,
+                  millisPerPixel: 30000/(window.innerWidth - 300),
                   grid: {
                       fillStyle: 'transparent',
                       strokeStyle: 'rgba(166,197,103,0.20)',
                       //sharpLines: true,
-                      //millisPerLine: 5000,
-                      verticalSections: 8,
-                      borderVisible: false
+                      //millisPerLine: 500,
+                      //verticalSections: 8,
+                      borderVisible: true
                   },
                   labels: { fillStyle: '#000000' }
               }),canvas = document.getElementById('chart'),
               series = new TimeSeries();
       function createTimeline() {
-          $("#chart").attr({'width': window.innerWidth, 'height': 200});
+          $("#chart").attr({'width': window.innerWidth - 300, 'height': 200});
 
           $('#line11').on('click', line11);
           $('#line21').on('click', line21);
@@ -142,346 +142,414 @@
           }
       }
     </script>
+
   </head>
 
   <body onload="createTimeline()">
   <table width="100%">
+      <colgroup>
+          <col width="80%">
+      </colgroup>
       <tr>
-          <td>Total transactions in a second</td>
-      </tr>
-      <tr>
+          <td style="padding-left: 50px; padding-right: 50px">
+              <input type="checkbox" id="line11" name="Line11" checked="true" />Branch 1  <font  color="#A6C567">&#9642;</font></br>
+              <input type="checkbox" id="line21" name="Line21" checked="true"/>Branch 2  <font  color="#0000FF">&#9642;</font></br>
+              <input type="checkbox" id="line31" name="Line31" checked="true"/>Branch 3  <font  color="#DC143C">&#9642;</font></br>
+              <input type="checkbox" id="line41" name="Line41" checked="true"/>Contact Center  <font  color="#FFD700">&#9642;</font></br>
+          </td>
           <td>
           <canvas id="chart" height="200px"></canvas>
           </td>
+
       </tr>
-      <ul>
-          <li><input type="checkbox" id="line11" name="Line11" checked="true" /><font  color="#A6C567"><b>real-time-Branch 1  </b></font> </li>
-          <li><input type="checkbox" id="line21" name="Line21" checked="true"/><font  color="#0000FF"><b>real-time-Branch 2  </b></font> </li>
-          <li><input type="checkbox" id="line31" name="Line31" checked="true"/><font  color="#DC143C"><b>real-time-Branch 3  </b></font> </li>
-          <li><input type="checkbox" id="line41" name="Line41" checked="true"/><font  color="#FFD700"><b>real-time-Contact Center  </b></font> </li>
-      </ul>
+
   </table>
     <table width="100%">
         <colgroup>
-            <col width="25%">
+            <col width="50%">
         </colgroup>
       <tr>
-          <td colspan="3">
-              <i>Total No. of Transactions : </i><label id="TotalNoTran"></label>
+          <td>
+              <b><i>Total No. of Transactions : </i></b><label id="TotalNoTran"></label>
           </td>
 
-          <td colspan="3"> <i>Total Amount : </i><label id="TotalAmount"></label> </td>
-
-      </tr>
-      <tr>
-          <th colspan="2">
-              Top five Deposits
-          </th>
-
-
-          <th colspan="2">
-              Top five Withdrawals
-          </th>
-
-          <th colspan="2">
-              Top five Transfer
-          </th>
-
-      </tr>
-      <tr>
-          <th>
-              <b>Account</b>
-          </th>
-          <th>
-              <b>Amount</b>
-          </th>
-
-          <th>
-              <b>Account</b>
-          </th>
-          <th>
-              <b>Amount</b>
-          </th>
-
-          <th>
-              <b>Account</b>
-          </th>
-          <th>
-              <b>Amount</b>
-          </th>
-
-      </tr>
-      <tr>
-          <td>
-              <label id="TopTenDepsits-Top1-Account"></label>
-          </td>
-          <td>
-              <label id="TopTenDepsits-Top1-Amount"></label>
-          </td>
-
-          <td>
-              <label id="TopTenWithdrawals-Top1-Account"></label>
-          </td>
-          <td>
-              <label id="TopTenWithdrawals-Top1-Amount"></label>
-          </td>
-
-          <td>
-              <label id="TopTenTransferFrom-Top1-Account"></label>
-          </td>
-          <td>
-              <label id="TopTenTransferFrom-Top1-Amount"></label>
-          </td>
-
-      </tr>
-      <tr>
-          <td>
-              <label type="text" id="TopTenDepsits-Top2-Account"></label>
-          </td>
-          <td>
-              <label type="text" id="TopTenDepsits-Top2-Amount"></label>
-          </td>
-
-          <td>
-              <label type="text" id="TopTenWithdrawals-Top2-Account"></label>
-          </td>
-          <td>
-              <label type="text" id="TopTenWithdrawals-Top2-Amount"></label>
-          </td>
-
-          <td>
-              <label type="text" id="TopTenTransferFrom-Top2-Account"></label>
-          </td>
-          <td>
-              <label type="text" id="TopTenTransferFrom-Top2-Amount"></label>
-          </td>
-
-      </tr>
-      <tr>
-          <td>
-              <label type="text" id="TopTenDepsits-Top3-Account"></label>
-          </td>
-          <td>
-              <label type="text" id="TopTenDepsits-Top3-Amount"></label>
-          </td>
-
-          <td>
-              <label type="text" id="TopTenWithdrawals-Top3-Account"></label>
-          </td>
-          <td>
-              <label type="text" id="TopTenWithdrawals-Top3-Amount"></label>
-          </td>
-
-          <td>
-              <label type="text" id="TopTenTransferFrom-Top3-Account"></label>
-          </td>
-          <td>
-              <label type="text" id="TopTenTransferFrom-Top3-Amount"></label>
-          </td>
+          <td> <b><i>Total Amount : </i></b><label id="TotalAmount"></label> </td>
 
       </tr>
         <tr>
-            <td>
-                <label type="text" id="TopTenDepsits-Top4-Account"></label>
-            </td>
-            <td>
-                <label type="text" id="TopTenDepsits-Top4-Amount"></label>
-            </td>
+            <td colspan="2">
+                <table width="100%">
+                    <colgroup>
+                        <col width="33%">
+                    </colgroup>
+                    <tr>
+                        <td>
+                            <table style="	border: 1px solid black " width="100%">
+                                <colgroup>
+                                    <col width="70%">
+                                </colgroup>
+                                <tr>
+                                    <th colspan="2">
+                                        Top five Deposits
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <b>Account</b>
+                                    </td>
+                                    <td>
+                                        <b>Amount</b>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label id="TopTenDepsits-Top1-Account"></label>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenDepsits-Top1-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label type="text" id="TopTenDepsits-Top2-Account"></label>
+                                    </td>
+                                    <td>
+                                        <label type="text" id="TopTenDepsits-Top2-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label type="text" id="TopTenDepsits-Top3-Account"></label>
+                                    </td>
+                                    <td>
+                                        <label type="text" id="TopTenDepsits-Top3-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label type="text" id="TopTenDepsits-Top4-Account"></label>
+                                    </td>
+                                    <td>
+                                        <label type="text" id="TopTenDepsits-Top4-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label type="text" id="TopTenDepsits-Top5-Account"></label>
+                                    </td>
+                                    <td>
+                                        <label type="text" id="TopTenDepsits-Top5-Amount"></label>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td>
+                            <table style="	border: 1px solid black " width="100%">
+                                <colgroup>
+                                    <col width="70%">
+                                </colgroup>
+                                <tr>
+                                    <th colspan="2">
+                                        Top five Withdrawals
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <b>Account</b>
+                                    </td>
+                                    <td>
+                                        <b>Amount</b>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label id="TopTenWithdrawals-Top1-Account"></label>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenWithdrawals-Top1-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label id="TopTenWithdrawals-Top2-Account"></label>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenWithdrawals-Top2-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label id="TopTenWithdrawals-Top3-Account"></label>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenWithdrawals-Top3-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label id="TopTenWithdrawals-Top4-Account"></label>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenWithdrawals-Top4-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label id="TopTenWithdrawals-Top5-Account"></label>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenWithdrawals-Top5-Amount"></label>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td>
+                            <table style="	border: 1px solid black " width="100%">
+                                <colgroup>
+                                    <col width="70%">
+                                </colgroup>
+                                <tr>
+                                    <th colspan="2">
+                                        Top five Transfer
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <b>Account</b>
+                                    </td>
+                                    <td>
+                                        <b>Amount</b>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label id="TopTenTransferFrom-Top1-Account"></label>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenTransferFrom-Top1-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label id="TopTenTransferFrom-Top2-Account"></label>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenTransferFrom-Top2-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label id="TopTenTransferFrom-Top3-Account"></label>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenTransferFrom-Top3-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label id="TopTenTransferFrom-Top4-Account"></label>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenTransferFrom-Top4-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label id="TopTenTransferFrom-Top5-Account"></label>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenTransferFrom-Top5-Amount"></label>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <table style="	border: 1px solid black " width="100%">
+                                <colgroup>
+                                    <col width="70%">
+                                </colgroup>
+                                <tr>
+                                    <th colspan="2">
+                                        Bottom five Deposits
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <b>Account</b>
+                                    </td>
+                                    <td>
+                                        <b>Amount</b>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label id="TopTenDepsits-Bot5-Account"></label>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenDepsits-Bot5-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label type="text" id="TopTenDepsits-Bot4-Account"></label>
+                                    </td>
+                                    <td>
+                                        <label type="text" id="TopTenDepsits-Bot4-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label type="text" id="TopTenDepsits-Bot3-Account"></label>
+                                    </td>
+                                    <td>
+                                        <label type="text" id="TopTenDepsits-Bot3-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label type="text" id="TopTenDepsits-Bot2-Account"></label>
+                                    </td>
+                                    <td>
+                                        <label type="text" id="TopTenDepsits-Bot2-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label type="text" id="TopTenDepsits-Bot1-Account"></label>
+                                    </td>
+                                    <td>
+                                        <label type="text" id="TopTenDepsits-Bot1-Amount"></label>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td>
+                            <table style="	border: 1px solid black " width="100%">
+                                <colgroup>
+                                    <col width="70%">
+                                </colgroup>
+                                <tr>
+                                    <th colspan="2">
+                                        Bottom five Withdrawals
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <b>Account</b>
+                                    </td>
+                                    <td>
+                                        <b>Amount</b>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label id="TopTenWithdrawals-Bot5-Account"></label>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenWithdrawals-Bot5-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label id="TopTenWithdrawals-Bot4-Account"></label>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenWithdrawals-Bot4-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label id="TopTenWithdrawals-Bot3-Account"></label>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenWithdrawals-Bot3-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label id="TopTenWithdrawals-Bot2-Account"></label>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenWithdrawals-Bot2-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label id="TopTenWithdrawals-Bot1-Account"></label>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenWithdrawals-Bot1-Amount"></label>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td>
+                            <table style="	border: 1px solid black " width="100%">
+                                <colgroup>
+                                    <col width="70%">
+                                </colgroup>
+                                <tr>
+                                    <th colspan="2">
+                                        Bottom five Transfer
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <b>Account</b>
+                                    </td>
+                                    <td>
+                                        <b>Amount</b>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label id="TopTenTransferFrom-Bot5-Account"></label>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenTransferFrom-Bot5-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label id="TopTenTransferFrom-Bot4-Account"></label>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenTransferFrom-Bot4-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label id="TopTenTransferFrom-Bot3-Account"></label>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenTransferFrom-Bot3-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label id="TopTenTransferFrom-Bot2-Account"></label>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenTransferFrom-Bot2-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label id="TopTenTransferFrom-Bot1-Account"></label>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenTransferFrom-Bot1-Amount"></label>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
 
-            <td>
-                <label type="text" id="TopTenWithdrawals-Top4-Account"></label>
-            </td>
-            <td>
-                <label type="text" id="TopTenWithdrawals-Top4-Amount"></label>
-            </td>
-
-            <td>
-                <label type="text" id="TopTenTransferFrom-Top4-Account"></label>
-            </td>
-            <td>
-                <label type="text" id="TopTenTransferFrom-Top4-Amount"></label>
-            </td>
-
+                </table>
         </tr>
-        <tr>
-            <td>
-                <label type="text" id="TopTenDepsits-Top5-Account"></label>
-            </td>
-            <td>
-                <label type="text" id="TopTenDepsits-Top5-Amount"></label>
-            </td>
-
-            <td>
-                <label type="text" id="TopTenWithdrawals-Top5-Account"></label>
-            </td>
-            <td>
-                <label type="text" id="TopTenWithdrawals-Top5-Amount"></label>
-            </td>
-
-            <td>
-                <label type="text" id="TopTenTransferFrom-Top5-Account"></label>
-            </td>
-            <td>
-                <label type="text" id="TopTenTransferFrom-Top5-Amount"></label>
-            </td>
-
-        </tr>
-        <tr>
-            <th colspan="2">
-                Bot five Deposits
-            </th>
-
-
-            <th colspan="2">
-                Bot five Withdrawals
-            </th>
-
-            <th colspan="2">
-                Bot five Transfer
-            </th>
-
-
-        </tr>
-        <tr>
-            <th>
-                Account
-            </th>
-            <th>
-                Amount
-            </th>
-
-            <th>
-                Account
-            </th>
-            <th>
-                Amount
-            </th>
-
-            <th>
-                Account
-            </th>
-            <th>
-                Amount
-            </th>
-
-        </tr>
-        <tr>
-            <td>
-                <label id="TopTenDepsits-Bot5-Account"></label>
-            </td>
-            <td>
-                <label id="TopTenDepsits-Bot5-Amount"></label>
-            </td>
-
-            <td>
-                <label id="TopTenWithdrawals-Bot5-Account"></label>
-            </td>
-            <td>
-                <label id="TopTenWithdrawals-Bot5-Amount"></label>
-            </td>
-
-            <td>
-                <label id="TopTenTransferFrom-Bot5-Account"></label>
-            </td>
-            <td>
-                <label id="TopTenTransferFrom-Bot5-Amount"></label>
-            </td>
-
-        </tr>
-        <tr>
-            <td>
-                <label type="text" id="TopTenDepsits-Bot4-Account"></label>
-            </td>
-            <td>
-                <label type="text" id="TopTenDepsits-Bot4-Amount"></label>
-            </td>
-
-            <td>
-                <label type="text" id="TopTenWithdrawals-Bot4-Account"></label>
-            </td>
-            <td>
-                <label type="text" id="TopTenWithdrawals-Bot4-Amount"></label>
-            </td>
-
-            <td>
-                <label type="text" id="TopTenTransferFrom-Bot4-Account"></label>
-            </td>
-            <td>
-                <label type="text" id="TopTenTransferFrom-Bot4-Amount"></label>
-            </td>
-
-        </tr>
-        <tr>
-            <td>
-                <label type="text" id="TopTenDepsits-Bot3-Account"></label>
-            </td>
-            <td>
-                <label type="text" id="TopTenDepsits-Bot3-Amount"></label>
-            </td>
-
-            <td>
-                <label type="text" id="TopTenWithdrawals-Bot3-Account"></label>
-            </td>
-            <td>
-                <label type="text" id="TopTenWithdrawals-Bot3-Amount"></label>
-            </td>
-
-            <td>
-                <label type="text" id="TopTenTransferFrom-Bot3-Account"></label>
-            </td>
-            <td>
-                <label type="text" id="TopTenTransferFrom-Bot3-Amount"></label>
-            </td>
-
-        </tr>
-        <tr>
-            <td>
-                <label type="text" id="TopTenDepsits-Bot2-Account"></label>
-            </td>
-            <td>
-                <label type="text" id="TopTenDepsits-Bot2-Amount"></label>
-            </td>
-
-            <td>
-                <label type="text" id="TopTenWithdrawals-Bot2-Account"></label>
-            </td>
-            <td>
-                <label type="text" id="TopTenWithdrawals-Bot2-Amount"></label>
-            </td>
-
-            <td>
-                <label type="text" id="TopTenTransferFrom-Bot2-Account"></label>
-            </td>
-            <td>
-                <label type="text" id="TopTenTransferFrom-Bot2-Amount"></label>
-            </td>
-
-        </tr>
-        <tr>
-            <td>
-                <label type="text" id="TopTenDepsits-Bot1-Account"></label>
-            </td>
-            <td>
-                <label type="text" id="TopTenDepsits-Bot1-Amount"></label>
-            </td>
-
-            <td>
-                <label type="text" id="TopTenWithdrawals-Bot1-Account"></label>
-            </td>
-            <td>
-                <label type="text" id="TopTenWithdrawals-Bot1-Amount"></label>
-            </td>
-
-            <td>
-                <label type="text" id="TopTenTransferFrom-Bot1-Account"></label>
-            </td>
-            <td>
-                <label type="text" id="TopTenTransferFrom-Bot1-Amount"></label>
-            </td>
-
-        </tr>
-  </table>
-
+    </table>
   </body>
 </html>
 
