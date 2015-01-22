@@ -1,5 +1,5 @@
 package storm.tpb.testing;
-
+//ss
 public class Transaction {
 	   private String trx_id;
 	   private String trx_code;
@@ -81,6 +81,7 @@ public class Transaction {
 		}
 		public void settimetamp(Long timetamp)
 		{
-			this.timestamp = timestamp;
+			this.timestamp = timetamp;
+
 		}
 }
