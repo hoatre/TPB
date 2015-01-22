@@ -37,7 +37,7 @@ public class SecondsBolt implements IRichBolt {
 
     public void prepare(Map stormConf, TopologyContext context,
                         OutputCollector collector) {
-        this.host = Properties.getString("redis.host");;
+        this.host = Properties.getString("redis.host");
         this.port = Properties.getInt("redis.port");
         this.collector=collector;
         reconnect();
@@ -61,37 +61,8 @@ public class SecondsBolt implements IRichBolt {
         transaction.setamount(Integer.parseInt(input.getValue(1).toString()));
         LOGGER.debug("Transactions summary");
 
-        //jedis.set(transaction.getch_id() + "_seconds", transaction.getamount().toString());
-
         jedis.set("real-time-" + transaction.getch_id(), transaction.getamount().toString());
-
-//        jedis.rpush("real-time-60s-" + transaction.getch_id(), transaction.getamount().toString());
-//        jedis.blpop(0, "real-time-60s-" + transaction.getch_id());
-
-//        List<String> list = jedis.lrange("listtest",0,9);
-//        int sum = 0;
-//        for(int i = 0; i < list.size(); i++)
-//        {
-//            sum = sum + Integer.parseInt(list.get(i));
-//        }
-//        jedis.set("10s", Integer.toString(sum));
-        /*
-        if (transaction.getch_id().equals("Branch 1"))
-            jedis.append(transaction.getch_id(), transaction.getamount());
-        else if (transaction.getch_id().equals("Contact Center"))
-            jedis.append(transaction.getch_id(), transaction.getamount());
-        else if (transaction.getch_id().equals("Branch 2"))
-            jedis.append(transaction.getch_id(), transaction.getamount());
-        else if (transaction.getch_id().equals("Branch 3"))
-            jedis.append(transaction.getch_id(), transaction.getamount());
-
-        secondsBucket.enqueue(transaction);
-            Transaction _transaction = secondsBucket.dequeue();
-            //insert(_transaction.getch_id(), _transaction.getamount());
-            collector.ack(input);
-        */
-        //Transaction _transaction = Utils.GetTransactionFromJSon(input);
-        //collector.emit(new Values("total", _transaction.gettrx_id(), _transaction.gettrx_code(), _transaction.getch_id(), _transaction.getamount(), _transaction.getacc_no(), _transaction.getprd_id()));
+        collector.ack(input);
     }
 
     static Connection conn; // Create a static global variable
