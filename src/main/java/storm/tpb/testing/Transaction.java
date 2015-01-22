@@ -7,18 +7,19 @@ public class Transaction {
 	   private Integer amount;
 	   private String acc_no;
 	   private String prd_id;
-	   
+	   private Long timestamp;
 	   public Transaction(){
 	 
 	   }
 
-	   public Transaction(String trx_id, String trx_code, String ch_id, Integer amount,String acc_no,String prd_id){
+	   public Transaction(String trx_id, String trx_code, String ch_id, Integer amount,String acc_no,String prd_id,Long timestamp){
 	      this.trx_id = trx_id;
 	      this.trx_code = trx_code;
 	      this.ch_id = ch_id;
 	      this.amount = amount;
 	      this.acc_no = acc_no;
-	      this.prd_id = prd_id;
+		   this.prd_id = prd_id;
+		   this.timestamp = timestamp;
 	   }
 	   public String gettrx_id()
 	   {
@@ -73,4 +74,13 @@ public class Transaction {
 	   {
 	      this.prd_id = prd_id;
 	   }
+
+		public Long gettimetamp()
+		{
+			return timestamp;
+		}
+		public void settimetamp(Long timetamp)
+		{
+			this.timestamp = timestamp;
+		}
 }
