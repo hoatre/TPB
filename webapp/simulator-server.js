@@ -1,3 +1,4 @@
+var MongoClient = require('mongodb').MongoClient;
 var express = require('express');
 app = express(),
     server = require('http').createServer(app),
@@ -8,14 +9,20 @@ server.listen(3001);
 app.get('/',function(req,res){
     res.sendFile(__dirname+'/simulator-client.html')
 });
-console.log('Server running at http://10.20.252.201:3001/');
+console.log('Server running at http://127.0.0.1:3001/');
 app.use(express.static(__dirname + '/lib'));
 
+//---------------variable--------------------------
+var ADD_KAFKA='localhost:2181';
+var ADD_MONGODB_CIC="mongodb://10.20.252.202:27017/CIC";
+var ADD_MONGODB_CLOUBBANK="mongodb://10.20.252.202:27017/CloudBank";
+//---------------variable--------------------------
 
 var kafka = require('kafka-node'),
     Producer = kafka.Producer,
     Client = kafka.Client,
-    client = new Client('10.20.252.201:2181');
+//client = new Client('10.20.252.201:2181');
+    client = new Client(ADD_KAFKA);
 
 //Topic
 var topic = 'TransactionTopic';
@@ -43,7 +50,7 @@ producer.on('error', function (err) {
 
 
 
-//Send message
+//SIMULATOR_LIST_SEND_MESSAGE
 function send(message) {
     producer.send([
         {topic: topic, messages: [message] , partition: p}
@@ -200,8 +207,8 @@ var GeneratorTransaction = function(amountto,amountfrom,channal, product, transa
         ,"100-121-12121219", "200-555-12313129", "100-643-10231329", "400-223-32424239", "500-123-23313449"];
     var acc_no = acc_nos[randomInt(0,acc_nos.length)];
 
-    console.log('amountfrom: '+ amountfrom);
-    console.log('amountto: '+ amountto);
+    //console.log('amountfrom: '+ amountfrom);
+    //console.log('amountto: '+ amountto);
     //Generate Amount
     var amount = randomInt(amountto, amountfrom);
 
@@ -223,10 +230,10 @@ var GeneratorTransaction = function(amountto,amountfrom,channal, product, transa
 
 
 io.sockets.on('connection',function(socket){
-    socket.on('send message',function(data){
+    socket.on('SIMULATOR_LIST_SEND_MESSAGE',function(data){
 
         //Option 1
-
+        console.log('SIMULATOR_LIST_SEND_MESSAGE:'+data);
 
         obj = {
             time: data.time==''?1000:data.time,
@@ -449,4 +456,37 @@ io.sockets.on('connection',function(socket){
                 clearTimeout(t3);
             }
         });
+    socket.on('SIMULATOR-GET-PARAMETER',function(data){
+        //io.sockets.emit('new message',data);
+        console.log('SIMULATOR-GET-PARAMETER:'+data);
+        SimulatorConfig('Channels','SIMULATOR-PARAMETER-CONFIG-CHANNELS');
+        SimulatorConfig('Products','SIMULATOR-PARAMETER-CONFIG-PRODUCT');
+        SimulatorConfig('TransactionTypes','SIMULATOR-PARAMETER-CONFIG-TRANSACTIONTYPES');
+        //console.log('msg:'+data);
+    });
 });
+
+//-----------------connect mongodb------------------
+function SimulatorConfig(tablename,parameterconfig)
+{
+    //console.log('connMongodb');
+    MongoClient.connect(ADD_MONGODB_CLOUBBANK, function(err, db) {
+        if(err) { return console.dir(err); }
+
+        var collection = db.collection(tablename);
+        console.log(tablename);
+        collection.find(
+            //{FULLNAME: /^NGUYEN/ }
+        ).toArray(function(err, items) {
+                if(items!=null&&items.length>0)
+                {
+                    console.log('cnt:'+items.length);
+                    io.sockets.emit(parameterconfig, items);
+                }
+            });
+
+
+    });
+}
+
+//--------------------------------------------------
