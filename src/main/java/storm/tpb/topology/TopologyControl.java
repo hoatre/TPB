@@ -84,8 +84,8 @@ public class TopologyControl {
 
         //Rankings TRANSFERFROM
         parsedStream.each(new Fields("trx_code"), new RollingBolt(PARAM.TransCode.TRANSFERFROM.getValue()))
-                .each(new Fields("amount", "acc_no", "timestamp"), new RankingsBolt(Sliding30s, SlidingWindow.Time.SECONDS), new Fields("TopFive", "BotFive"))
-                .each(new Fields("TopFive", "BotFive"), new SaveRedisTopBotBolt(PARAM.TransCode.TRANSFERFROM.getValue()), new Fields("abc"));
+                    .each(new Fields("amount", "acc_no", "timestamp"), new RankingsBolt(Sliding30s, SlidingWindow.Time.SECONDS), new Fields("TopFive", "BotFive"))
+                    .each(new Fields("TopFive", "BotFive"), new SaveRedisTopBotBolt(PARAM.TransCode.TRANSFERFROM.getValue()), new Fields("abc"));
 
         //Rankings WITHDRAWAL
         parsedStream.each(new Fields("trx_code"), new RollingBolt(PARAM.TransCode.WITHDRAWAL.getValue()))
