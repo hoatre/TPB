@@ -89,8 +89,8 @@ public class TopologyControl {
 
         //Rankings WITHDRAWAL
         parsedStream.each(new Fields("trx_code"), new RollingBolt(PARAM.TransCode.WITHDRAWAL.getValue()))
-                .each(new Fields("amount", "acc_no", "timestamp"), new RankingsBolt(Sliding30s, SlidingWindow.Time.SECONDS), new Fields("TopFive", "BotFive"))
-                .each(new Fields("TopFive", "BotFive"), new SaveRedisTopBotBolt(PARAM.TransCode.WITHDRAWAL.getValue()), new Fields("abc"));
+                    .each(new Fields("amount", "acc_no", "timestamp"), new RankingsBolt(Sliding30s, SlidingWindow.Time.SECONDS), new Fields("TopFive", "BotFive"))
+                    .each(new Fields("TopFive", "BotFive"), new SaveRedisTopBotBolt(PARAM.TransCode.WITHDRAWAL.getValue()), new Fields("abc"));
 
 
         return topology.build();
