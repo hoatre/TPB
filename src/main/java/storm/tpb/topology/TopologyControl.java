@@ -110,8 +110,6 @@ public class TopologyControl {
             for (int i = 0; i < this.fields.size(); i++) {
                 values.add(map.get(this.fields.get(i)));
             }
-            System.out.println("All values : " + values);
-
             collector.emit(values);
         }
     }
