@@ -21,7 +21,7 @@ var ADD_MONGODB_CLOUBBANK="mongodb://10.20.252.202:27017/CloudBank";
 var kafka = require('kafka-node'),
     Producer = kafka.Producer,
     Client = kafka.Client,
-//client = new Client('10.20.252.201:2181');
+    //client = new Client('10.20.252.201:2181');
     client = new Client(ADD_KAFKA);
 
 //Topic
@@ -230,10 +230,10 @@ var GeneratorTransaction = function(amountto,amountfrom,channal, product, transa
 
 
 io.sockets.on('connection',function(socket){
-    socket.on('SIMULATOR_LIST_SEND_MESSAGE',function(data){
+		socket.on('SIMULATOR_LIST_SEND_MESSAGE',function(data){
 
         //Option 1
-        console.log('SIMULATOR_LIST_SEND_MESSAGE:'+data);
+		console.log('SIMULATOR_LIST_SEND_MESSAGE:'+data);
 
         obj = {
             time: data.time==''?1000:data.time,
@@ -456,37 +456,37 @@ io.sockets.on('connection',function(socket){
                 clearTimeout(t3);
             }
         });
-    socket.on('SIMULATOR-GET-PARAMETER',function(data){
-        //io.sockets.emit('new message',data);
-        console.log('SIMULATOR-GET-PARAMETER:'+data);
-        SimulatorConfig('Channels','SIMULATOR-PARAMETER-CONFIG-CHANNELS');
-        SimulatorConfig('Products','SIMULATOR-PARAMETER-CONFIG-PRODUCT');
-        SimulatorConfig('TransactionTypes','SIMULATOR-PARAMETER-CONFIG-TRANSACTIONTYPES');
-        //console.log('msg:'+data);
-    });
+		socket.on('SIMULATOR-GET-PARAMETER',function(data){
+		//io.sockets.emit('new message',data);
+		console.log('SIMULATOR-GET-PARAMETER:'+data);
+		SimulatorConfig('Channels','SIMULATOR-PARAMETER-CONFIG-CHANNELS');
+		SimulatorConfig('Products','SIMULATOR-PARAMETER-CONFIG-PRODUCT');
+		SimulatorConfig('TransactionTypes','SIMULATOR-PARAMETER-CONFIG-TRANSACTIONTYPES');
+		//console.log('msg:'+data);
+	});
 });
 
 //-----------------connect mongodb------------------
 function SimulatorConfig(tablename,parameterconfig)
 {
-    //console.log('connMongodb');
-    MongoClient.connect(ADD_MONGODB_CLOUBBANK, function(err, db) {
-        if(err) { return console.dir(err); }
-
-        var collection = db.collection(tablename);
-        console.log(tablename);
-        collection.find(
-            //{FULLNAME: /^NGUYEN/ }
-        ).toArray(function(err, items) {
-                if(items!=null&&items.length>0)
-                {
-                    console.log('cnt:'+items.length);
-                    io.sockets.emit(parameterconfig, items);
-                }
-            });
-
-
-    });
+	//console.log('connMongodb');
+	MongoClient.connect(ADD_MONGODB_CLOUBBANK, function(err, db) {
+	  if(err) { return console.dir(err); }
+	  
+	  var collection = db.collection(tablename);
+			console.log(tablename);
+			collection.find(
+				//{FULLNAME: /^NGUYEN/ }
+			).toArray(function(err, items) {
+				if(items!=null&&items.length>0)
+				{
+					console.log('cnt:'+items.length);
+					io.sockets.emit(parameterconfig, items);
+				}
+			});
+			
+			
+	});
 }
 
 //--------------------------------------------------
