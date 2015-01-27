@@ -18,8 +18,8 @@ public class MovingAverageFunction extends BaseFunction {
         this.emitRatePer = emitRatePer;
     }
     public void execute(TridentTuple tuple, TridentCollector collector) {
-        this.sliding.mark(tuple.getLong(0), tuple.getLong(1));
+        //this.sliding.mark(tuple.getLong(0), tuple.getLong(1));
         //System.out.println("Rate: " + this.sliding.getAverageRatePer(this.emitRatePer));
-        collector.emit(new Values(this.sliding.getAverageRatePer(this.emitRatePer)));
+        //collector.emit(new Values(this.sliding.getAverageRatePer(this.emitRatePer)));
     }
 }
