@@ -85,11 +85,11 @@ setInterval(function() {
     redis_get_total('TotalNoTran');
     redis_get_total('TotalAmount');
     for(z=1; z <= 5; z++) {
-        redis_hmget_top('TopTenDepsits-Top' + z.toString());
-        redis_hmget_top('TopTenWithdrawals-Top' + z.toString());
-        redis_hmget_top('TopTenDepsits-Bot' + z.toString());
-        redis_hmget_top('TopTenWithdrawals-Bot' + z.toString());
-        redis_hmget_top('TopTenTransferFrom-Bot' + z.toString());
-        redis_hmget_top('TopTenTransferFrom-Top' + z.toString());
+        redis_hmget_top('TopTenDeposit-Top' + z.toString());
+        redis_hmget_top('TopTenWithdrawal-Top' + z.toString());
+        redis_hmget_top('TopTenDeposit-Bot' + z.toString());
+        redis_hmget_top('TopTenWithdrawal-Bot' + z.toString());
+        redis_hmget_top('TopTenTransfer From-Bot' + z.toString());
+        redis_hmget_top('TopTenTransfer From-Top' + z.toString());
     }
 }, 1000);

@@ -31,8 +31,6 @@ public class TotalBolt extends BaseRichBolt {
         this.sliding.mark(tuple.getIntegerByField("amount"), tuple.getLongByField("timestamp"));
         collector.emit(new Values(this.sliding.getCount(),this.sliding.getSum()));
         System.out.println("count : " + Long.toString(this.sliding.getCount()) + " sum : " + Long.toString(this.sliding.getSum()));
-//        jedis.set("TotalNoTran", Long.toString(this.sliding.getCount()));
-//        jedis.set("TotalAmount", Long.toString(this.sliding.getSum()));
     }
     public void prepare(Map stormConf, TopologyContext context,
                         OutputCollector collector) {

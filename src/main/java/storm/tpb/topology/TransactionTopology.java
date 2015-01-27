@@ -116,7 +116,7 @@ public class TransactionTopology
 
         //Total tran and amount
         SlidingWindow sliding5SECONDS = new SlidingWindow().sliding(30.0, SlidingWindow.Time.SECONDS);
-        topology.setBolt(totalTrancounterSeconds, new TotalBolt(sliding5SECONDS,SlidingWindow.Time.SECONDS)).fieldsGrouping(routerId, new Fields("amount","timestamp"));
+        topology.setBolt(totalTrancounterSeconds, new TotalBolt(sliding5SECONDS,SlidingWindow.Time.SECONDS)).globalGrouping(routerId);
         topology.setBolt(totalTranSecondsRankerId, new SecondsTotalBolt()).globalGrouping(totalTrancounterSeconds);
 
         //ranking Deposit
