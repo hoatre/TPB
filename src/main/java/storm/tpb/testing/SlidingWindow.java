@@ -221,6 +221,10 @@ public class SlidingWindow implements Serializable {
 
     }
 
+    public long getWindow() {
+        return this.window;
+    }
+
     public long getCount() {
         return this.count;
     }

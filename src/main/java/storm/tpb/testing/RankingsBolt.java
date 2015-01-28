@@ -24,6 +24,6 @@ public class RankingsBolt extends BaseFunction{
                 tuple.getStringByField("acc_no"), tuple.getLongByField("timestamp"));
         System.out.println("TopFive : " + this.sliding.getTopFive());
         System.out.println("BotFive : " + this.sliding.getBotFive());
-        collector.emit(new Values(this.sliding.getTopFive(),this.sliding.getBotFive()));
+        collector.emit(new Values(this.sliding.getTopFive(),this.sliding.getBotFive(), this.sliding.getWindow()));
     }
 }

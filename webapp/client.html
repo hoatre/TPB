@@ -29,8 +29,8 @@
       var line7 = new TimeSeries();
       var line8 = new TimeSeries();
 
-      function TopTen(Top) {
-          socket.on('Top-' + Top, function (data1) {
+      function TopTen(Top, slidingTime) {
+          socket.on('Top-' + Top + '-' + slidingTime, function (data1) {
               var array = $.map(data1, function (value, index) {
                   return [value];
               });
@@ -50,6 +50,41 @@
                   labels: { fillStyle: '#000000' }
               }),canvas = document.getElementById('chart'),
               series = new TimeSeries();
+
+      function Total(slidingTime){
+          socket.on('Total-TotalNoTran-' + slidingTime, function (data1) {
+              var TotalNoTran = document.getElementById("TotalNoTran");
+              TotalNoTran.innerHTML = data1.toString();
+          });
+          socket.on('Total-TotalAmount-' + slidingTime, function (data1) {
+              var TotalAmount = document.getElementById("TotalAmount");
+              TotalAmount.innerHTML = data1.toString();
+          });
+      }
+      function TopBot(slidingTime){
+          for(z = 1;z<=5;z++) {
+              TopTen('TopTenDeposit-Top' + z.toString(), slidingTime.toString());
+              TopTen('TopTenDeposit-Bot' + z.toString(), slidingTime.toString());
+              TopTen('TopTenWithdrawal-Top' + z.toString(), slidingTime.toString());
+              TopTen('TopTenWithdrawal-Bot' + z.toString(), slidingTime.toString());
+              TopTen('TopTenTransfer From-Top' + z.toString(), slidingTime.toString());
+              TopTen('TopTenTransfer From-Bot' + z.toString(), slidingTime.toString());
+          }
+      }
+      function LineChart(slidingTime){
+          socket.on('CountChart-real-time-Branch 1-' + slidingTime, function (data1) {
+              line1.append(new Date().getTime(), data1);
+          });
+          socket.on('CountChart-real-time-Branch 2-' + slidingTime, function (data1) {
+              line2.append(new Date().getTime(), data1);
+          });
+          socket.on('CountChart-real-time-Branch 3-' + slidingTime, function (data1) {
+              line3.append(new Date().getTime(), data1);
+          });
+          socket.on('CountChart-real-time-Contact Center-' + slidingTime, function (data1) {
+              line4.append(new Date().getTime(), data1);
+          });
+      }
       function createTimeline() {
           $("#chart").attr({'width': window.innerWidth - 300, 'height': 200});
 
@@ -58,35 +93,36 @@
           $('#line31').on('click', line31);
           $('#line41').on('click', line41);
 
-          for(z = 1;z<=5;z++) {
-              TopTen('TopTenDeposit-Top' + z.toString());
-              TopTen('TopTenDeposit-Bot' + z.toString());
-              TopTen('TopTenWithdrawal-Top' + z.toString());
-              TopTen('TopTenWithdrawal-Bot' + z.toString());
-              TopTen('TopTenTransfer From-Top' + z.toString());
-              TopTen('TopTenTransfer From-Bot' + z.toString());
-          }
+          $('#SlidingTimeCbo').change(function() {
+              var str = "";
+              $( "select option:selected" ).each(function() {
+                  str += $( this ).text();
+              });
+              if(str.toLowerCase().localeCompare("30s".toLowerCase()) == 0)
+              {
+                  socket.emit('open30s',"30s");
+                  chart.millisPerPixel
+              }
+              else if(str.toLowerCase().localeCompare("10m".toLowerCase()) == 0)
+              {
+                  socket.emit('open10m',"10m");
 
-          socket.on('CountChart-real-time-Branch 1', function (data1) {
-              line1.append(new Date().getTime(), data1);
-          });
-          socket.on('CountChart-real-time-Branch 2', function (data1) {
-              line2.append(new Date().getTime(), data1);
-          });
-          socket.on('CountChart-real-time-Branch 3', function (data1) {
-              line3.append(new Date().getTime(), data1);
-          });
-          socket.on('CountChart-real-time-Contact Center', function (data1) {
-              line4.append(new Date().getTime(), data1);
-          });
-          socket.on('Total-TotalNoTran', function (data1) {
-              var TotalNoTran = document.getElementById("TotalNoTran");
-              TotalNoTran.innerHTML = data1.toString();
-          });
-          socket.on('Total-TotalAmount', function (data1) {
-              var TotalAmount = document.getElementById("TotalAmount");
-              TotalAmount.innerHTML = data1.toString();
-          });
+              }
+              else if(str.toLowerCase().localeCompare("60s".toLowerCase()) == 0)
+              {
+                  socket.emit('open60s',"60s");
+              }
+          }).change();
+
+          TopBot(30000);
+          TopBot(60000);
+          TopBot(600000);
+          LineChart(30000);
+          LineChart(60000);
+          LineChart(600000);
+          Total(30000);
+          Total(60000);
+          Total(600000);
           chart.addTimeSeries(line1,
                   { strokeStyle: '#A6C567', lineWidth:3 });
           chart.addTimeSeries(line2,
@@ -153,6 +189,11 @@
               <input type="checkbox" id="line21" name="Line21" checked="true"/>Branch 2  <font  color="#0000FF">&#9642;</font></br>
               <input type="checkbox" id="line31" name="Line31" checked="true"/>Branch 3  <font  color="#DC143C">&#9642;</font></br>
               <input type="checkbox" id="line41" name="Line41" checked="true"/>Contact Center  <font  color="#FFD700">&#9642;</font></br>
+              <select id="SlidingTimeCbo">
+                  <option >30s</option>
+                  <option >60s</option>
+                  <option >10m</option>
+              </select>
           </td>
           <td>
           <canvas id="chart" height="200px"></canvas>

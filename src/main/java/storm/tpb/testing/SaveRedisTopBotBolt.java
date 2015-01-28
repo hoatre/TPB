@@ -27,8 +27,8 @@ public class SaveRedisTopBotBolt extends BaseFunction {
         {
             for(int z = 1; z <=5 ; z++)
             {
-                jedis.hdel("TopTen" + this.TranType + "-Top" + Integer.toString(z), "Acc","Amount");
-                jedis.hdel("TopTen" + this.TranType + "-Bot" + Integer.toString(z), "Acc","Amount");
+                jedis.hdel("TopTen" + this.TranType + "-Top" + Integer.toString(z) + "-" + Long.toString(tuple.getLongByField("window")), "Acc","Amount");
+                jedis.hdel("TopTen" + this.TranType + "-Bot" + Integer.toString(z) + "-" + Long.toString(tuple.getLongByField("window")), "Acc","Amount");
             }
             List<String> TopFive = (ArrayList<String>)tuple.get(0);
             if(TopFive != null)
@@ -37,7 +37,7 @@ public class SaveRedisTopBotBolt extends BaseFunction {
                     Map<String, String> map = new HashMap<String, String>();
                     map.put("Acc", TopFive.get(i).substring(0, TopFive.get(i).indexOf(",")));
                     map.put("Amount", TopFive.get(i).substring(TopFive.get(i).lastIndexOf(",") + 1));
-                    jedis.hmset("TopTen" + this.TranType + "-Top" + Integer.toString(i + 1), map);
+                    jedis.hmset("TopTen" + this.TranType + "-Top" + Integer.toString(i + 1) + "-" + Long.toString(tuple.getLongByField("window")), map);
                 }
             }
             List<String> BotFive = (ArrayList<String>)tuple.get(1);
@@ -47,7 +47,7 @@ public class SaveRedisTopBotBolt extends BaseFunction {
                     Map<String, String> map = new HashMap<String, String>();
                     map.put("Acc", BotFive.get(i).substring(0, BotFive.get(i).indexOf(",")));
                     map.put("Amount", BotFive.get(i).substring(BotFive.get(i).lastIndexOf(",") + 1));
-                    jedis.hmset("TopTen" + this.TranType + "-Bot" + Integer.toString(i + 1), map);
+                    jedis.hmset("TopTen" + this.TranType + "-Bot" + Integer.toString(i + 1) + "-" + Long.toString(tuple.getLongByField("window")), map);
                 }
             }
         }

@@ -49,9 +49,6 @@ public class TopologyControl {
 
     public static StormTopology createTopology() {
 
-        Fields valueChart = new Fields("countBranch1", "countBranch2", "countBranch3", "countCenter");
-        Fields totalCountAmount = new Fields("count", "sumAmount");
-
         TridentTopology topology = new TridentTopology();
         BrokerHosts zk = new ZkHosts(Properties.getString("storm.zkhosts"));
         TridentKafkaConfig spoutConf = new TridentKafkaConfig(zk,KAFKA_TOPIC);
@@ -65,35 +62,45 @@ public class TopologyControl {
         Stream parsedStream = spoutStream.each(new Fields("str"), new
                 JsonProjectFunction(jsonFields), jsonFields);
 
-        SlidingWindow Sliding30s = new SlidingWindow().sliding(30.0, SlidingWindow.Time.SECONDS);
+        TopologySliding(parsedStream, 30.0);
+        TopologySliding(parsedStream, 60.0);
+        TopologySliding(parsedStream, 600.0);
+
+        return topology.build();
+    }
+
+    private static void TopologySliding(Stream parsedStream, double SlidingTime)
+    {
+        Fields totalCountAmount = new Fields("count", "sumAmount", "window");
+        Fields valueChart = new Fields("countBranch1", "countBranch2", "countBranch3", "countCenter", "window");
+        Fields RankingField = new Fields("TopFive", "BotFive", "window");
+
+        SlidingWindow Sliding = new SlidingWindow().sliding(SlidingTime, SlidingWindow.Time.SECONDS);
 
         //Total Tran & Amount
-        parsedStream.each(new Fields("amount", "timestamp"), new TotalCountAmountBolt(Sliding30s, SlidingWindow.Time.SECONDS)
-                        , new Fields("count", "sumAmount"))
-                    .each(totalCountAmount, new SaveRedisTotalCountAmount(), new Fields("doneCountAmount"));
+        parsedStream.each(new Fields("amount", "timestamp"), new TotalCountAmountBolt(Sliding, SlidingWindow.Time.SECONDS)
+                , totalCountAmount)
+                .each(totalCountAmount, new SaveRedisTotalCountAmount(), new Fields("doneCountAmount"));
 
         //Count channel for chart
-        parsedStream.each(new Fields("ch_id", "timestamp"), new ValueChartBolt(Sliding30s, SlidingWindow.Time.SECONDS)
-                            , valueChart)
-                    .each(valueChart, new SaveRedisForChart(), new Fields("doneValueChart"));
+        parsedStream.each(new Fields("ch_id", "timestamp"), new ValueChartBolt(Sliding, SlidingWindow.Time.SECONDS)
+                , valueChart)
+                .each(valueChart, new SaveRedisForChart(), new Fields("doneValueChart"));
 
         //Rankings DEPOSIT
         parsedStream.each(new Fields("trx_code"), new RollingBolt(PARAM.TransCode.DEPOSIT.getValue()))
-                    .each(new Fields("amount", "acc_no", "timestamp"), new RankingsBolt(Sliding30s, SlidingWindow.Time.SECONDS), new Fields("TopFive", "BotFive"))
-                    .each(new Fields("TopFive", "BotFive"), new SaveRedisTopBotBolt(PARAM.TransCode.DEPOSIT.getValue()), new Fields("abc"));
+                .each(new Fields("amount", "acc_no", "timestamp"), new RankingsBolt(Sliding, SlidingWindow.Time.SECONDS), RankingField)
+                .each(RankingField, new SaveRedisTopBotBolt(PARAM.TransCode.DEPOSIT.getValue()), new Fields("abc"));
 
         //Rankings TRANSFERFROM
         parsedStream.each(new Fields("trx_code"), new RollingBolt(PARAM.TransCode.TRANSFERFROM.getValue()))
-                    .each(new Fields("amount", "acc_no", "timestamp"), new RankingsBolt(Sliding30s, SlidingWindow.Time.SECONDS), new Fields("TopFive", "BotFive"))
-                    .each(new Fields("TopFive", "BotFive"), new SaveRedisTopBotBolt(PARAM.TransCode.TRANSFERFROM.getValue()), new Fields("abc"));
+                .each(new Fields("amount", "acc_no", "timestamp"), new RankingsBolt(Sliding, SlidingWindow.Time.SECONDS), RankingField)
+                .each(RankingField, new SaveRedisTopBotBolt(PARAM.TransCode.TRANSFERFROM.getValue()), new Fields("abc"));
 
         //Rankings WITHDRAWAL
         parsedStream.each(new Fields("trx_code"), new RollingBolt(PARAM.TransCode.WITHDRAWAL.getValue()))
-                    .each(new Fields("amount", "acc_no", "timestamp"), new RankingsBolt(Sliding30s, SlidingWindow.Time.SECONDS), new Fields("TopFive", "BotFive"))
-                    .each(new Fields("TopFive", "BotFive"), new SaveRedisTopBotBolt(PARAM.TransCode.WITHDRAWAL.getValue()), new Fields("abc"));
-
-
-        return topology.build();
+                .each(new Fields("amount", "acc_no", "timestamp"), new RankingsBolt(Sliding, SlidingWindow.Time.SECONDS), RankingField)
+                .each(RankingField, new SaveRedisTopBotBolt(PARAM.TransCode.WITHDRAWAL.getValue()), new Fields("abc"));
     }
 
     public static class JsonProjectFunction extends BaseFunction {
@@ -110,7 +117,6 @@ public class TopologyControl {
             for (int i = 0; i < this.fields.size(); i++) {
                 values.add(map.get(this.fields.get(i)));
             }
-            System.out.println("All values : " + values);
 
             collector.emit(values);
         }

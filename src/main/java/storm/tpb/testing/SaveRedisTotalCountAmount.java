@@ -17,8 +17,8 @@ public class SaveRedisTotalCountAmount extends BaseFunction {
         //collector.emit(new Values(this.sliding.getCount(),this.sliding.getSum()));
         //System.out.println("Rediscount : " + Long.toString(this.sliding.getCount()) + " sum : " + Long.toString(this.sliding.getSum()));
         jedis=new Jedis(Properties.getString("redis.host"), Properties.getInt("redis.port"));
-        jedis.set("TotalNoTran", Long.toString(tuple.getLong(0)));
-        jedis.set("TotalAmount", Long.toString(tuple.getLong(1)));
+        jedis.set("TotalNoTran-" + Long.toString(tuple.getLongByField("window")), Long.toString(tuple.getLong(0)));
+        jedis.set("TotalAmount-" + Long.toString(tuple.getLongByField("window")), Long.toString(tuple.getLong(1)));
        // collector.emit(tuple);
     }
 }
