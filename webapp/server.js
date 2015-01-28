@@ -77,6 +77,11 @@ function redis_hmget_top(key){
         }
     });
 }
+clearInterval(t2);
+clearInterval(t3);
+t1 = setInterval(function() {
+    setTime(30000);
+}, 1000);
 io.sockets.on('connection',function(socket){
     socket.on('open30s', function (data1) {
         log('warn', "open30s");
