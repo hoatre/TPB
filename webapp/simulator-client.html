@@ -77,10 +77,10 @@
 			</td>
 			<td>
 				<select id="cboChannel" style="width:200px;">
-					<option value="Branch 1" selected >Branch 1</option>
+					<!--<option value="Branch 1" selected >Branch 1</option>
 					<option value="Branch 2">Branch 2 </option>
 					<option value="Branch 3">Branch 3</option>
-					<option value="Contact Center">Contact Center</option>
+					<option value="Contact Center">Contact Center</option>-->
 				</select>
 			</td>
 			<td>
@@ -88,10 +88,10 @@
 			</td>
 			<td>
 				<select id="cboChannel1" style="width:200px;">
-					<option value="Branch 1" selected >Branch 1</option>
+					<!--<option value="Branch 1" selected >Branch 1</option>
 					<option value="Branch 2">Branch 2 </option>
 					<option value="Branch 3">Branch 3</option>
-					<option value="Contact Center">Contact Center</option>
+					<option value="Contact Center">Contact Center</option>-->
 				</select>
 			</td>
 		</tr>
@@ -101,7 +101,7 @@
 			</td>
 			<td>
 				<select id="cboProduct" style="width:200px;">
-					<option value="Savings" selected >Savings</option>
+					<!--<option value="Savings" selected >Savings</option>-->
 				</select>
 			</td>
 			<td>
@@ -109,7 +109,7 @@
 			</td>
 			<td>
 				<select id="cboProduct1" style="width:200px;">
-					<option value="Savings" selected >Savings</option>
+					<!--<option value="Savings" selected >Savings</option>-->
 				</select>
 			</td>
 		</tr>
@@ -119,11 +119,11 @@
 			</td>
 			<td>
 				<select id="cboTransactionType" style="width:200px;">
-					<option value="Deposit" selected >Deposit</option>
+					<!--<option value="Deposit" selected >Deposit</option>
 					<option value="Withdrawal" selected >Withdrawal</option>
 					<option value="Transfer From" selected >Transfer Form</option>
 					<option value="Transfer To" selected >Transfer To</option>
-					<option value="Balance Inquiry" selected >Balance Inquiry</option>
+					<option value="Balance Inquiry" selected >Balance Inquiry</option>-->
 				</select>
 			</td>
 			<td>
@@ -131,11 +131,11 @@
 			</td>
 			<td>
 				<select id="cboTransactionType1" style="width:200px;">
-					<option value="Deposit" selected >Deposit</option>
+					<!--<option value="Deposit" selected >Deposit</option>
 					<option value="Withdrawal" selected >Withdrawal</option>
 					<option value="Transfer From" selected >Transfer Form</option>
 					<option value="Transfer To" selected >Transfer To</option>
-					<option value="Balance Inquiry" selected >Balance Inquiry</option>
+					<option value="Balance Inquiry" selected >Balance Inquiry</option>-->
 				</select>
 			</td>
 		</tr>
@@ -205,10 +205,10 @@
 			</td>
 			<td>
 				<select id="cboChannel2" style="width:200px;">
-					<option value="Branch 1" selected >Branch 1</option>
+					<!--<option value="Branch 1" selected >Branch 1</option>
 					<option value="Branch 2">Branch 2 </option>
 					<option value="Branch 3">Branch 3</option>
-					<option value="Contact Center">Contact Center</option>
+					<option value="Contact Center">Contact Center</option>-->
 				</select>
 			</td>
 			<td>
@@ -216,10 +216,10 @@
 			</td>
 			<td>
 				<select id="cboChannel3" style="width:200px;">
-					<option value="Branch 1" selected >Branch 1</option>
+					<!--<option value="Branch 1" selected >Branch 1</option>
 					<option value="Branch 2">Branch 2 </option>
 					<option value="Branch 3">Branch 3</option>
-					<option value="Contact Center">Contact Center</option>
+					<option value="Contact Center">Contact Center</option>-->
 				</select>
 			</td>
 		</tr>
@@ -229,7 +229,7 @@
 			</td>
 			<td>
 				<select id="cboProduct2" style="width:200px;">
-					<option value="Savings" selected >Savings</option>
+					<!--<option value="Savings" selected >Savings</option>-->
 				</select>
 			</td>
 			<td>
@@ -237,7 +237,7 @@
 			</td>
 			<td>
 				<select id="cboProduct3" style="width:200px;">
-					<option value="Savings" selected >Savings</option>
+					<!--<option value="Savings" selected >Savings</option>-->
 				</select>
 			</td>
 		</tr>
@@ -247,11 +247,11 @@
 			</td>
 			<td>
 				<select id="cboTransactionType2" style="width:200px;">
-					<option value="Deposit" selected >Deposit</option>
+					<!--<option value="Deposit" selected >Deposit</option>
 					<option value="Withdrawal" selected >Withdrawal</option>
 					<option value="Transfer From" selected >Transfer Form</option>
 					<option value="Transfer To" selected >Transfer To</option>
-					<option value="Balance Inquiry" selected >Balance Inquiry</option>
+					<option value="Balance Inquiry" selected >Balance Inquiry</option>-->
 				</select>
 			</td>
 			<td>
@@ -259,11 +259,11 @@
 			</td>
 			<td>
 				<select id="cboTransactionType3" style="width:200px;">
-					<option value="Deposit" selected >Deposit</option>
+					<!--<option value="Deposit" selected >Deposit</option>
 					<option value="Withdrawal" selected >Withdrawal</option>
 					<option value="Transfer From" selected >Transfer Form</option>
 					<option value="Transfer To" selected >Transfer To</option>
-					<option value="Balance Inquiry" selected >Balance Inquiry</option>
+					<option value="Balance Inquiry" selected >Balance Inquiry</option>-->
 				</select>
 			</td>
 		</tr>
@@ -279,8 +279,9 @@
 <script class="include" type="text/javascript" src="jquery.min.js"></script>
 
 <script>
+	var socket = io.connect('http://localhost:3001/');
 	jQuery(function($){
-		var socket = io.connect('http://localhost:3001/');
+		socket.emit('SIMULATOR-GET-PARAMETER','ALL');
 		var $btnConfig1 = $('#btnConfig1');
 		var $btnConfig2 = $('#btnConfig2');
 		var $btnConfig3 = $('#btnConfig3');
@@ -323,7 +324,7 @@
 		$messageForm.submit(function(e){
 			e.preventDefault();
 			//-----------------------
-			//socket.emit('send message',$txtSec.val());
+			//socket.emit('SIMULATOR_LIST_SEND_MESSAGE',$txtSec.val());
 			//alert('submit');
 			var obj=setobj();
 			$('#btnConfig1').val('stop');
@@ -352,7 +353,7 @@
 				$('#btnConfig4').val('start');
 			}
 
-			socket.emit('send message',obj);
+			socket.emit('SIMULATOR_LIST_SEND_MESSAGE',obj);
 		});
 
 		$('#btnConfig1').click( function() {
@@ -465,6 +466,93 @@
 			return false;
 		return true;
 	}
+	socket.on('SIMULATOR-PARAMETER-CONFIG-CHANNELS', function(data){
+		//alert(data.length);
+		for(var i=0;i<data.length;i++)
+		{
+			var x = document.getElementById("cboChannel");
+			var option = document.createElement("option");
+			option.text = data[i].ChannelName;
+			option.value = data[i].ChannelCode;
+			x.add(option);
+			
+			x = document.getElementById("cboChannel1");
+			option = document.createElement("option");
+			option.text = data[i].ChannelName;
+			option.value = data[i].ChannelCode;
+			x.add(option);
+			
+			x = document.getElementById("cboChannel2");
+			option = document.createElement("option");
+			option.text = data[i].ChannelName;
+			option.value = data[i].ChannelCode;
+			x.add(option);
+			
+			x = document.getElementById("cboChannel3");
+			option = document.createElement("option");
+			option.text = data[i].ChannelName;
+			option.value = data[i].ChannelCode;
+			x.add(option);
+		}
+	});
+	socket.on('SIMULATOR-PARAMETER-CONFIG-PRODUCT', function(data){
+		//alert(data.length);
+		for(var i=0;i<data.length;i++)
+		{
+			var x = document.getElementById("cboProduct");
+			var option = document.createElement("option");
+			option.text = data[i].ProductName;
+			option.value = data[i].ProductCode;
+			x.add(option);
+			
+			x = document.getElementById("cboProduct1");
+			option = document.createElement("option");
+			option.text = data[i].ProductName;
+			option.value = data[i].ProductCode;
+			x.add(option);
+			
+			x = document.getElementById("cboProduct2");
+			option = document.createElement("option");
+			option.text = data[i].ProductName;
+			option.value = data[i].ProductCode;
+			x.add(option);
+			
+			x = document.getElementById("cboProduct3");
+			option = document.createElement("option");
+			option.text = data[i].ProductName;
+			option.value = data[i].ProductCode;
+			x.add(option);
+		}
+	});
+	socket.on('SIMULATOR-PARAMETER-CONFIG-TRANSACTIONTYPES', function(data){
+		//alert(data.length);
+		for(var i=0;i<data.length;i++)
+		{
+			var x = document.getElementById("cboTransactionType");
+			var option = document.createElement("option");
+			option.text = data[i].TransactionName;
+			option.value = data[i].TransactionCode;
+			x.add(option);
+			
+			x = document.getElementById("cboTransactionType1");
+			option = document.createElement("option");
+			option.text = data[i].TransactionName;
+			option.value = data[i].TransactionCode;
+			x.add(option);
+			
+			x = document.getElementById("cboTransactionType2");
+			option = document.createElement("option");
+			option.text = data[i].TransactionName;
+			option.value = data[i].TransactionCode;
+			x.add(option);
+			
+			x = document.getElementById("cboTransactionType3");
+			option = document.createElement("option");
+			option.text = data[i].TransactionName;
+			option.value = data[i].TransactionCode;
+			x.add(option);
+		}
+	});
 </script>
 </body>
 </html>
