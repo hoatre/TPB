@@ -21,7 +21,7 @@ public class SaveRedisTopBotBolt extends BaseFunction {
         this.TranType = TranType;
     }
     public synchronized void execute(TridentTuple tuple, TridentCollector collector) {
-        jedis=new Jedis(Properties.getString("redis.host"), Properties.getInt("redis.port"));
+        jedis=new Jedis(Properties.getString("redis.host"), Properties.getInt("redis.port"), 2000);
 
         if(!tuple.isEmpty())
         {
