@@ -18,9 +18,10 @@ public class ValueChartBolt extends BaseFunction{
         this.emitRatePer = emitRatePer;
     }
     public void execute(TridentTuple tuple, TridentCollector collector) {
-        this.sliding.chart(tuple.getStringByField("ch_id"), tuple.getLongByField("timestamp"));
+        this.sliding.chart(tuple.getStringByField("ch_id"), tuple.getLongByField("timestamp"), tuple.getLongByField("amount"));
         collector.emit(new Values(this.sliding.getCountBranch1(),this.sliding.getCountBranch2()
-                                    ,this.sliding.getCountBranch3(),this.sliding.getCountCenter(), this.sliding.getWindow()));
+                                    ,this.sliding.getCountBranch3(),this.sliding.getCountCenter(), this.sliding.getWindow(),this.sliding.getSumBranch1()
+                                    ,this.sliding.getSumBranch2(),this.sliding.getSumBranch3(),this.sliding.getSumCenter()));
         System.out.println("getCountBranch1 : " + this.sliding.getCountBranch1() + " getCountBranch2 : " + this.sliding.getCountBranch2()
                 + " getCountBranch3 : " + this.sliding.getCountBranch3() + " getCountCenter : " + this.sliding.getCountCenter());
     }

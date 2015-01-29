@@ -11,6 +11,9 @@ var Branch1 = "B1";
 var Branch2 = "B2";
 var Branch3 = "B3";
 var Contact_Center = "Contact";
+var totalNoTran = 0;
+var totalAmount = 0;
+
 
 var express = require('express');
     app = express(),
@@ -116,12 +119,14 @@ io.sockets.on('connection',function(socket){
 });
 
 function setTime(slidingTime){
-    redis_get_total('TotalNoTran-' + slidingTime);
-    redis_get_total('TotalAmount-' + slidingTime);
-    redis_get('real-time-' + Branch1 + '-' + slidingTime);
-    redis_get('real-time-' + Branch2 + '-' + slidingTime);
-    redis_get('real-time-' + Branch3 + '-' + slidingTime);
-    redis_get('real-time-' + Contact_Center + '-' + slidingTime);
+    redis_get('real-time-count-' + Branch1 + '-' + slidingTime);
+    redis_get('real-time-count-' + Branch2 + '-' + slidingTime);
+    redis_get('real-time-count-' + Branch3 + '-' + slidingTime);
+    redis_get('real-time-count-' + Contact_Center + '-' + slidingTime);
+    redis_get('real-time-sum-' + Branch1 + '-' + slidingTime);
+    redis_get('real-time-sum-' + Branch2 + '-' + slidingTime);
+    redis_get('real-time-sum-' + Branch3 + '-' + slidingTime);
+    redis_get('real-time-sum-' + Contact_Center + '-' + slidingTime);
     for(z=1; z <= 5; z++) {
         redis_hmget_top('TopTen' + Deposit + '-Top' + z.toString() + "-" + slidingTime);
         redis_hmget_top('TopTen' + Withdrawal + '-Top' + z.toString() + "-" + slidingTime);

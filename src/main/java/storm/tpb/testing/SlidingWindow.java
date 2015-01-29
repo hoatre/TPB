@@ -56,6 +56,10 @@ public class SlidingWindow implements Serializable {
     private long countBranch2=0;
     private long countBranch3=0;
     private long countCenter=0;
+    private long sumBranch1=0;
+    private long sumBranch2=0;
+    private long sumBranch3=0;
+    private long sumCenter=0;
     private List<String> TopFive = new ArrayList<String>();
     private List<String> BotFive = new ArrayList<String>();;
 
@@ -117,14 +121,15 @@ public class SlidingWindow implements Serializable {
 
     }
 
-    public void chart(String channel, long timetamp) {
-        chart(System.currentTimeMillis(), channel, timetamp);
+    public void chart(String channel, long timetamp, long amount) {
+        chart(System.currentTimeMillis(), channel, timetamp, (int)amount);
     }
-    public synchronized void chart(long time, String channel, long timetamp) {
+    public synchronized void chart(long time, String channel, long timetamp, int amount) {
         cacheTimeChart.add(time);
         Transaction tran = new Transaction();
         tran.settimetamp(timetamp);
         tran.setch_id(channel);
+        tran.setamount(amount);
         listTransChart.add(tran);
         if (this.sliding) {
             if ((time - this.lastChart) > this.window) {
@@ -143,19 +148,32 @@ public class SlidingWindow implements Serializable {
         countBranch2=0;
         countBranch3=0;
         countCenter=0;
+        sumBranch1=0;
+        sumBranch2=0;
+        sumBranch3=0;
+        sumCenter=0;
+
 
         if(!listTransChart.isEmpty())
         {
             for(int i = 0; i < listTransChart.size(); i++)
             {
-                if(listTransChart.get(i).getch_id().equals(PARAM.Channel.BRANCH1.getValue()))
+                if(listTransChart.get(i).getch_id().equals(PARAM.Channel.BRANCH1.getValue())) {
                     countBranch1++;
-                if(listTransChart.get(i).getch_id().equals(PARAM.Channel.BRANCH2.getValue()))
+                    sumBranch1 = sumBranch1 + listTransChart.get(i).getamount();
+                }
+                if(listTransChart.get(i).getch_id().equals(PARAM.Channel.BRANCH2.getValue())) {
                     countBranch2++;
-                if(listTransChart.get(i).getch_id().equals(PARAM.Channel.BRANCH3.getValue()))
+                    sumBranch2 = sumBranch2 + listTransChart.get(i).getamount();
+                }
+                if(listTransChart.get(i).getch_id().equals(PARAM.Channel.BRANCH3.getValue())) {
                     countBranch3++;
-                if(listTransChart.get(i).getch_id().equals(PARAM.Channel.BRANCH4.getValue()))
+                    sumBranch3 = sumBranch3 + listTransChart.get(i).getamount();
+                }
+                if(listTransChart.get(i).getch_id().equals(PARAM.Channel.BRANCH4.getValue())) {
                     countCenter++;
+                    sumCenter = sumCenter + listTransChart.get(i).getamount();
+                }
             }
         }
 
@@ -249,6 +267,22 @@ public class SlidingWindow implements Serializable {
 
     public long getCountCenter() {
         return this.countCenter;
+    }
+
+    public long getSumBranch1() {
+        return this.sumBranch1;
+    }
+
+    public long getSumBranch2() {
+        return this.sumBranch2;
+    }
+
+    public long getSumBranch3() {
+        return this.sumBranch3;
+    }
+
+    public long getSumCenter() {
+        return this.sumCenter;
     }
 
     public List<String> getTopFive(){return this.TopFive; }

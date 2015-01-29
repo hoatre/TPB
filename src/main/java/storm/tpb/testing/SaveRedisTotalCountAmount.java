@@ -12,11 +12,15 @@ import storm.trident.tuple.TridentTuple;
  */
 public class SaveRedisTotalCountAmount extends BaseFunction {
     private Jedis jedis;
+    private String channel;
+    public SaveRedisTotalCountAmount(String channel){
+        this.channel = channel;
+    }
     public synchronized void execute(TridentTuple tuple, TridentCollector collector) {
         try {
             jedis = new Jedis(Properties.getString("redis.host"), Properties.getInt("redis.port"), 2000);
-            jedis.set("TotalNoTran-" + Long.toString(tuple.getLongByField("window")), Long.toString(tuple.getLong(0)));
-            jedis.set("TotalAmount-" + Long.toString(tuple.getLongByField("window")), Long.toString(tuple.getLong(1)));
+            jedis.set("TotalNoTran-" + this.channel + "-" + Long.toString(tuple.getLongByField("window")), Long.toString(tuple.getLong(0)));
+            jedis.set("TotalAmount-" + this.channel + "-" + Long.toString(tuple.getLongByField("window")), Long.toString(tuple.getLong(1)));
         }catch (Exception e){}
     }
 }

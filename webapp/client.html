@@ -34,7 +34,24 @@
       var Branch2 = "B2";
       var Branch3 = "B3";
       var Contact_Center = "Contact";
+      var profileHost = 'http://localhost:3002/Detail/';
 
+      var countB1 = 0;
+      var sumB1 = 0;
+      var countB2 = 0;
+      var sumB2 = 0;
+      var countB3 = 0;
+      var sumB3 = 0;
+      var countCenter = 0;
+      var sumCenter = 0;
+
+
+      var totalCount = 0;
+      var totalSum = 0;
+      var Line11Checked = true;
+      var Line21Checked = true;
+      var Line31Checked = true;
+      var Line41Checked = true;
       function TopTen(Top, slidingTime) {
           socket.on('Top-' + Top + '-' + slidingTime, function (data1) {
               var array = $.map(data1, function (value, index) {
@@ -42,10 +59,16 @@
               });
               var TopTenDepositTop1Acc = document.getElementById(Top + "-Account");
               TopTenDepositTop1Acc.innerHTML = array[0];
+
+//              var TopTenDepositTop1Acc_a = document.getElementById(Top + "_a-Account");
+//              TopTenDepositTop1Acc.href = profileHost + array[0];
+
+
               var TopTenDepositTop1Amount = document.getElementById(Top + "-Amount");
               TopTenDepositTop1Amount.innerHTML = array[1];
           });
       }
+
       var chart = new SmoothieChart({
                   millisPerPixel: 30000/(window.innerWidth - 300),
                   grid: {
@@ -67,6 +90,35 @@
               TotalAmount.innerHTML = data1.toString();
           });
       }
+      setInterval(function() {
+          totalCount = countB1 + countB2 + countB3 + countCenter;
+          totalSum = sumB1 + sumB2 + sumB3 + sumCenter;
+          if(!Line11Checked)
+          {
+              totalCount = totalCount - countB1;
+              totalSum = totalSum - sumB1;
+          }
+          if(!Line21Checked)
+          {
+              totalCount = totalCount - countB2;
+              totalSum = totalSum - sumB2;
+          }
+          if(!Line31Checked)
+          {
+              totalCount = totalCount - countB3;
+              totalSum = totalSum - sumB3;
+          }
+          if(!Line41Checked) {
+              totalCount = totalCount - countCenter;
+              totalSum = totalSum - sumCenter;
+          }
+          var TotalNoTran = document.getElementById("TotalNoTran");
+          TotalNoTran.innerHTML = totalCount.toString();
+
+          var TotalAmount = document.getElementById("TotalAmount");
+          TotalAmount.innerHTML = totalSum.toString();
+
+      }, 1000);
       function TopBot(slidingTime){
           for(z = 1;z<=5;z++) {
               TopTen('TopTen' + Deposit + '-Top' + z.toString(), slidingTime.toString());
@@ -78,20 +130,47 @@
           }
       }
       function LineChart(slidingTime){
-          socket.on('CountChart-real-time-' + Branch1 + '-' + slidingTime, function (data1) {
+          socket.on('CountChart-real-time-count-' + Branch1 + '-' + slidingTime, function (data1) {
               line1.append(new Date().getTime(), data1);
+              countB1 = parseInt(data1);
+
           });
-          socket.on('CountChart-real-time-' + Branch2 + '-' + slidingTime, function (data1) {
+          socket.on('CountChart-real-time-count-' + Branch2 + '-' + slidingTime, function (data1) {
               line2.append(new Date().getTime(), data1);
+              countB2 = parseInt(data1);
           });
-          socket.on('CountChart-real-time-' + Branch3 + '-' + slidingTime, function (data1) {
+          socket.on('CountChart-real-time-count-' + Branch3 + '-' + slidingTime, function (data1) {
               line3.append(new Date().getTime(), data1);
+              countB3 = parseInt(data1);
           });
-          socket.on('CountChart-real-time-' + Contact_Center + '-' + slidingTime, function (data1) {
+          socket.on('CountChart-real-time-count-' + Contact_Center + '-' + slidingTime, function (data1) {
               line4.append(new Date().getTime(), data1);
+              countCenter = parseInt(data1);
+          });
+      }
+      function SumPer(slidingTime){
+          socket.on('CountChart-real-time-sum-' + Branch1 + '-' + slidingTime, function (data1) {
+              sumB1 = parseInt(data1);
+          });
+          socket.on('CountChart-real-time-sum-' + Branch2 + '-' + slidingTime, function (data1) {
+              sumB2 = parseInt(data1);
+          });
+          socket.on('CountChart-real-time-sum-' + Branch3 + '-' + slidingTime, function (data1) {
+              sumB3 = parseInt(data1);
+          });
+          socket.on('CountChart-real-time-sum-' + Contact_Center + '-' + slidingTime, function (data1) {
+              sumCenter = parseInt(data1);
           });
       }
       function createTimeline() {
+
+          $( "input" ).change(function() {
+              Line11Checked = $('input[name="Line11"]:checked').length > 0;
+              Line21Checked = $('input[name="Line21"]:checked').length > 0;
+              Line31Checked = $('input[name="Line31"]:checked').length > 0;
+              Line41Checked = $('input[name="Line41"]:checked').length > 0;
+          }).change();
+
           $("#chart").attr({'width': window.innerWidth - 300, 'height': 200});
 
           $('#line11').on('click', line11);
@@ -125,9 +204,12 @@
           LineChart(30000);
           LineChart(60000);
           LineChart(600000);
-          Total(30000);
-          Total(60000);
-          Total(600000);
+          SumPer(30000);
+          SumPer(60000);
+          SumPer(600000);
+//          Total(30000);
+//          Total(60000);
+//          Total(600000);
           chart.addTimeSeries(line1,
                   { strokeStyle: '#A6C567', lineWidth:3 });
           chart.addTimeSeries(line2,
@@ -138,15 +220,13 @@
                   { strokeStyle:'#FFD700', lineWidth:3 });
 
           chart.streamTo(document.getElementById("chart"), 1000);
-
-
-
       }
 
       function line11() {
-          if($('#line11').is(':checked'))
+          if($('#line11').is(':checked')) {
               chart.addTimeSeries(line1,
-                      { strokeStyle: '#A6C567', lineWidth:3 });
+                      {strokeStyle: '#A6C567', lineWidth: 3});
+          }
           else{
               chart.removeTimeSeries(line1);
           }
@@ -157,6 +237,7 @@
           if($('#line21').is(':checked'))
               chart.addTimeSeries(line2,
                       { strokeStyle:'#0000FF', lineWidth:3 });
+
           else{
               chart.removeTimeSeries(line2);
           }
@@ -190,10 +271,10 @@
       </colgroup>
       <tr>
           <td style="padding-left: 50px; padding-right: 50px">
-              <input type="checkbox" id="line11" name="Line11" checked="true" />Branch 1  <font  color="#A6C567">&#9642;</font></br>
-              <input type="checkbox" id="line21" name="Line21" checked="true"/>Branch 2  <font  color="#0000FF">&#9642;</font></br>
-              <input type="checkbox" id="line31" name="Line31" checked="true"/>Branch 3  <font  color="#DC143C">&#9642;</font></br>
-              <input type="checkbox" id="line41" name="Line41" checked="true"/>Contact Center  <font  color="#FFD700">&#9642;</font></br>
+              <input type="checkbox" id="line11" name="Line11" Checked/>Branch 1  <font  color="#A6C567">&#9642;</font></br>
+              <input type="checkbox" id="line21" name="Line21" Checked/>Branch 2  <font  color="#0000FF">&#9642;</font></br>
+              <input type="checkbox" id="line31" name="Line31" Checked/>Branch 3  <font  color="#DC143C">&#9642;</font></br>
+              <input type="checkbox" id="line41" name="Line41" Checked/>Contact Center  <font  color="#FFD700">&#9642;</font></br>
               <select id="SlidingTimeCbo">
                   <option >30s</option>
                   <option >60s</option>
@@ -489,6 +570,7 @@
                                 <tr>
                                     <td>
                                         <label id="TopTenWI-Bot5-Account"></label>
+                                        <!--<a id="TopTenWI-Bot5-Account_a" href="#"></a>-->
                                     </td>
                                     <td>
                                         <label id="TopTenWI-Bot5-Amount"></label>
