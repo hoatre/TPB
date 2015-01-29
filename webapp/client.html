@@ -45,6 +45,9 @@
       var countCenter = 0;
       var sumCenter = 0;
 
+      var time1 = 60000;
+      var time2 = 3600000;
+      var time3 = 86400000;
 
       var totalCount = 0;
       var totalSum = 0;
@@ -70,7 +73,7 @@
       }
 
       var chart = new SmoothieChart({
-                  millisPerPixel: 30000/(window.innerWidth - 300),
+                  millisPerPixel: time1/(window.innerWidth - 300),
                   grid: {
                       fillStyle: 'transparent',
                       strokeStyle: 'rgba(166,197,103,0.20)',
@@ -183,30 +186,30 @@
               $( "select option:selected" ).each(function() {
                   str += $( this ).text();
               });
-              if(str.toLowerCase().localeCompare("30s".toLowerCase()) == 0)
+              if(str.toLowerCase().localeCompare("1 Minute".toLowerCase()) == 0)
               {
-                  socket.emit('open30s',"30s");
+                  socket.emit('open 1 Minute',"1 Minute");
               }
-              else if(str.toLowerCase().localeCompare("10m".toLowerCase()) == 0)
+              else if(str.toLowerCase().localeCompare("1 hour".toLowerCase()) == 0)
               {
-                  socket.emit('open10m',"10m");
+                  socket.emit('open 1 hour',"1 hour");
 
               }
-              else if(str.toLowerCase().localeCompare("60s".toLowerCase()) == 0)
+              else if(str.toLowerCase().localeCompare("1 day".toLowerCase()) == 0)
               {
-                  socket.emit('open60s',"60s");
+                  socket.emit('open 1 day',"1 day");
               }
           }).change();
 
-          TopBot(30000);
-          TopBot(60000);
-          TopBot(600000);
-          LineChart(30000);
-          LineChart(60000);
-          LineChart(600000);
-          SumPer(30000);
-          SumPer(60000);
-          SumPer(600000);
+          TopBot(time1);
+          TopBot(time2);
+          TopBot(time3);
+          LineChart(time1);
+          LineChart(time2);
+          LineChart(time3);
+          SumPer(time1);
+          SumPer(time2);
+          SumPer(time3);
 //          Total(30000);
 //          Total(60000);
 //          Total(600000);
@@ -276,9 +279,9 @@
               <input type="checkbox" id="line31" name="Line31" Checked/>Branch 3  <font  color="#DC143C">&#9642;</font></br>
               <input type="checkbox" id="line41" name="Line41" Checked/>Contact Center  <font  color="#FFD700">&#9642;</font></br>
               <select id="SlidingTimeCbo">
-                  <option >30s</option>
-                  <option >60s</option>
-                  <option >10m</option>
+                  <option >1 Minute</option>
+                  <option >1 hour</option>
+                  <option >1 day</option>
               </select>
           </td>
           <td>

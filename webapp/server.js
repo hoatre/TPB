@@ -13,7 +13,9 @@ var Branch3 = "B3";
 var Contact_Center = "Contact";
 var totalNoTran = 0;
 var totalAmount = 0;
-
+var time1 = 60000;
+var time2 = 3600000;
+var time3 = 86400000;
 
 var express = require('express');
     app = express(),
@@ -21,7 +23,8 @@ var express = require('express');
     io = require('socket.io').listen(server);
 
 const redis = require('redis');
-const client1 = redis.createClient(6379, '10.20.252.201', {});
+//const client1 = redis.createClient(6379, '10.20.252.201', {});
+const client1 = redis.createClient();
 log('info', 'connected to redis server');
 
 server.listen(3000);
@@ -92,28 +95,28 @@ clearInterval(t2);
 clearInterval(t3);
 clearInterval(t1);
 io.sockets.on('connection',function(socket){
-    socket.on('open30s', function (data1) {
-        log('warn', "open30s");
+    socket.on('open 1 Minute', function (data1) {
+        log('warn', "open 1 Minute");
         clearInterval(t2);
         clearInterval(t3);
         t1 = setInterval(function() {
-            setTime(30000);
+            setTime(time1);
         }, 1000);
     }),
-    socket.on('open60s', function (data1) {
-        log('warn', "open60s");
+    socket.on('open 1 hour', function (data1) {
+        log('warn', "open 1 hour");
         clearInterval(t1);
         clearInterval(t3);
         t2 = setInterval(function() {
-            setTime(60000);
+            setTime(time2);
         }, 1000);
     }),
-    socket.on('open10m', function (data1) {
-        log('warn', "open10m");
+    socket.on('open 1 day', function (data1) {
+        log('warn', "open 1 day");
         clearInterval(t2);
         clearInterval(t1);
         t3 = setInterval(function() {
-            setTime(600000);
+            setTime(time3);
         }, 1000);
     })
 });

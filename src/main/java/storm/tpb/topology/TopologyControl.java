@@ -66,9 +66,9 @@ public class TopologyControl {
         Stream parsedStream = spoutStream.each(new Fields("str"), new
                 JsonProjectFunction(jsonFields), jsonFields);
 
-        TopologySliding(parsedStream, 30.0);
         TopologySliding(parsedStream, 60.0);
-        TopologySliding(parsedStream, 600.0);
+        TopologySliding(parsedStream, 3600.0);
+        TopologySliding(parsedStream, 86400.0);
 
         return topology.build();
     }
