@@ -18,7 +18,7 @@ var express = require('express');
     io = require('socket.io').listen(server);
 
 const redis = require('redis');
-const client1 = redis.createClient();
+const client1 = redis.createClient(6379, '10.20.252.201', {});
 log('info', 'connected to redis server');
 
 server.listen(3000);
