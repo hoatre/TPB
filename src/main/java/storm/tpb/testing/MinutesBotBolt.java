@@ -76,12 +76,12 @@ public class MinutesBotBolt implements IRichBolt {
             map.put("Amount" , Long.toString(rankable.getCount()));
             jedis.hmset("TopTen"+TransactionType+"-Bot" + Integer.toString(j), map);
         }
-        if(rankingsToBeMerged.size() < 5){
-            for(int z = 1;z < 5 - rankingsToBeMerged.size();z++)
-            {
-                jedis.hdel("TopTen" + TransactionType + "-Bot" + Integer.toString(z), "Acc","Amount");
-            }
-        }
+//        if(rankingsToBeMerged.size() < 5){
+//            for(int z = 1;z < 5 - rankingsToBeMerged.size();z++)
+//            {
+//                jedis.hdel("TopTen" + TransactionType + "-Bot" + Integer.toString(z), "Acc","Amount");
+//            }
+//        }
     }
 
     static Connection conn; // Create a static global variable

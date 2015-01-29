@@ -33,7 +33,7 @@ public class Utils {
                 _transaction.setamount(root.get("amount").getIntValue());
                 _transaction.setacc_no(root.get("acc_no").getTextValue());
                 _transaction.setprd_id(root.get("prd_id").getTextValue());
-
+                _transaction.settimetamp(root.get("timestamp").getLongValue());
 
             }
         }

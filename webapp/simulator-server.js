@@ -1,3 +1,4 @@
+var MongoClient = require('mongodb').MongoClient;
 var express = require('express');
 app = express(),
     server = require('http').createServer(app),
@@ -11,11 +12,17 @@ app.get('/',function(req,res){
 console.log('Server running at http://127.0.0.1:3001/');
 app.use(express.static(__dirname + '/lib'));
 
+//---------------variable--------------------------
+var ADD_KAFKA='localhost:2181';
+var ADD_MONGODB_CIC="mongodb://10.20.252.202:27017/CIC";
+var ADD_MONGODB_CLOUBBANK="mongodb://10.20.252.202:27017/CloudBank";
+//---------------variable--------------------------
 
 var kafka = require('kafka-node'),
     Producer = kafka.Producer,
     Client = kafka.Client,
-    client = new Client('localhost:2181');
+    //client = new Client('10.20.252.201:2181');
+    client = new Client(ADD_KAFKA);
 
 //Topic
 var topic = 'TransactionTopic';
@@ -43,7 +50,7 @@ producer.on('error', function (err) {
 
 
 
-//Send message
+//SIMULATOR_LIST_SEND_MESSAGE
 function send(message) {
     producer.send([
         {topic: topic, messages: [message] , partition: p}
@@ -108,7 +115,7 @@ function recursive()
 
     cnt++;
     console.log('conf1 status:'+obj.status);
-    if (cnt >= obj.countmessage||obj.status=='stop') {
+    if (obj.countmessage!=''&&cnt >= obj.countmessage||obj.status=='stop') {
         console.log('stop conf1');
         clearTimeout(t);
     }
@@ -123,7 +130,7 @@ function recursive1()
 {
 
     cnt1++;
-    if (cnt1 >= obj.countmessage1||obj.status1=='stop') {
+    if (obj.countmessage1!=''&&cnt1 >= obj.countmessage1||obj.status1=='stop') {
         console.log('stop conf2');
         clearTimeout(t1);
     }
@@ -137,7 +144,7 @@ function recursive2()
 {
 
     cnt2++;
-    if (cnt2 >= obj.countmessage2||obj.status2=='stop') {
+    if (obj.countmessage2!=''&&cnt2 >= obj.countmessage2||obj.status2=='stop') {
         console.log('stop conf3');
         clearTimeout(t2);
     }
@@ -151,7 +158,7 @@ function recursive3()
 {
 
     cnt3++;
-    if(cnt3>=obj.countmessage3||obj.status3=='stop')
+    if(obj.countmessage3!=''&&cnt3>=obj.countmessage3||obj.status3=='stop')
     {
         console.log('stop conf4');
         clearTimeout(t3);
@@ -190,18 +197,18 @@ var GeneratorTransaction = function(amountto,amountfrom,channal, product, transa
 
     //Generate Account
     var acc_nos = ["100-121-12121212", "200-555-12313123", "100-643-10231323", "400-223-32424234", "500-123-23313443"
-                    ,"100-121-12121212", "200-555-12313121", "100-643-10231321", "400-223-32424231", "500-123-23313441"
-                    ,"100-121-12121213", "200-555-12313122", "100-643-10231322", "400-223-32424232", "500-123-23313442"
-                    ,"100-121-12121214", "200-555-12313124", "100-643-10231324", "400-223-32424233", "500-123-23313444"
-                    ,"100-121-12121215", "200-555-12313125", "100-643-10231325", "400-223-32424235", "500-123-23313445"
-                    ,"100-121-12121216", "200-555-12313126", "100-643-10231326", "400-223-32424236", "500-123-23313446"
-                    ,"100-121-12121217", "200-555-12313127", "100-643-10231327", "400-223-32424237", "500-123-23313447"
-                    ,"100-121-12121218", "200-555-12313128", "100-643-10231328", "400-223-32424238", "500-123-23313448"
-                    ,"100-121-12121219", "200-555-12313129", "100-643-10231329", "400-223-32424239", "500-123-23313449"];
+        ,"100-121-12121212", "200-555-12313121", "100-643-10231321", "400-223-32424231", "500-123-23313441"
+        ,"100-121-12121213", "200-555-12313122", "100-643-10231322", "400-223-32424232", "500-123-23313442"
+        ,"100-121-12121214", "200-555-12313124", "100-643-10231324", "400-223-32424233", "500-123-23313444"
+        ,"100-121-12121215", "200-555-12313125", "100-643-10231325", "400-223-32424235", "500-123-23313445"
+        ,"100-121-12121216", "200-555-12313126", "100-643-10231326", "400-223-32424236", "500-123-23313446"
+        ,"100-121-12121217", "200-555-12313127", "100-643-10231327", "400-223-32424237", "500-123-23313447"
+        ,"100-121-12121218", "200-555-12313128", "100-643-10231328", "400-223-32424238", "500-123-23313448"
+        ,"100-121-12121219", "200-555-12313129", "100-643-10231329", "400-223-32424239", "500-123-23313449"];
     var acc_no = acc_nos[randomInt(0,acc_nos.length)];
 
-    console.log('amountfrom: '+ amountfrom);
-    console.log('amountto: '+ amountto);
+    //console.log('amountfrom: '+ amountfrom);
+    //console.log('amountto: '+ amountto);
     //Generate Amount
     var amount = randomInt(amountto, amountfrom);
 
@@ -223,20 +230,28 @@ var GeneratorTransaction = function(amountto,amountfrom,channal, product, transa
 
 
 io.sockets.on('connection',function(socket){
-    socket.on('send message',function(data){
+		socket.on('SIMULATOR_LIST_SEND_MESSAGE',function(data){
 
         //Option 1
-
+		console.log('SIMULATOR_LIST_SEND_MESSAGE:'+data);
 
         obj = {
-            time: data.time,
-            time1: data.time1,
-            time2: data.time2,
-            time3: data.time3,
+            time: data.time==''?1000:data.time,
+            time1: data.time1==''?1000:data.time1,
+            time2: data.time2==''?1000:data.time2,
+            time3: data.time3==''?1000:data.time3,
             countmessage: data.countmessage,
             countmessage1: data.countmessage1,
             countmessage2: data.countmessage2,
             countmessage3: data.countmessage3,
+            amountto: data.amountto==''?10:data.amountto,
+            amountto1: data.amountto1==''?10:data.amountto1,
+            amountto2: data.amountto2==''?10:data.amountto2,
+            amountto3: data.amountto3==''?10:data.amountto3,
+            amountfrom: data.amountfrom==''?100:data.amountfrom,
+            amountfrom1: data.amountfrom1==''?100:data.amountfrom1,
+            amountfrom2: data.amountfrom2==''?100:data.amountfrom2,
+            amountfrom3: data.amountfrom3==''?100:data.amountfrom3,
             channel: data.channel,
             channel1: data.channel1,
             channel2: data.channel2,
@@ -245,14 +260,6 @@ io.sockets.on('connection',function(socket){
             product1: data.product1,
             product2: data.product2,
             product3: data.product3,
-            amountto: data.amountto,
-            amountto1: data.amountto1,
-            amountto2: data.amountto2,
-            amountto3: data.amountto3,
-            amountfrom: data.amountfrom,
-            amountfrom1: data.amountfrom1,
-            amountfrom2: data.amountfrom2,
-            amountfrom3: data.amountfrom3,
             transactiontype: data.transactiontype,
             transactiontype1: data.transactiontype1,
             transactiontype2: data.transactiontype2,
@@ -278,22 +285,22 @@ io.sockets.on('connection',function(socket){
             if(data.status=='start')
             {
                 obj = {
-                    time: data.time,
-                    time1: data.time1,
-                    time2: data.time2,
-                    time3: data.time3,
+                    time: data.time==''?1000:data.time,
+                    time1: data.time1==''?1000:data.time1,
+                    time2: data.time2==''?1000:data.time2,
+                    time3: data.time3==''?1000:data.time3,
                     countmessage: data.countmessage,
                     countmessage1: data.countmessage1,
                     countmessage2: data.countmessage2,
                     countmessage3: data.countmessage3,
-                    amountto: data.amountto,
-                    amountto1: data.amountto1,
-                    amountto2: data.amountto2,
-                    amountto3: data.amountto3,
-                    amountfrom: data.amountfrom,
-                    amountfrom1: data.amountfrom1,
-                    amountfrom2: data.amountfrom2,
-                    amountfrom3: data.amountfrom3,
+                    amountto: data.amountto==''?10:data.amountto,
+                    amountto1: data.amountto1==''?10:data.amountto1,
+                    amountto2: data.amountto2==''?10:data.amountto2,
+                    amountto3: data.amountto3==''?10:data.amountto3,
+                    amountfrom: data.amountfrom==''?100:data.amountfrom,
+                    amountfrom1: data.amountfrom1==''?100:data.amountfrom1,
+                    amountfrom2: data.amountfrom2==''?100:data.amountfrom2,
+                    amountfrom3: data.amountfrom3==''?100:data.amountfrom3,
                     channel: data.channel,
                     channel1: data.channel1,
                     channel2: data.channel2,
@@ -322,22 +329,22 @@ io.sockets.on('connection',function(socket){
             if(data.status1=='start')
             {
                 obj = {
-                    time: data.time,
-                    time1: data.time1,
-                    time2: data.time2,
-                    time3: data.time3,
+                    time: data.time==''?1000:data.time,
+                    time1: data.time1==''?1000:data.time1,
+                    time2: data.time2==''?1000:data.time2,
+                    time3: data.time3==''?1000:data.time3,
                     countmessage: data.countmessage,
                     countmessage1: data.countmessage1,
                     countmessage2: data.countmessage2,
                     countmessage3: data.countmessage3,
-                    amountto: data.amountto,
-                    amountto1: data.amountto1,
-                    amountto2: data.amountto2,
-                    amountto3: data.amountto3,
-                    amountfrom: data.amountfrom,
-                    amountfrom1: data.amountfrom1,
-                    amountfrom2: data.amountfrom2,
-                    amountfrom3: data.amountfrom3,
+                    amountto: data.amountto==''?10:data.amountto,
+                    amountto1: data.amountto1==''?10:data.amountto1,
+                    amountto2: data.amountto2==''?10:data.amountto2,
+                    amountto3: data.amountto3==''?10:data.amountto3,
+                    amountfrom: data.amountfrom==''?100:data.amountfrom,
+                    amountfrom1: data.amountfrom1==''?100:data.amountfrom1,
+                    amountfrom2: data.amountfrom2==''?100:data.amountfrom2,
+                    amountfrom3: data.amountfrom3==''?100:data.amountfrom3,
                     channel: data.channel,
                     channel1: data.channel1,
                     channel2: data.channel2,
@@ -366,22 +373,22 @@ io.sockets.on('connection',function(socket){
             if(data.status2=='start')
             {
                 obj = {
-                    time: data.time,
-                    time1: data.time1,
-                    time2: data.time2,
-                    time3: data.time3,
+                    time: data.time==''?1000:data.time,
+                    time1: data.time1==''?1000:data.time1,
+                    time2: data.time2==''?1000:data.time2,
+                    time3: data.time3==''?1000:data.time3,
                     countmessage: data.countmessage,
                     countmessage1: data.countmessage1,
                     countmessage2: data.countmessage2,
                     countmessage3: data.countmessage3,
-                    amountto: data.amountto,
-                    amountto1: data.amountto1,
-                    amountto2: data.amountto2,
-                    amountto3: data.amountto3,
-                    amountfrom: data.amountfrom,
-                    amountfrom1: data.amountfrom1,
-                    amountfrom2: data.amountfrom2,
-                    amountfrom3: data.amountfrom3,
+                    amountto: data.amountto==''?10:data.amountto,
+                    amountto1: data.amountto1==''?10:data.amountto1,
+                    amountto2: data.amountto2==''?10:data.amountto2,
+                    amountto3: data.amountto3==''?10:data.amountto3,
+                    amountfrom: data.amountfrom==''?100:data.amountfrom,
+                    amountfrom1: data.amountfrom1==''?100:data.amountfrom1,
+                    amountfrom2: data.amountfrom2==''?100:data.amountfrom2,
+                    amountfrom3: data.amountfrom3==''?100:data.amountfrom3,
                     channel: data.channel,
                     channel1: data.channel1,
                     channel2: data.channel2,
@@ -410,22 +417,22 @@ io.sockets.on('connection',function(socket){
             if(data.status3=='start')
             {
                 obj = {
-                    time: data.time,
-                    time1: data.time1,
-                    time2: data.time2,
-                    time3: data.time3,
+                    time: data.time==''?1000:data.time,
+                    time1: data.time1==''?1000:data.time1,
+                    time2: data.time2==''?1000:data.time2,
+                    time3: data.time3==''?1000:data.time3,
                     countmessage: data.countmessage,
                     countmessage1: data.countmessage1,
                     countmessage2: data.countmessage2,
                     countmessage3: data.countmessage3,
-                    amountto: data.amountto,
-                    amountto1: data.amountto1,
-                    amountto2: data.amountto2,
-                    amountto3: data.amountto3,
-                    amountfrom: data.amountfrom,
-                    amountfrom1: data.amountfrom1,
-                    amountfrom2: data.amountfrom2,
-                    amountfrom3: data.amountfrom3,
+                    amountto: data.amountto==''?10:data.amountto,
+                    amountto1: data.amountto1==''?10:data.amountto1,
+                    amountto2: data.amountto2==''?10:data.amountto2,
+                    amountto3: data.amountto3==''?10:data.amountto3,
+                    amountfrom: data.amountfrom==''?100:data.amountfrom,
+                    amountfrom1: data.amountfrom1==''?100:data.amountfrom1,
+                    amountfrom2: data.amountfrom2==''?100:data.amountfrom2,
+                    amountfrom3: data.amountfrom3==''?100:data.amountfrom3,
                     channel: data.channel,
                     channel1: data.channel1,
                     channel2: data.channel2,
@@ -449,4 +456,37 @@ io.sockets.on('connection',function(socket){
                 clearTimeout(t3);
             }
         });
+		socket.on('SIMULATOR-GET-PARAMETER',function(data){
+		//io.sockets.emit('new message',data);
+		console.log('SIMULATOR-GET-PARAMETER:'+data);
+		SimulatorConfig('Channels','SIMULATOR-PARAMETER-CONFIG-CHANNELS');
+		SimulatorConfig('Products','SIMULATOR-PARAMETER-CONFIG-PRODUCT');
+		SimulatorConfig('TransactionTypes','SIMULATOR-PARAMETER-CONFIG-TRANSACTIONTYPES');
+		//console.log('msg:'+data);
+	});
 });
+
+//-----------------connect mongodb------------------
+function SimulatorConfig(tablename,parameterconfig)
+{
+	//console.log('connMongodb');
+	MongoClient.connect(ADD_MONGODB_CLOUBBANK, function(err, db) {
+	  if(err) { return console.dir(err); }
+	  
+	  var collection = db.collection(tablename);
+			console.log(tablename);
+			collection.find(
+				//{FULLNAME: /^NGUYEN/ }
+			).toArray(function(err, items) {
+				if(items!=null&&items.length>0)
+				{
+					console.log('cnt:'+items.length);
+					io.sockets.emit(parameterconfig, items);
+				}
+			});
+			
+			
+	});
+}
+
+//--------------------------------------------------
