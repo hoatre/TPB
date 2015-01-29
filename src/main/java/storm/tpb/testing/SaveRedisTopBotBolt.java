@@ -22,7 +22,7 @@ public class SaveRedisTopBotBolt extends BaseFunction {
     }
     public synchronized void execute(TridentTuple tuple, TridentCollector collector) {
         try {
-            jedis = new Jedis(Properties.getString("redis.host"), Properties.getInt("redis.port"), 2000);
+            jedis = new Jedis(Properties.getString("redis.host"), Properties.getInt("redis.port"));
 
             if (!tuple.isEmpty()) {
                 for (int z = 1; z <= 5; z++) {

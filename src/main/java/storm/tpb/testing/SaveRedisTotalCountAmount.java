@@ -18,7 +18,7 @@ public class SaveRedisTotalCountAmount extends BaseFunction {
     }
     public synchronized void execute(TridentTuple tuple, TridentCollector collector) {
         try {
-            jedis = new Jedis(Properties.getString("redis.host"), Properties.getInt("redis.port"), 2000);
+            jedis = new Jedis(Properties.getString("redis.host"), Properties.getInt("redis.port"));
             jedis.set("TotalNoTran-" + this.channel + "-" + Long.toString(tuple.getLongByField("window")), Long.toString(tuple.getLong(0)));
             jedis.set("TotalAmount-" + this.channel + "-" + Long.toString(tuple.getLongByField("window")), Long.toString(tuple.getLong(1)));
         }catch (Exception e){}
