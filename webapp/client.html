@@ -34,7 +34,7 @@
       var Branch2 = "B2";
       var Branch3 = "B3";
       var Contact_Center = "Contact";
-      var profileHost = 'http://localhost:3002/Detail/';
+      var profileHost = 'http://localhost:3001/customerdetail/';
 
       var countB1 = 0;
       var sumB1 = 0;
@@ -60,11 +60,10 @@
               var array = $.map(data1, function (value, index) {
                   return [value];
               });
+
               var TopTenDepositTop1Acc = document.getElementById(Top + "-Account");
               TopTenDepositTop1Acc.innerHTML = array[0];
-
-//              var TopTenDepositTop1Acc_a = document.getElementById(Top + "_a-Account");
-//              TopTenDepositTop1Acc.href = profileHost + array[0];
+              TopTenDepositTop1Acc.href = profileHost + array[0];
 
 
               var TopTenDepositTop1Amount = document.getElementById(Top + "-Amount");
@@ -330,7 +329,8 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label id="TopTenDE-Top1-Account"></label>
+                                        <!--<label id="TopTenDE-Top1-Account"></label>-->
+                                        <a id="TopTenDE-Top1-Account" href="#"></a>
                                     </td>
                                     <td>
                                         <label id="TopTenDE-Top1-Amount"></label>
@@ -338,7 +338,8 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label type="text" id="TopTenDE-Top2-Account"></label>
+                                        <!--<label type="text" id="TopTenDE-Top2-Account"></label>-->
+                                        <a id="TopTenDE-Top2-Account" href="#"></a>
                                     </td>
                                     <td>
                                         <label type="text" id="TopTenDE-Top2-Amount"></label>
@@ -346,7 +347,8 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label type="text" id="TopTenDE-Top3-Account"></label>
+                                        <!--<label type="text" id="TopTenDE-Top3-Account"></label>-->
+                                        <a id="TopTenDE-Top3-Account" href="#"></a>
                                     </td>
                                     <td>
                                         <label type="text" id="TopTenDE-Top3-Amount"></label>
@@ -354,7 +356,8 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label type="text" id="TopTenDE-Top4-Account"></label>
+                                        <!--<label type="text" id="TopTenDE-Top4-Account"></label>-->
+                                        <a id="TopTenDE-Top4-Account" href="#"></a>
                                     </td>
                                     <td>
                                         <label type="text" id="TopTenDE-Top4-Amount"></label>
@@ -362,7 +365,8 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label type="text" id="TopTenDE-Top5-Account"></label>
+                                        <!--<label type="text" id="TopTenDE-Top5-Account"></label>-->
+                                        <a id="TopTenDE-Top5-Account" href="#"></a>
                                     </td>
                                     <td>
                                         <label type="text" id="TopTenDE-Top5-Amount"></label>
@@ -390,7 +394,8 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label id="TopTenWI-Top1-Account"></label>
+                                        <!--<label id="TopTenWI-Top1-Account"></label>-->
+                                        <a id="TopTenWI-Top1-Account" href="#"></a>
                                     </td>
                                     <td>
                                         <label id="TopTenWI-Top1-Amount"></label>
@@ -398,7 +403,8 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label id="TopTenWI-Top2-Account"></label>
+                                        <!--<label id="TopTenWI-Top2-Account"></label>-->
+                                        <a id="TopTenWI-Top2-Account" href="#"></a>
                                     </td>
                                     <td>
                                         <label id="TopTenWI-Top2-Amount"></label>
@@ -406,7 +412,8 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label id="TopTenWI-Top3-Account"></label>
+                                        <!--<label id="TopTenWI-Top3-Account"></label>-->
+                                        <a id="TopTenWI-Top3-Account" href="#"></a>
                                     </td>
                                     <td>
                                         <label id="TopTenWI-Top3-Amount"></label>
@@ -414,7 +421,8 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label id="TopTenWI-Top4-Account"></label>
+                                        <!--<label id="TopTenWI-Top4-Account"></label>-->
+                                        <a id="TopTenWI-Top4-Account" href="#"></a>
                                     </td>
                                     <td>
                                         <label id="TopTenWI-Top4-Amount"></label>
@@ -422,7 +430,8 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label id="TopTenWI-Top5-Account"></label>
+                                        <!--<label id="TopTenWI-Top5-Account"></label>-->
+                                        <a id="TopTenWI-Top5-Account" href="#"></a>
                                     </td>
                                     <td>
                                         <label id="TopTenWI-Top5-Amount"></label>
@@ -450,7 +459,8 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label id="TopTenTF-Top1-Account"></label>
+                                        <!--<label id="TopTenTF-Top1-Account"></label>-->
+                                        <a id="TopTenTF-Top1-Account" href="#"></a>
                                     </td>
                                     <td>
                                         <label id="TopTenTF-Top1-Amount"></label>
@@ -458,7 +468,8 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label id="TopTenTF-Top2-Account"></label>
+                                        <!--<label id="TopTenTF-Top2-Account"></label>-->
+                                        <a id="TopTenTF-Top2-Account" href="#"></a>
                                     </td>
                                     <td>
                                         <label id="TopTenTF-Top2-Amount"></label>
@@ -466,7 +477,8 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label id="TopTenTF-Top3-Account"></label>
+                                        <!--<label id="TopTenTF-Top3-Account"></label>-->
+                                        <a id="TopTenTF-Top3-Account" href="#"></a>
                                     </td>
                                     <td>
                                         <label id="TopTenTF-Top3-Amount"></label>
@@ -474,7 +486,8 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label id="TopTenTF-Top4-Account"></label>
+                                        <!--<label id="TopTenTF-Top4-Account"></label>-->
+                                        <a id="TopTenTF-Top4-Account" href="#"></a>
                                     </td>
                                     <td>
                                         <label id="TopTenTF-Top4-Amount"></label>
@@ -482,7 +495,8 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label id="TopTenTF-Top5-Account"></label>
+                                        <!--<label id="TopTenTF-Top5-Account"></label>-->
+                                        <a id="TopTenTF-Top5-Account" href="#"></a>
                                     </td>
                                     <td>
                                         <label id="TopTenTF-Top5-Amount"></label>
@@ -512,7 +526,8 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label id="TopTenDE-Bot5-Account"></label>
+                                        <!--<label id="TopTenDE-Bot5-Account"></label>-->
+                                        <a id="TopTenDE-Bot5-Account" href="#"></a>
                                     </td>
                                     <td>
                                         <label id="TopTenDE-Bot5-Amount"></label>
@@ -520,7 +535,8 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label type="text" id="TopTenDE-Bot4-Account"></label>
+                                        <!--<label type="text" id="TopTenDE-Bot4-Account"></label>-->
+                                        <a id="TopTenDE-Bot4-Account" href="#"></a>
                                     </td>
                                     <td>
                                         <label type="text" id="TopTenDE-Bot4-Amount"></label>
@@ -528,7 +544,8 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label type="text" id="TopTenDE-Bot3-Account"></label>
+                                        <!--<label type="text" id="TopTenDE-Bot3-Account"></label>-->
+                                        <a id="TopTenDE-Bot3-Account" href="#"></a>
                                     </td>
                                     <td>
                                         <label type="text" id="TopTenDE-Bot3-Amount"></label>
@@ -536,7 +553,8 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label type="text" id="TopTenDE-Bot2-Account"></label>
+                                        <!--<label type="text" id="TopTenDE-Bot2-Account"></label>-->
+                                        <a id="TopTenDE-Bot2-Account" href="#"></a>
                                     </td>
                                     <td>
                                         <label type="text" id="TopTenDE-Bot2-Amount"></label>
@@ -544,7 +562,8 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label type="text" id="TopTenDE-Bot1-Account"></label>
+                                        <!--<label type="text" id="TopTenDE-Bot1-Account"></label>-->
+                                        <a id="TopTenDE-Bot1-Account" href="#"></a>
                                     </td>
                                     <td>
                                         <label type="text" id="TopTenDE-Bot1-Amount"></label>
@@ -572,8 +591,8 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label id="TopTenWI-Bot5-Account"></label>
-                                        <!--<a id="TopTenWI-Bot5-Account_a" href="#"></a>-->
+                                        <!--<label id="TopTenWI-Bot5-Account"></label>-->
+                                        <a id="TopTenWI-Bot5-Account" href="#"></a>
                                     </td>
                                     <td>
                                         <label id="TopTenWI-Bot5-Amount"></label>
@@ -581,7 +600,8 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label id="TopTenWI-Bot4-Account"></label>
+                                        <!--<label id="TopTenWI-Bot4-Account"></label>-->
+                                        <a id="TopTenWI-Bot4-Account" href="#"></a>
                                     </td>
                                     <td>
                                         <label id="TopTenWI-Bot4-Amount"></label>
@@ -589,7 +609,8 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label id="TopTenWI-Bot3-Account"></label>
+                                        <!--<label id="TopTenWI-Bot3-Account"></label>-->
+                                        <a id="TopTenWI-Bot3-Account" href="#"></a>
                                     </td>
                                     <td>
                                         <label id="TopTenWI-Bot3-Amount"></label>
@@ -597,7 +618,8 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label id="TopTenWI-Bot2-Account"></label>
+                                        <!--<label id="TopTenWI-Bot2-Account"></label>-->
+                                        <a id="TopTenWI-Bot2-Account" href="#"></a>
                                     </td>
                                     <td>
                                         <label id="TopTenWI-Bot2-Amount"></label>
@@ -605,7 +627,8 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label id="TopTenWI-Bot1-Account"></label>
+                                        <!--<label id="TopTenWI-Bot1-Account"></label>-->
+                                        <a id="TopTenWI-Bot1-Account" href="#"></a>
                                     </td>
                                     <td>
                                         <label id="TopTenWI-Bot1-Amount"></label>
@@ -633,7 +656,8 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label id="TopTenTF-Bot5-Account"></label>
+                                        <!--<label id="TopTenTF-Bot5-Account"></label>-->
+                                        <a id="TopTenTF-Bot5-Account" href="#"></a>
                                     </td>
                                     <td>
                                         <label id="TopTenTF-Bot5-Amount"></label>
@@ -641,7 +665,8 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label id="TopTenTF-Bot4-Account"></label>
+                                        <!--<label id="TopTenTF-Bot4-Account"></label>-->
+                                        <a id="TopTenTF-Bot4-Account" href="#"></a>
                                     </td>
                                     <td>
                                         <label id="TopTenTF-Bot4-Amount"></label>
@@ -649,7 +674,8 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label id="TopTenTF-Bot3-Account"></label>
+                                        <!--<label id="TopTenTF-Bot3-Account"></label>-->
+                                        <a id="TopTenTF-Bot3-Account" href="#"></a>
                                     </td>
                                     <td>
                                         <label id="TopTenTF-Bot3-Amount"></label>
@@ -657,7 +683,8 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label id="TopTenTF-Bot2-Account"></label>
+                                        <!--<label id="TopTenTF-Bot2-Account"></label>-->
+                                        <a id="TopTenTF-Bot2-Account" href="#"></a>
                                     </td>
                                     <td>
                                         <label id="TopTenTF-Bot2-Amount"></label>
@@ -665,7 +692,8 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label id="TopTenTF-Bot1-Account"></label>
+                                        <!--<label id="TopTenTF-Bot1-Account"></label>-->
+                                        <a id="TopTenTF-Bot1-Account" href="#"></a>
                                     </td>
                                     <td>
                                         <label id="TopTenTF-Bot1-Amount"></label>

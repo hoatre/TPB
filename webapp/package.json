@@ -9,9 +9,10 @@
   "dependencies" : {
     "redis": "0.12.1",
     "socket.io": "1.2.1",
-    "express": "3.2.6",
+    "express": "4.10.7",
     "smoothie": "1.27.0",
-    "kafka-node":"0.2.14"
+    "kafka-node":"0.2.14",
+    "mongodb": "1.4.29"
   },
   "repository" : {
     "type": "git",

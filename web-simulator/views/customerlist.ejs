@@ -229,7 +229,7 @@
 			{
 				var sex = arr[i].GENDER==1?"MALE":"FEMALE";
 				// str+="<tr><td onclick=\"viewDetail('"+arr[i]._id+"',"+i+")\">"+arr[i].FULLNAME+"</td><td>"+sex+"</td><td>"+arr[i].DOB+"</td><td>"+arr[i].PHONENUMBER+"</td><td>"+arr[i].ADDRESS+"</td></tr>";
-				str+="<tr><td><a href='/customerdetail/"+arr[i]._id+"'>"+arr[i].FULLNAME+"</a></td><td>"+sex+"</td><td>"+arr[i].DOB+"</td><td>"+arr[i].PHONENUMBER+"</td><td>"+arr[i].ADDRESS+"</td></tr>";
+				str+="<tr><td><a href='/customerdetail/"+arr[i].ACCOUNTNUMBER+"'>"+arr[i].FULLNAME+"</a></td><td>"+sex+"</td><td>"+arr[i].DOB+"</td><td>"+arr[i].PHONENUMBER+"</td><td>"+arr[i].ADDRESS+"</td></tr>";
 			}
 			strTable +="<table class='CSSTableGenerator'>"
 			//strTable +="<thead>";

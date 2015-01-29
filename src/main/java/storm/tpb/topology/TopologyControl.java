@@ -70,6 +70,9 @@ public class TopologyControl {
         TopologySliding(parsedStream, 3600.0);
         TopologySliding(parsedStream, 86400.0);
 
+        spoutStream.each(new Fields("str"), new
+                StoreTransactionToMongoDB(), new Fields("StoreTransactionToMongoDB"));
+
         return topology.build();
     }
 
