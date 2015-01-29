@@ -21,13 +21,19 @@
       var line2 = new TimeSeries();
       var line3 = new TimeSeries();
       var line4 = new TimeSeries();
-      
-      //minutes
 
       var line5 = new TimeSeries();
       var line6 = new TimeSeries();
       var line7 = new TimeSeries();
       var line8 = new TimeSeries();
+
+      var Deposit = "DE";
+      var Withdrawal = "WI";
+      var Transfer_From = "TF";
+      var Branch1 = "B1";
+      var Branch2 = "B2";
+      var Branch3 = "B3";
+      var Contact_Center = "Contact";
 
       function TopTen(Top, slidingTime) {
           socket.on('Top-' + Top + '-' + slidingTime, function (data1) {
@@ -63,25 +69,25 @@
       }
       function TopBot(slidingTime){
           for(z = 1;z<=5;z++) {
-              TopTen('TopTenDeposit-Top' + z.toString(), slidingTime.toString());
-              TopTen('TopTenDeposit-Bot' + z.toString(), slidingTime.toString());
-              TopTen('TopTenWithdrawal-Top' + z.toString(), slidingTime.toString());
-              TopTen('TopTenWithdrawal-Bot' + z.toString(), slidingTime.toString());
-              TopTen('TopTenTransfer From-Top' + z.toString(), slidingTime.toString());
-              TopTen('TopTenTransfer From-Bot' + z.toString(), slidingTime.toString());
+              TopTen('TopTen' + Deposit + '-Top' + z.toString(), slidingTime.toString());
+              TopTen('TopTen' + Deposit + '-Bot' + z.toString(), slidingTime.toString());
+              TopTen('TopTen' + Withdrawal + '-Top' + z.toString(), slidingTime.toString());
+              TopTen('TopTen' + Withdrawal + '-Bot' + z.toString(), slidingTime.toString());
+              TopTen('TopTen' + Transfer_From + '-Top' + z.toString(), slidingTime.toString());
+              TopTen('TopTen' + Transfer_From + '-Bot' + z.toString(), slidingTime.toString());
           }
       }
       function LineChart(slidingTime){
-          socket.on('CountChart-real-time-Branch 1-' + slidingTime, function (data1) {
+          socket.on('CountChart-real-time-' + Branch1 + '-' + slidingTime, function (data1) {
               line1.append(new Date().getTime(), data1);
           });
-          socket.on('CountChart-real-time-Branch 2-' + slidingTime, function (data1) {
+          socket.on('CountChart-real-time-' + Branch2 + '-' + slidingTime, function (data1) {
               line2.append(new Date().getTime(), data1);
           });
-          socket.on('CountChart-real-time-Branch 3-' + slidingTime, function (data1) {
+          socket.on('CountChart-real-time-' + Branch3 + '-' + slidingTime, function (data1) {
               line3.append(new Date().getTime(), data1);
           });
-          socket.on('CountChart-real-time-Contact Center-' + slidingTime, function (data1) {
+          socket.on('CountChart-real-time-' + Contact_Center + '-' + slidingTime, function (data1) {
               line4.append(new Date().getTime(), data1);
           });
       }
@@ -241,42 +247,42 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label id="TopTenDeposit-Top1-Account"></label>
+                                        <label id="TopTenDE-Top1-Account"></label>
                                     </td>
                                     <td>
-                                        <label id="TopTenDeposit-Top1-Amount"></label>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label type="text" id="TopTenDeposit-Top2-Account"></label>
-                                    </td>
-                                    <td>
-                                        <label type="text" id="TopTenDeposit-Top2-Amount"></label>
+                                        <label id="TopTenDE-Top1-Amount"></label>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label type="text" id="TopTenDeposit-Top3-Account"></label>
+                                        <label type="text" id="TopTenDE-Top2-Account"></label>
                                     </td>
                                     <td>
-                                        <label type="text" id="TopTenDeposit-Top3-Amount"></label>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label type="text" id="TopTenDeposit-Top4-Account"></label>
-                                    </td>
-                                    <td>
-                                        <label type="text" id="TopTenDeposit-Top4-Amount"></label>
+                                        <label type="text" id="TopTenDE-Top2-Amount"></label>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label type="text" id="TopTenDeposit-Top5-Account"></label>
+                                        <label type="text" id="TopTenDE-Top3-Account"></label>
                                     </td>
                                     <td>
-                                        <label type="text" id="TopTenDeposit-Top5-Amount"></label>
+                                        <label type="text" id="TopTenDE-Top3-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label type="text" id="TopTenDE-Top4-Account"></label>
+                                    </td>
+                                    <td>
+                                        <label type="text" id="TopTenDE-Top4-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label type="text" id="TopTenDE-Top5-Account"></label>
+                                    </td>
+                                    <td>
+                                        <label type="text" id="TopTenDE-Top5-Amount"></label>
                                     </td>
                                 </tr>
                             </table>
@@ -301,42 +307,42 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label id="TopTenWithdrawal-Top1-Account"></label>
+                                        <label id="TopTenWI-Top1-Account"></label>
                                     </td>
                                     <td>
-                                        <label id="TopTenWithdrawal-Top1-Amount"></label>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label id="TopTenWithdrawal-Top2-Account"></label>
-                                    </td>
-                                    <td>
-                                        <label id="TopTenWithdrawal-Top2-Amount"></label>
+                                        <label id="TopTenWI-Top1-Amount"></label>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label id="TopTenWithdrawal-Top3-Account"></label>
+                                        <label id="TopTenWI-Top2-Account"></label>
                                     </td>
                                     <td>
-                                        <label id="TopTenWithdrawal-Top3-Amount"></label>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label id="TopTenWithdrawal-Top4-Account"></label>
-                                    </td>
-                                    <td>
-                                        <label id="TopTenWithdrawal-Top4-Amount"></label>
+                                        <label id="TopTenWI-Top2-Amount"></label>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label id="TopTenWithdrawal-Top5-Account"></label>
+                                        <label id="TopTenWI-Top3-Account"></label>
                                     </td>
                                     <td>
-                                        <label id="TopTenWithdrawal-Top5-Amount"></label>
+                                        <label id="TopTenWI-Top3-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label id="TopTenWI-Top4-Account"></label>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenWI-Top4-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label id="TopTenWI-Top5-Account"></label>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenWI-Top5-Amount"></label>
                                     </td>
                                 </tr>
                             </table>
@@ -361,42 +367,42 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label id="TopTenTransfer From-Top1-Account"></label>
+                                        <label id="TopTenTF-Top1-Account"></label>
                                     </td>
                                     <td>
-                                        <label id="TopTenTransfer From-Top1-Amount"></label>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label id="TopTenTransfer From-Top2-Account"></label>
-                                    </td>
-                                    <td>
-                                        <label id="TopTenTransfer From-Top2-Amount"></label>
+                                        <label id="TopTenTF-Top1-Amount"></label>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label id="TopTenTransfer From-Top3-Account"></label>
+                                        <label id="TopTenTF-Top2-Account"></label>
                                     </td>
                                     <td>
-                                        <label id="TopTenTransfer From-Top3-Amount"></label>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label id="TopTenTransfer From-Top4-Account"></label>
-                                    </td>
-                                    <td>
-                                        <label id="TopTenTransfer From-Top4-Amount"></label>
+                                        <label id="TopTenTF-Top2-Amount"></label>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label id="TopTenTransfer From-Top5-Account"></label>
+                                        <label id="TopTenTF-Top3-Account"></label>
                                     </td>
                                     <td>
-                                        <label id="TopTenTransfer From-Top5-Amount"></label>
+                                        <label id="TopTenTF-Top3-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label id="TopTenTF-Top4-Account"></label>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenTF-Top4-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label id="TopTenTF-Top5-Account"></label>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenTF-Top5-Amount"></label>
                                     </td>
                                 </tr>
                             </table>
@@ -423,42 +429,42 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label id="TopTenDeposit-Bot5-Account"></label>
+                                        <label id="TopTenDE-Bot5-Account"></label>
                                     </td>
                                     <td>
-                                        <label id="TopTenDeposit-Bot5-Amount"></label>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label type="text" id="TopTenDeposit-Bot4-Account"></label>
-                                    </td>
-                                    <td>
-                                        <label type="text" id="TopTenDeposit-Bot4-Amount"></label>
+                                        <label id="TopTenDE-Bot5-Amount"></label>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label type="text" id="TopTenDeposit-Bot3-Account"></label>
+                                        <label type="text" id="TopTenDE-Bot4-Account"></label>
                                     </td>
                                     <td>
-                                        <label type="text" id="TopTenDeposit-Bot3-Amount"></label>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label type="text" id="TopTenDeposit-Bot2-Account"></label>
-                                    </td>
-                                    <td>
-                                        <label type="text" id="TopTenDeposit-Bot2-Amount"></label>
+                                        <label type="text" id="TopTenDE-Bot4-Amount"></label>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label type="text" id="TopTenDeposit-Bot1-Account"></label>
+                                        <label type="text" id="TopTenDE-Bot3-Account"></label>
                                     </td>
                                     <td>
-                                        <label type="text" id="TopTenDeposit-Bot1-Amount"></label>
+                                        <label type="text" id="TopTenDE-Bot3-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label type="text" id="TopTenDE-Bot2-Account"></label>
+                                    </td>
+                                    <td>
+                                        <label type="text" id="TopTenDE-Bot2-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label type="text" id="TopTenDE-Bot1-Account"></label>
+                                    </td>
+                                    <td>
+                                        <label type="text" id="TopTenDE-Bot1-Amount"></label>
                                     </td>
                                 </tr>
                             </table>
@@ -483,42 +489,42 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label id="TopTenWithdrawal-Bot5-Account"></label>
+                                        <label id="TopTenWI-Bot5-Account"></label>
                                     </td>
                                     <td>
-                                        <label id="TopTenWithdrawal-Bot5-Amount"></label>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label id="TopTenWithdrawal-Bot4-Account"></label>
-                                    </td>
-                                    <td>
-                                        <label id="TopTenWithdrawal-Bot4-Amount"></label>
+                                        <label id="TopTenWI-Bot5-Amount"></label>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label id="TopTenWithdrawal-Bot3-Account"></label>
+                                        <label id="TopTenWI-Bot4-Account"></label>
                                     </td>
                                     <td>
-                                        <label id="TopTenWithdrawal-Bot3-Amount"></label>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label id="TopTenWithdrawal-Bot2-Account"></label>
-                                    </td>
-                                    <td>
-                                        <label id="TopTenWithdrawal-Bot2-Amount"></label>
+                                        <label id="TopTenWI-Bot4-Amount"></label>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label id="TopTenWithdrawal-Bot1-Account"></label>
+                                        <label id="TopTenWI-Bot3-Account"></label>
                                     </td>
                                     <td>
-                                        <label id="TopTenWithdrawal-Bot1-Amount"></label>
+                                        <label id="TopTenWI-Bot3-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label id="TopTenWI-Bot2-Account"></label>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenWI-Bot2-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label id="TopTenWI-Bot1-Account"></label>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenWI-Bot1-Amount"></label>
                                     </td>
                                 </tr>
                             </table>
@@ -543,42 +549,42 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label id="TopTenTransfer From-Bot5-Account"></label>
+                                        <label id="TopTenTF-Bot5-Account"></label>
                                     </td>
                                     <td>
-                                        <label id="TopTenTransfer From-Bot5-Amount"></label>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label id="TopTenTransfer From-Bot4-Account"></label>
-                                    </td>
-                                    <td>
-                                        <label id="TopTenTransfer From-Bot4-Amount"></label>
+                                        <label id="TopTenTF-Bot5-Amount"></label>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label id="TopTenTransfer From-Bot3-Account"></label>
+                                        <label id="TopTenTF-Bot4-Account"></label>
                                     </td>
                                     <td>
-                                        <label id="TopTenTransfer From-Bot3-Amount"></label>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label id="TopTenTransfer From-Bot2-Account"></label>
-                                    </td>
-                                    <td>
-                                        <label id="TopTenTransfer From-Bot2-Amount"></label>
+                                        <label id="TopTenTF-Bot4-Amount"></label>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label id="TopTenTransfer From-Bot1-Account"></label>
+                                        <label id="TopTenTF-Bot3-Account"></label>
                                     </td>
                                     <td>
-                                        <label id="TopTenTransfer From-Bot1-Amount"></label>
+                                        <label id="TopTenTF-Bot3-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label id="TopTenTF-Bot2-Account"></label>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenTF-Bot2-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label id="TopTenTF-Bot1-Account"></label>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenTF-Bot1-Amount"></label>
                                     </td>
                                 </tr>
                             </table>

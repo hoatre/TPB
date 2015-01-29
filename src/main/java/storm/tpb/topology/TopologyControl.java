@@ -22,6 +22,8 @@ import storm.trident.operation.TridentCollector;
 import storm.trident.operation.builtin.Sum;
 import storm.trident.tuple.TridentTuple;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,19 +31,18 @@ import java.util.Map;
  */
 public class TopologyControl {
 
+
+
     private static final String KAFKA_TOPIC =
             Properties.getString("storm.kafka_topic");
 
     public static void main(String[] args) throws Exception {
         Config conf = new Config();
-        //conf.setMaxSpoutPending(500);
-        //conf.put("task.heartbeat.frequency.secs",3);
         if (args.length == 0) {
             LocalCluster cluster = new LocalCluster();
             cluster.submitTopology("log-analysis", conf,
                     createTopology());
         } else {
-            //conf.setNumWorkers(3);
             StormSubmitter.submitTopology(args[0], conf,
                     createTopology());
         }

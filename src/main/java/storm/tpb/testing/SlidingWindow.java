@@ -2,6 +2,8 @@ package storm.tpb.testing;
 
 import redis.clients.jedis.Jedis;
 import storm.tpb.topology.PARAM;
+import storm.tpb.topology.TopologyControl;
+import storm.tpb.topology.TopologyMain;
 
 import java.io.Serializable;
 import java.util.ArrayList;

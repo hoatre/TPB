@@ -4,6 +4,14 @@
  */
 
 var t1, t2, t3;
+var Deposit = "DE";
+var Withdrawal = "WI";
+var Transfer_From = "TF";
+var Branch1 = "B1";
+var Branch2 = "B2";
+var Branch3 = "B3";
+var Contact_Center = "Contact";
+
 var express = require('express');
     app = express(),
     server = require('http').createServer(app),
@@ -79,9 +87,7 @@ function redis_hmget_top(key){
 }
 clearInterval(t2);
 clearInterval(t3);
-t1 = setInterval(function() {
-    setTime(30000);
-}, 1000);
+clearInterval(t1);
 io.sockets.on('connection',function(socket){
     socket.on('open30s', function (data1) {
         log('warn', "open30s");
@@ -112,16 +118,16 @@ io.sockets.on('connection',function(socket){
 function setTime(slidingTime){
     redis_get_total('TotalNoTran-' + slidingTime);
     redis_get_total('TotalAmount-' + slidingTime);
-    redis_get('real-time-Branch 1-' + slidingTime);
-    redis_get('real-time-Branch 2-' + slidingTime);
-    redis_get('real-time-Branch 3-' + slidingTime);
-    redis_get('real-time-Contact Center-' + slidingTime);
+    redis_get('real-time-' + Branch1 + '-' + slidingTime);
+    redis_get('real-time-' + Branch2 + '-' + slidingTime);
+    redis_get('real-time-' + Branch3 + '-' + slidingTime);
+    redis_get('real-time-' + Contact_Center + '-' + slidingTime);
     for(z=1; z <= 5; z++) {
-        redis_hmget_top('TopTenDeposit-Top' + z.toString() + "-" + slidingTime);
-        redis_hmget_top('TopTenWithdrawal-Top' + z.toString() + "-" + slidingTime);
-        redis_hmget_top('TopTenDeposit-Bot' + z.toString() + "-" + slidingTime);
-        redis_hmget_top('TopTenWithdrawal-Bot' + z.toString() + "-" + slidingTime);
-        redis_hmget_top('TopTenTransfer From-Bot' + z.toString() + "-" + slidingTime);
-        redis_hmget_top('TopTenTransfer From-Top' + z.toString() + "-" + slidingTime);
+        redis_hmget_top('TopTen' + Deposit + '-Top' + z.toString() + "-" + slidingTime);
+        redis_hmget_top('TopTen' + Withdrawal + '-Top' + z.toString() + "-" + slidingTime);
+        redis_hmget_top('TopTen' + Deposit + '-Bot' + z.toString() + "-" + slidingTime);
+        redis_hmget_top('TopTen' + Withdrawal + '-Bot' + z.toString() + "-" + slidingTime);
+        redis_hmget_top('TopTen' + Transfer_From + '-Bot' + z.toString() + "-" + slidingTime);
+        redis_hmget_top('TopTen' + Transfer_From + '-Top' + z.toString() + "-" + slidingTime);
     }
 }
