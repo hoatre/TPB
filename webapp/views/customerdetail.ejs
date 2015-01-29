@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Customer Detail</title>
+
+	<style type="text/css">
+		table.myTable { border-collapse:collapse; }
+		table.myTable td, table.myTable th { border:1px solid black;padding:5px; }
+		.CSSTableGenerator {
+			margin:0px;padding:0px;
+			width:100%;
+			box-shadow: 10px 10px 5px FF6600;
+			border:1px solid #000000;
+
+			-moz-border-radius-bottomleft:0px;
+			-webkit-border-bottom-left-radius:0px;
+			border-bottom-left-radius:0px;
+
+			-moz-border-radius-bottomright:0px;
+			-webkit-border-bottom-right-radius:0px;
+			border-bottom-right-radius:0px;
+
+			-moz-border-radius-topright:0px;
+			-webkit-border-top-right-radius:0px;
+			border-top-right-radius:0px;
+
+			-moz-border-radius-topleft:0px;
+			-webkit-border-top-left-radius:0px;
+			border-top-left-radius:0px;
+		}.CSSTableGenerator table{
+			 width:100%;
+			 height:100%;
+			 margin:0px;padding:0px;
+		 }.CSSTableGenerator tr:last-child td:last-child {
+			  -moz-border-radius-bottomright:0px;
+			  -webkit-border-bottom-right-radius:0px;
+			  border-bottom-right-radius:0px;
+		  }
+		.CSSTableGenerator table tr:first-child td:first-child {
+			-moz-border-radius-topleft:0px;
+			-webkit-border-top-left-radius:0px;
+			border-top-left-radius:0px;
+		}
+		.CSSTableGenerator table tr:first-child td:last-child {
+			-moz-border-radius-topright:0px;
+			-webkit-border-top-right-radius:0px;
+			border-top-right-radius:0px;
+		}.CSSTableGenerator tr:last-child td:first-child{
+			 -moz-border-radius-bottomleft:0px;
+			 -webkit-border-bottom-left-radius:0px;
+			 border-bottom-left-radius:0px;
+		 }.CSSTableGenerator tr:hover td{
+
+		  }
+		.CSSTableGenerator tr:nth-child(odd){ background-color:#FFCCCC; }
+		.CSSTableGenerator tr:nth-child(even)    { background-color:#FFFFCC; }.CSSTableGenerator td{
+																				  vertical-align:middle;
+
+
+																				  border:1px solid #000000;
+																				  border-width:0px 1px 1px 0px;
+																				  text-align:left;
+																				  padding:10px;
+																				  font-size:12px;
+																				  font-family:Arial;
+																				  font-weight:normal;
+																				  color:#000000;
+																			  }.CSSTableGenerator tr:last-child td{
+																				   border-width:0px 1px 0px 0px;
+																			   }.CSSTableGenerator tr td:last-child{
+																					border-width:0px 0px 1px 0px;
+																				}.CSSTableGenerator tr:last-child td:last-child{
+																					 border-width:0px 0px 0px 0px;
+																				 }
+		.CSSTableGenerator tr:first-child td{
+			background:-o-linear-gradient(bottom, #FF6600 5%, #FF6600 100%);	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #FF6600), color-stop(1, #FF6600) );
+			background:-moz-linear-gradient( center top, #FF6600 5%, #FF6600 100% );
+			filter:progid:DXImageTransform.Microsoft.gradient(startColorstr="#FF6600", endColorstr="#FF6600");	background: -o-linear-gradient(top,#FF6600,007fff);
+
+			background-color:#FF6600;
+			border:0px solid #000000;
+			text-align:center;
+			border-width:0px 0px 1px 1px;
+			font-size:14px;
+			font-family:Arial;
+			font-weight:bold;
+			color:#ffffff;
+		}
+		.CSSTableGenerator tr:first-child:hover td{
+			background:-o-linear-gradient(bottom, #FF6600 5%, #FF6600 100%);	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #FF6600), color-stop(1, #FF6600) );
+			background:-moz-linear-gradient( center top, #FF6600 5%, #FF6600 100% );
+			filter:progid:DXImageTransform.Microsoft.gradient(startColorstr="#FF6600", endColorstr="#FF6600");	background: -o-linear-gradient(top,#FF6600,007fff);
+
+			background-color:#FF6600;
+		}
+		.CSSTableGenerator tr:first-child td:first-child{
+			border-width:0px 0px 1px 0px;
+		}
+		.CSSTableGenerator tr:first-child td:last-child{
+			border-width:0px 0px 1px 1px;
+		}
+	</style>
+</head>
+
+<body>
+<div id='dataCustomerDetail' class="well white">
+	<table border="1">
+		<tr>
+			<td width="80%"><div id='divInfomationDetail' align="center">
+				<p>fullname</p>
+				<p>birthday</p>
+				<p>sex</p>
+				<p>add</p>
+				<p>mobile</p>
+				<p>mobile</p></div></td>
+			<td width="20%" rowspan="2">
+				<table width="100%">
+					<tr>
+						<td width="100%">
+							<div id="fb-root"></div>
+							<img src="http://hayageek.com/examples/oauth/facebook/oauth-javascript/LoginWithFacebook.png" width="98%" style="cursor:pointer;" onclick="Login()"/>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<div id="message">
+								Logs:<br/>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<div style="border: solid 1px #FF6600;border-radius: 5px 10px 5px 10px	">
+								<div style="font-weight:bold;text-align:center">
+									Promotor Activity
+								</div>
+								<div style="width:70%;float:left">
+									Sent
+								</div>
+								<div style="width:30%;float:right;text-align:right">
+									50
+								</div>
+								<div style="width:70%;float:left">
+									Accepted
+								</div>
+								<div style="width:30%;float:right;text-align:right">
+									5
+								</div>
+								<div style="width:70%;float:left">
+									Pending
+								</div>
+								<div style="width:30%;float:right;text-align:right">
+									20
+								</div>
+								<br style="clear:both"/>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td id="tdTableTop5" height="50%">
+				
+			</td>
+		</tr>
+	</table>
+</div>
+
+<input type='hidden' value='<%= _id %>' name='_CustomerID' id='_CustomerID' />
+
+<!--<script src="assets/js/jquery.min.js"></script>-->
+<script src="/jquery-latest.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+	//for tables checkbox demo
+	var arr=[];
+	var totalrecord=0;
+	var socket = io.connect('http://127.0.0.1:3001/');
+	var objPage={value:'',start:0,end:50}
+	jQuery(function($) {
+		var customerID = $("#_CustomerID").val();
+		//alert(customerID);
+		
+		socket.emit('customerID',customerID);
+		
+		socket.on('_customerDetail',function(data){
+			var str='';
+			var sex = data[0].GENDER==1?"MALE":"FEMALE";
+			str+="<p>FullName: "+data[0].FULLNAME+"</p>";
+			str+="<p>Sex: "+sex+"</p>";
+			str+="<p>BithDay: "+data[0].DOB+"</p>";
+			str+="<p>Mobile: "+data[0].PHONENUMBER+"</p>";
+			str+="<p>Address: "+data[0].ADDRESS+"</p>";
+			document.getElementById('divInfomationDetail').innerHTML=str;
+			socket.emit('CUSTOMERLOGS_TOP5_TRANSACTION_SEND_MESSAGE',data[0].ACCOUNTNUMBER);
+		});
+		socket.on('CUSTOMERLOGS_TOP5_TRANSACTION_DATA', function(data){
+			//alert(data[0].trx_id);
+			var strTableTop5='';
+			strTableTop5="<span style='font-weight:bold;font-size:16px'>Recent Interactions</span>";
+			strTableTop5+="<table class='CSSTableGenerator'  width='100%'>";
+			strTableTop5+="<tr>";
+			strTableTop5+="<td width='20%'>Time</td>";
+			strTableTop5+="<td width='40%'>Activity</td>";
+			strTableTop5+="<td width='40%'>Details</td>";
+			strTableTop5+="</tr>";
+			
+			for(var i=0;i<data.length;i++)
+			{
+				var j=i+1;
+				strTableTop5+="<td>"+data[i].timestamp+"</td>";
+				strTableTop5+="<td>"+data[i].trx_id+"</td>";
+				strTableTop5+="<td>"+data[i].acc_no+"</td>";
+			}
+			strTableTop5+="</table>";
+			//alert(strTableTop5);
+			document.getElementById('tdTableTop5').innerHTML=strTableTop5;
+		});
+	});
+
+</script>
+
+</body>
+</html>

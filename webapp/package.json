@@ -9,7 +9,7 @@
   "dependencies" : {
     "redis": "0.12.1",
     "socket.io": "1.2.1",
-    "express": "4.10.7",
+    "express": "3.2.6",
     "smoothie": "1.27.0",
     "kafka-node":"0.2.14"
   },

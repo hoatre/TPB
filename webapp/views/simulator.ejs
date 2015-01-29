@@ -1,0 +1,558 @@
+<html>
+<head>
+	<title>Web Simulator Demo</title>
+	<style>
+		#chat{
+			border:solid 1px black;
+		}
+	</style>
+</head>
+<body>
+<div id="chat"></div>
+<form id="send-message">
+	<table border="1" width="100%">
+		<tr>
+			<td style="width:10%">
+
+			</td>
+			<td style="width:40%">
+				<span style="font-size:18px;font-weight:bolder">config 1</span>
+				<input type="button" id="btnConfig1" value="start" />
+			</td>
+			<td style="width:10%">
+
+			</td>
+			<td style="width:40%;height:40px">
+				<span style="font-size:18px;font-weight:bolder">Config 2</span>
+				<input type="button" id="btnConfig2" value="start" />
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Time
+			</td>
+			<td>
+				<input id="txtTime" style="width:200px;" onkeypress='return isNumberKey(event)'></input>
+			</td>
+			<td>
+				Time
+			</td>
+			<td>
+				<input id="txtTime1" style="width:200px;" onkeypress='return isNumberKey(event)'></input>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Message
+			</td>
+			<td>
+				<input id="txtCountMessage" style="width:200px;" onkeypress='return isNumberKey(event)'></input>
+			</td>
+			<td>
+				Message
+			</td>
+			<td>
+				<input id="txtCountMessage1" style="width:200px;" onkeypress='return isNumberKey(event)'></input>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Amount
+			</td>
+			<td>
+				<input id="txtAmountTo" style="width:90px;" onkeypress='return isNumberKey(event)'></input>---
+				<input id="txtAmountFrom" style="width:90px;" onkeypress='return isNumberKey(event)'></input>
+			</td>
+			<td>
+				Amount
+			</td>
+			<td>
+				<input id="txtAmountTo1" style="width:90px;" onkeypress='return isNumberKey(event)'></input>---
+				<input id="txtAmountFrom1" style="width:90px;" onkeypress='return isNumberKey(event)'></input>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Channel
+			</td>
+			<td>
+				<select id="cboChannel" style="width:200px;">
+					<!--<option value="Branch 1" selected >Branch 1</option>
+					<option value="Branch 2">Branch 2 </option>
+					<option value="Branch 3">Branch 3</option>
+					<option value="Contact Center">Contact Center</option>-->
+				</select>
+			</td>
+			<td>
+				Channel
+			</td>
+			<td>
+				<select id="cboChannel1" style="width:200px;">
+					<!--<option value="Branch 1" selected >Branch 1</option>
+					<option value="Branch 2">Branch 2 </option>
+					<option value="Branch 3">Branch 3</option>
+					<option value="Contact Center">Contact Center</option>-->
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Product
+			</td>
+			<td>
+				<select id="cboProduct" style="width:200px;">
+					<!--<option value="Savings" selected >Savings</option>-->
+				</select>
+			</td>
+			<td>
+				Product
+			</td>
+			<td>
+				<select id="cboProduct1" style="width:200px;">
+					<!--<option value="Savings" selected >Savings</option>-->
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Transaction Type
+			</td>
+			<td>
+				<select id="cboTransactionType" style="width:200px;">
+					<!--<option value="Deposit" selected >Deposit</option>
+					<option value="Withdrawal" selected >Withdrawal</option>
+					<option value="Transfer From" selected >Transfer Form</option>
+					<option value="Transfer To" selected >Transfer To</option>
+					<option value="Balance Inquiry" selected >Balance Inquiry</option>-->
+				</select>
+			</td>
+			<td>
+				Transaction Type
+			</td>
+			<td>
+				<select id="cboTransactionType1" style="width:200px;">
+					<!--<option value="Deposit" selected >Deposit</option>
+					<option value="Withdrawal" selected >Withdrawal</option>
+					<option value="Transfer From" selected >Transfer Form</option>
+					<option value="Transfer To" selected >Transfer To</option>
+					<option value="Balance Inquiry" selected >Balance Inquiry</option>-->
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td style="width:10%">
+
+			</td>
+			<td style="width:40%">
+				<span style="font-size:18px;font-weight:bolder">config 3</span>
+				<input type="button" id="btnConfig3" value="start" />
+			</td>
+			<td style="width:10%">
+
+			</td>
+			<td style="width:40%;height:40px">
+				<span style="font-size:18px;font-weight:bolder">Config 4</span>
+				<input type="button" id="btnConfig4" value="start" />
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Time
+			</td>
+			<td>
+				<input id="txtTime2" style="width:200px;" onkeypress='return isNumberKey(event)'></input>
+			</td>
+			<td>
+				Time
+			</td>
+			<td>
+				<input id="txtTime3" style="width:200px;" onkeypress='return isNumberKey(event)'></input>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Message
+			</td>
+			<td>
+				<input id="txtCountMessage2" style="width:200px;" onkeypress='return isNumberKey(event)'></input>
+			</td>
+			<td>
+				Message
+			</td>
+			<td>
+				<input id="txtCountMessage3" style="width:200px;" onkeypress='return isNumberKey(event)'></input>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Amount
+			</td>
+			<td>
+				<input id="txtAmountTo2" style="width:90px;" onkeypress='return isNumberKey(event)'></input>---
+				<input id="txtAmountFrom2" style="width:90px;" onkeypress='return isNumberKey(event)'></input>
+			</td>
+			<td>
+				Amount
+			</td>
+			<td>
+				<input id="txtAmountTo3" style="width:90px;" onkeypress='return isNumberKey(event)'></input>---
+				<input id="txtAmountFrom3" style="width:90px;" onkeypress='return isNumberKey(event)'></input>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Channel
+			</td>
+			<td>
+				<select id="cboChannel2" style="width:200px;">
+					<!--<option value="Branch 1" selected >Branch 1</option>
+					<option value="Branch 2">Branch 2 </option>
+					<option value="Branch 3">Branch 3</option>
+					<option value="Contact Center">Contact Center</option>-->
+				</select>
+			</td>
+			<td>
+				Channel
+			</td>
+			<td>
+				<select id="cboChannel3" style="width:200px;">
+					<!--<option value="Branch 1" selected >Branch 1</option>
+					<option value="Branch 2">Branch 2 </option>
+					<option value="Branch 3">Branch 3</option>
+					<option value="Contact Center">Contact Center</option>-->
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Product
+			</td>
+			<td>
+				<select id="cboProduct2" style="width:200px;">
+					<!--<option value="Savings" selected >Savings</option>-->
+				</select>
+			</td>
+			<td>
+				Product
+			</td>
+			<td>
+				<select id="cboProduct3" style="width:200px;">
+					<!--<option value="Savings" selected >Savings</option>-->
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Transaction Type
+			</td>
+			<td>
+				<select id="cboTransactionType2" style="width:200px;">
+					<!--<option value="Deposit" selected >Deposit</option>
+					<option value="Withdrawal" selected >Withdrawal</option>
+					<option value="Transfer From" selected >Transfer Form</option>
+					<option value="Transfer To" selected >Transfer To</option>
+					<option value="Balance Inquiry" selected >Balance Inquiry</option>-->
+				</select>
+			</td>
+			<td>
+				Transaction Type
+			</td>
+			<td>
+				<select id="cboTransactionType3" style="width:200px;">
+					<!--<option value="Deposit" selected >Deposit</option>
+					<option value="Withdrawal" selected >Withdrawal</option>
+					<option value="Transfer From" selected >Transfer Form</option>
+					<option value="Transfer To" selected >Transfer To</option>
+					<option value="Balance Inquiry" selected >Balance Inquiry</option>-->
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td colspan='4' style = 'text-align:center'>
+				<input type="submit" id="btnConfigALL" value="start..."></input>
+			</td>
+		</tr>
+	</table>
+</form>
+<script src="jquery-latest.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script class="include" type="text/javascript" src="jquery.min.js"></script>
+
+<script>
+	var socket = io.connect('http://localhost:3001/');
+	jQuery(function($){
+		socket.emit('SIMULATOR-GET-PARAMETER','ALL');
+		var $btnConfig1 = $('#btnConfig1');
+		var $btnConfig2 = $('#btnConfig2');
+		var $btnConfig3 = $('#btnConfig3');
+		var $btnConfig4 = $('#btnConfig4');
+		var $messageForm = $('#send-message');
+		var $txtTime = $('#txtTime');
+		var $txtTime1 = $('#txtTime1');
+		var $txtTime2 = $('#txtTime2');
+		var $txtTime3 = $('#txtTime3');
+		var $txtCountMessage = $('#txtCountMessage');
+		var $txtCountMessage1 = $('#txtCountMessage1');
+		var $txtCountMessage2 = $('#txtCountMessage2');
+		var $txtCountMessage3 = $('#txtCountMessage3');
+		var $txtAmountTo = $('#txtAmountTo');
+		var $txtAmountTo1 = $('#txtAmountTo1');
+		var $txtAmountTo2 = $('#txtAmountTo2');
+		var $txtAmountTo3 = $('#txtAmountTo3');
+		var $txtAmountFrom = $('#txtAmountFrom');
+		var $txtAmountFrom1 = $('#txtAmountFrom1');
+		var $txtAmountFrom2 = $('#txtAmountFrom2');
+		var $txtAmountFrom3 = $('#txtAmountFrom3');
+		var $cboChannel = $('#cboChannel');
+		var $cboChannel1 = $('#cboChannel1');
+		var $cboChannel2 = $('#cboChannel2');
+		var $cboChannel3 = $('#cboChannel3');
+		var $cboProduct = $('#cboProduct');
+		var $cboProduct1 = $('#cboProduct1');
+		var $cboProduct2 = $('#cboProduct2');
+		var $cboProduct3 = $('#cboProduct3');
+		var $cboTransactionType = $('#cboTransactionType');
+		var $cboTransactionType1 = $('#cboTransactionType1');
+		var $cboTransactionType2 = $('#cboTransactionType2');
+		var $cboTransactionType3 = $('#cboTransactionType3');
+		var $chat = $('#chat');
+		var $btnConfig1 = $('#btnConfig1');
+		var $btnConfig2 = $('#btnConfig2');
+		var $btnConfig3 = $('#btnConfig3');
+		var $btnConfig4 = $('#btnConfig4');
+		var $btnConfigALL = $('#btnConfigALL');
+		$messageForm.submit(function(e){
+			e.preventDefault();
+			//-----------------------
+			//socket.emit('SIMULATOR_LIST_SEND_MESSAGE',$txtSec.val());
+			//alert('submit');
+			var obj=setobj();
+			$('#btnConfig1').val('stop');
+			$('#btnConfig1').val('stop');
+			$('#btnConfig2').val('stop');
+			$('#btnConfig3').val('stop');
+			$('#btnConfig4').val('stop');
+			if($btnConfigALL.val()=='start...')
+			{
+				$('#btnConfigALL').val('stop...');
+
+			}
+			else if($btnConfigALL.val()=='stop...')
+			{
+
+				$('#btnConfigALL').val('start...');
+				obj.status='stop';
+				obj.status1='stop';
+				obj.status2='stop';
+				obj.status3='stop';
+
+				$('#btnConfig1').val('start');
+				$('#btnConfig1').val('start');
+				$('#btnConfig2').val('start');
+				$('#btnConfig3').val('start');
+				$('#btnConfig4').val('start');
+			}
+
+			socket.emit('SIMULATOR_LIST_SEND_MESSAGE',obj);
+		});
+
+		$('#btnConfig1').click( function() {
+			//alert($txtCountMessage.val());
+			var obj=setobj();
+			if($btnConfig1.val()=='start')
+			{
+				$('#btnConfig1').val('stop');
+				obj.status='start';
+
+			}
+			else if($btnConfig1.val()=='stop')
+			{
+				$('#btnConfig1').val('start');
+				obj.status='stop';
+			}
+			socket.emit('btnConfig1',obj);
+		});
+		$('#btnConfig2').click( function() {
+			var obj=setobj();
+			if($btnConfig2.val()=='start')
+			{
+				$('#btnConfig2').val('stop');
+				obj.status1='start';
+
+			}
+			else if($btnConfig2.val()=='stop')
+			{
+				$('#btnConfig2').val('start');
+				obj.status1='stop';
+			}
+			socket.emit('btnConfig2',obj);
+		});
+		$('#btnConfig3').click( function() {
+			var obj=setobj();
+			if($btnConfig3.val()=='start')
+			{
+				$('#btnConfig3').val('stop');
+				obj.status2='start';
+
+			}
+			else if($btnConfig3.val()=='stop')
+			{
+				$('#btnConfig3').val('start');
+				obj.status2='stop';
+			}
+			socket.emit('btnConfig3',obj);
+		});
+		$('#btnConfig4').click( function() {
+			var obj=setobj();
+			if($btnConfig4.val()=='start')
+			{
+				$('#btnConfig4').val('stop');
+				obj.status3='start';
+
+			}
+			else if($btnConfig4.val()=='stop')
+			{
+				$('#btnConfig4').val('start');
+				obj.status3='stop';
+			}
+			socket.emit('btnConfig4',obj);
+		});
+		function setobj()
+		{
+			var obj = {
+				time: $txtTime.val(),
+				time1: $txtTime1.val(),
+				time2: $txtTime2.val(),
+				time3: $txtTime3.val(),
+				countmessage: $txtCountMessage.val(),
+				countmessage1: $txtCountMessage1.val(),
+				countmessage2: $txtCountMessage2.val(),
+				countmessage3: $txtCountMessage3.val(),
+				amountto: $txtAmountTo.val(),
+				amountto1: $txtAmountTo1.val(),
+				amountto2: $txtAmountTo2.val(),
+				amountto3: $txtAmountTo3.val(),
+				amountfrom: $txtAmountFrom.val(),
+				amountfrom1: $txtAmountFrom1.val(),
+				amountfrom2: $txtAmountFrom2.val(),
+				amountfrom3: $txtAmountFrom3.val(),
+				channel:$cboChannel.val(),
+				channel1:$cboChannel1.val(),
+				channel2:$cboChannel2.val(),
+				channel3:$cboChannel3.val(),
+				product:$cboProduct.val(),
+				product1:$cboProduct1.val(),
+				product2:$cboProduct2.val(),
+				product3:$cboProduct3.val(),
+				transactiontype:$cboTransactionType.val(),
+				transactiontype1:$cboTransactionType1.val(),
+				transactiontype2:$cboTransactionType2.val(),
+				transactiontype3:$cboTransactionType3.val(),
+				status:$btnConfig1.val(),
+				status1:$btnConfig2.val(),
+				status2:$btnConfig3.val(),
+				status3:$btnConfig4.val(),
+				a:5,
+				b:5
+			}
+
+			return obj;
+		}
+	});
+
+	function isNumberKey(evt){
+		var charCode = (evt.which) ? evt.which : evt.keyCode;
+		if (charCode > 31 && (charCode < 48 || charCode > 57))
+			return false;
+		return true;
+	}
+	socket.on('SIMULATOR-PARAMETER-CONFIG-CHANNELS', function(data){
+		//alert(data.length);
+		for(var i=0;i<data.length;i++)
+		{
+			var x = document.getElementById("cboChannel");
+			var option = document.createElement("option");
+			option.text = data[i].ChannelName;
+			option.value = data[i].ChannelCode;
+			x.add(option);
+			
+			x = document.getElementById("cboChannel1");
+			option = document.createElement("option");
+			option.text = data[i].ChannelName;
+			option.value = data[i].ChannelCode;
+			x.add(option);
+			
+			x = document.getElementById("cboChannel2");
+			option = document.createElement("option");
+			option.text = data[i].ChannelName;
+			option.value = data[i].ChannelCode;
+			x.add(option);
+			
+			x = document.getElementById("cboChannel3");
+			option = document.createElement("option");
+			option.text = data[i].ChannelName;
+			option.value = data[i].ChannelCode;
+			x.add(option);
+		}
+	});
+	socket.on('SIMULATOR-PARAMETER-CONFIG-PRODUCT', function(data){
+		//alert(data.length);
+		for(var i=0;i<data.length;i++)
+		{
+			var x = document.getElementById("cboProduct");
+			var option = document.createElement("option");
+			option.text = data[i].ProductName;
+			option.value = data[i].ProductCode;
+			x.add(option);
+			
+			x = document.getElementById("cboProduct1");
+			option = document.createElement("option");
+			option.text = data[i].ProductName;
+			option.value = data[i].ProductCode;
+			x.add(option);
+			
+			x = document.getElementById("cboProduct2");
+			option = document.createElement("option");
+			option.text = data[i].ProductName;
+			option.value = data[i].ProductCode;
+			x.add(option);
+			
+			x = document.getElementById("cboProduct3");
+			option = document.createElement("option");
+			option.text = data[i].ProductName;
+			option.value = data[i].ProductCode;
+			x.add(option);
+		}
+	});
+	socket.on('SIMULATOR-PARAMETER-CONFIG-TRANSACTIONTYPES', function(data){
+		//alert(data.length);
+		for(var i=0;i<data.length;i++)
+		{
+			var x = document.getElementById("cboTransactionType");
+			var option = document.createElement("option");
+			option.text = data[i].TransactionName;
+			option.value = data[i].TransactionCode;
+			x.add(option);
+			
+			x = document.getElementById("cboTransactionType1");
+			option = document.createElement("option");
+			option.text = data[i].TransactionName;
+			option.value = data[i].TransactionCode;
+			x.add(option);
+			
+			x = document.getElementById("cboTransactionType2");
+			option = document.createElement("option");
+			option.text = data[i].TransactionName;
+			option.value = data[i].TransactionCode;
+			x.add(option);
+			
+			x = document.getElementById("cboTransactionType3");
+			option = document.createElement("option");
+			option.text = data[i].TransactionName;
+			option.value = data[i].TransactionCode;
+			x.add(option);
+		}
+	});
+</script>
+</body>
+</html>
