@@ -187,7 +187,7 @@
 	//for tables checkbox demo
 	var arr=[];
 	var totalrecord=0;
-	var socket = io.connect('http://127.0.0.1:3001/');
+	var socket = io.connect('http://127.0.0.1:3000/');
 	var objPage={value:'',start:0,end:50}
 	jQuery(function($) {
 		objPage.value=$( "#txtSeach" ).val()==''?"ALL":$( "#txtSeach" ).val();
@@ -229,7 +229,7 @@
 			{
 				var sex = arr[i].GENDER==1?"MALE":"FEMALE";
 				// str+="<tr><td onclick=\"viewDetail('"+arr[i]._id+"',"+i+")\">"+arr[i].FULLNAME+"</td><td>"+sex+"</td><td>"+arr[i].DOB+"</td><td>"+arr[i].PHONENUMBER+"</td><td>"+arr[i].ADDRESS+"</td></tr>";
-				str+="<tr><td><a href='/customerdetail/"+arr[i].ACCOUNTNUMBER+"'>"+arr[i].FULLNAME+"</a></td><td>"+sex+"</td><td>"+arr[i].DOB+"</td><td>"+arr[i].PHONENUMBER+"</td><td>"+arr[i].ADDRESS+"</td></tr>";
+				str+="<tr><td><a href='/customerdetail/"+arr[i]._id+"'>"+arr[i].FULLNAME+"</a></td><td>"+sex+"</td><td>"+arr[i].DOB+"</td><td>"+arr[i].PHONENUMBER+"</td><td>"+arr[i].ADDRESS+"</td></tr>";
 			}
 			strTable +="<table class='CSSTableGenerator'>"
 			//strTable +="<thead>";

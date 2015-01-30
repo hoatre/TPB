@@ -4,17 +4,17 @@
  */
 var MongoClient = require('mongodb').MongoClient;
 var express = require('express')
-    , routes = require('./routes')
-    , user = require('./routes/user')
-    , customerlist = require('./routes/customerlist')
-    , customerdetail = require('./routes/customerdetail')
-    , simulator = require('./routes/simulator')
-    , dashboad = require('./routes/dashboad')
-//, http = require('http')
-    , app = express()
-    , path = require('path')
-    , server = require('http').createServer(app)
-    , io = require('socket.io').listen(server);
+  , routes = require('./routes')
+  , user = require('./routes/user')
+  , customerlist = require('./routes/customerlist')
+  , customerdetail = require('./routes/customerdetail')
+  , simulator = require('./routes/simulator')
+  , dashboad = require('./routes/dashboad')
+  //, http = require('http')
+  , app = express()
+  , path = require('path')
+  , server = require('http').createServer(app)
+  , io = require('socket.io').listen(server);
 
 //---------------variable--------------------------
 var ADD_KAFKA='localhost:2181';
@@ -35,7 +35,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // development only
 if ('development' == app.get('env')) {
-    app.use(express.errorHandler());
+  app.use(express.errorHandler());
 }
 
 app.get('/', routes.index);
@@ -50,119 +50,119 @@ server.listen(3000);
 console.log('Server running at http://127.0.0.1:3000/');
 app.use(express.static(__dirname + '/lib'));
 /*http.createServer(app).listen(app.get('port'), function(){
- console.log('Express server listening on port ' + app.get('port'));
- });*/
+  console.log('Express server listening on port ' + app.get('port'));
+});*/
 //--------------------------------------customer---------------------------------------------
 var customer={
-    fullname:''
+	fullname:''
 }
 var lstcustormer=[];
 var arr;
 function connMongodb(data)
 {
-    MongoClient.connect(ADD_MONGODB_CLOUBBANK, function(err, db) {
-        if(err) { return console.dir(err); }
+	MongoClient.connect(ADD_MONGODB_CLOUBBANK, function(err, db) {
+		if(err) { return console.dir(err); }
 
-        var collection = db.collection('Customers');
+		var collection = db.collection('Customers');
 
-        /*collection.find(
-         {FULLNAME: /^NGUYEN/ }
-         ).skip(1).limit(10).toArray(function(err, items) {
-         if(items!=null&&items.length>0)
-         {
-         console.log('FULLNAME:'+items[0].FULLNAME);
-         io.sockets.emit('CUSTOMER_LIST_DATA', items);
-         }
-         });*/
-        if(data.value=='ALL')
-        {
-            var obj={data:[],count:0}
-            collection.find(
-                //{FULLNAME: /^NGUYEN/ }
-            ).skip(data.start).limit(data.end).toArray(function(err, items) {
-                    if(items!=null&&items.length>0)
-                    {
-                        //console.log('FULLNAME:'+items[0].FULLNAME);
-                        obj.data=items;
-                        //io.sockets.emit('CUSTOMER_LIST_DATA', items);
-                        collection.count(function(err, count) {
-                            if(count>0)
-                            {
-                                console.log('FULLNAME:'+obj.data[0].FULLNAME);
-                                obj.count=count;
-                                io.sockets.emit('CUSTOMER_LIST_DATA', obj);
-                            }
-                        });
-                    }
-                });
+		/*collection.find(
+		 {FULLNAME: /^NGUYEN/ }
+		 ).skip(1).limit(10).toArray(function(err, items) {
+		 if(items!=null&&items.length>0)
+		 {
+		 console.log('FULLNAME:'+items[0].FULLNAME);
+		 io.sockets.emit('CUSTOMER_LIST_DATA', items);
+		 }
+		 });*/
+		if(data.value=='ALL')
+		{
+			var obj={data:[],count:0}
+			collection.find(
+				//{FULLNAME: /^NGUYEN/ }
+			).skip(data.start).limit(data.end).toArray(function(err, items) {
+					if(items!=null&&items.length>0)
+					{
+						//console.log('FULLNAME:'+items[0].FULLNAME);
+						obj.data=items;
+						//io.sockets.emit('CUSTOMER_LIST_DATA', items);
+						collection.count(function(err, count) {
+							if(count>0)
+							{
+								console.log('FULLNAME:'+obj.data[0].FULLNAME);
+								obj.count=count;
+								io.sockets.emit('CUSTOMER_LIST_DATA', obj);
+							}
+						});
+					}
+				});
 
 
-        }
-        else
-        {
-            var obj={data:[],count:0}
-            var seachValue = data.value.toUpperCase();
-            //var seachValue=data.value.toUpperCase();
-            console.log('value:'+seachValue);
-            collection.find(
-                {FULLNAME: new RegExp(seachValue) }
-            ).skip(data.start).limit(data.end).toArray(function(err, items) {
-                    if(items!=null&&items.length>0)
-                    {
-                        //console.log('FULLNAME:'+items[0].FULLNAME);
-                        obj.data=items;
-                        //io.sockets.emit('CUSTOMER_LIST_DATA', items);
-                        collection.count({FULLNAME: new RegExp(seachValue)} ,function(err, count) {
-                            if(count>0)
-                            {
-                                console.log('FULLNAME:'+obj.data[0].FULLNAME);
-                                obj.count=count;
-                                io.sockets.emit('CUSTOMER_LIST_DATA', obj);
-                            }
-                        });
-                    }
-                });
-        }
-    });
+		}
+		else
+		{
+			var obj={data:[],count:0}
+			var seachValue = data.value.toUpperCase();
+			//var seachValue=data.value.toUpperCase();
+			console.log('value:'+seachValue);
+			collection.find(
+				{FULLNAME: new RegExp(seachValue) }
+			).skip(data.start).limit(data.end).toArray(function(err, items) {
+					if(items!=null&&items.length>0)
+					{
+						//console.log('FULLNAME:'+items[0].FULLNAME);
+						obj.data=items;
+						//io.sockets.emit('CUSTOMER_LIST_DATA', items);
+						collection.count({FULLNAME: new RegExp(seachValue)} ,function(err, count) {
+							if(count>0)
+							{
+								console.log('FULLNAME:'+obj.data[0].FULLNAME);
+								obj.count=count;
+								io.sockets.emit('CUSTOMER_LIST_DATA', obj);
+							}
+						});
+					}
+				});
+		}
+	});
 }
 
 function GetTop5CustomerLogs(data)
 {
-    MongoClient.connect(ADD_MONGODB_CLOUBBANK, function(err, db) {
-        if(err) { return console.dir(err); }
+	MongoClient.connect(ADD_MONGODB_CLOUBBANK, function(err, db) {
+		if(err) { return console.dir(err); }
 
-        var collection = db.collection('CustomerLogs');
+		var collection = db.collection('CustomerLogs');
+		
+			//var obj={data:[],count:0}
+			//var seachValue = data.value.toUpperCase();
+			//var seachValue=data.value.toUpperCase();
+			console.log('GetTop5CustomerLogs');
+			collection.find(
+				{acc_no: data }
+			).sort({timestamp: -1}).skip(0).limit(5).toArray(function(err, items) {
+					if(items!=null&&items.length>0)
+					{
 
-        //var obj={data:[],count:0}
-        //var seachValue = data.value.toUpperCase();
-        //var seachValue=data.value.toUpperCase();
-        console.log('GetTop5CustomerLogs');
-        collection.find(
-            {acc_no: data }
-        ).sort({timestamp: -1}).skip(0).limit(5).toArray(function(err, items) {
-                if(items!=null&&items.length>0)
-                {
-
-                    io.sockets.emit('CUSTOMERLOGS_TOP5_TRANSACTION_DATA', items);
-
-                }
-            });
-
-    });
+								io.sockets.emit('CUSTOMERLOGS_TOP5_TRANSACTION_DATA', items);
+							
+					}
+				});
+		
+	});
 }
 
 io.sockets.on('connection',function(socket){
-    socket.on('CUSTOMER_LIST_SEND_MESSAGE',function(data){
-        //io.sockets.emit('new message',data);
-        connMongodb(data);
-        console.log('msg:'+data.value+"--start:"+data.start+"--end:"+data.end);
-    });
-    socket.on('CUSTOMERLOGS_TOP5_TRANSACTION_SEND_MESSAGE',function(data){
-        //io.sockets.emit('new message',data);
-        //connMongodb(data);
-        GetTop5CustomerLogs(data);
-        console.log('CUSTOMERLOGS_TOP5_TRANSACTION_SEND_MESSAGE:'+data);
-    });
+	socket.on('CUSTOMER_LIST_SEND_MESSAGE',function(data){
+		//io.sockets.emit('new message',data);
+		connMongodb(data);
+		console.log('msg:'+data.value+"--start:"+data.start+"--end:"+data.end);
+	});
+	socket.on('CUSTOMERLOGS_TOP5_TRANSACTION_SEND_MESSAGE',function(data){
+		//io.sockets.emit('new message',data);
+		//connMongodb(data);
+		GetTop5CustomerLogs(data);
+		console.log('CUSTOMERLOGS_TOP5_TRANSACTION_SEND_MESSAGE:'+data);
+	});
 
     socket.on('customerID',function(data){
         getDetail(data);
@@ -173,23 +173,23 @@ io.sockets.on('connection',function(socket){
 function getDetail(customerID)
 {
     console.log('customerID:'+customerID);
-
+    
     MongoClient.connect(ADD_MONGODB_CLOUBBANK, function(err, db) {
-        if(err) { return console.dir(err); }
-
-        var collection = db.collection('Customers');
-        console.log('Customers');
-        collection.find(
-            {_id: new require('mongodb').ObjectID(customerID) }
-        ).toArray(function(err, items) {
+      if(err) { return console.dir(err); }
+      
+      var collection = db.collection('Customers');
+            console.log('Customers');
+            collection.find(
+                {_id: new require('mongodb').ObjectID(customerID) }
+            ).toArray(function(err, items) {
                 if(items!=null&&items.length>0)
                 {
                     console.log('cnt:'+items.length);
                     io.sockets.emit('_customerDetail', items);
                 }
             });
-
-
+            
+            
     });
 }
 //--------------------------------------customer---------------------------------------------
@@ -199,7 +199,7 @@ function getDetail(customerID)
 var kafka = require('kafka-node'),
     Producer = kafka.Producer,
     Client = kafka.Client,
-//client = new Client('10.20.252.201:2181');
+    //client = new Client('10.20.252.201:2181');
     client = new Client(ADD_KAFKA);
 
 //Topic
@@ -380,7 +380,7 @@ var GeneratorTransaction = function(amountto,amountfrom,channal, product, transa
         ,"211-806-44852348", "205-942-49869215", "512-934-58342425", "634-179-52661293", "922-651-83633753"
         ,"932-511-12473453", "899-472-55449952", "630-561-33936692", "536-222-53456993", "351-977-80518275"
         ,"100-121-12121216", "200-555-12313126", "100-643-10231326", "400-223-32424236", "500-123-23313446"];
-
+        
     var acc_no = acc_nos[randomInt(0,acc_nos.length)];
 
     //console.log('amountfrom: '+ amountfrom);
@@ -390,51 +390,51 @@ var GeneratorTransaction = function(amountto,amountfrom,channal, product, transa
 
     var timestamp = new Date().getTime();
     var trans = {
-        trx_id: trx_id,
-        trx_code: transactionType,
-        ch_id: channal,
-        amount: amount,
-        acc_no: acc_no,
-        prd_id: product,
-        timestamp: timestamp,
-        count: msgs
-    };
+						trx_id: trx_id,
+						trx_code: transactionType,
+						ch_id: channal,
+						amount: amount,
+						acc_no: acc_no,
+						prd_id: product,
+						timestamp: timestamp,
+						count: msgs
+					    };
     //-------------------------------------------------
-    /*MongoClient.connect(ADD_MONGODB_CLOUBBANK, function(err, db) {
-     if(err) { return console.dir(err); }
-
-     var collection = db.collection("AccNumbers");
-     console.log("AccNumbers");
-     collection.find(
-     //{FULLNAME: /^NGUYEN/ }
-     ).toArray(function(err, items) {
-     if(items!=null&&items.length>0)
-     {
-     //console.log('cnt:'+items.length);
-     //io.sockets.emit(parameterconfig, items);
-     //acc_no=items[randomInt(0,acc_nos.length)].ACCOUNTNUMBER;
-     trans.acc_no=items[0].ACCOUNTNUMBER;
-     //console.log('ACCOUNTNUMBER:'+acc_no);
-     //console.log('ACCOUNTNUMBER:'+acc_no);
-     }
-     });
-
-
-
-     });*/
-    //-------------------------------------------------
-    console.log('ACCOUNTNUMBER:'+trans.acc_no);
-
-    var msg = JSON.stringify(trans);
-    return msg;
+	 /*MongoClient.connect(ADD_MONGODB_CLOUBBANK, function(err, db) {
+	 if(err) { return console.dir(err); }
+	  
+	  var collection = db.collection("AccNumbers");
+			console.log("AccNumbers");
+			collection.find(
+				//{FULLNAME: /^NGUYEN/ }
+			).toArray(function(err, items) {
+				if(items!=null&&items.length>0)
+				{
+					//console.log('cnt:'+items.length);
+					//io.sockets.emit(parameterconfig, items);
+				        //acc_no=items[randomInt(0,acc_nos.length)].ACCOUNTNUMBER;
+					trans.acc_no=items[0].ACCOUNTNUMBER;
+					//console.log('ACCOUNTNUMBER:'+acc_no);
+					//console.log('ACCOUNTNUMBER:'+acc_no);
+				}
+			});
+		
+					    	
+			
+	});*/
+	//-------------------------------------------------
+	console.log('ACCOUNTNUMBER:'+trans.acc_no);
+    
+	var msg = JSON.stringify(trans);
+	return msg;	
 }
 
 
 io.sockets.on('connection',function(socket){
-    socket.on('SIMULATOR_LIST_SEND_MESSAGE',function(data){
+		socket.on('SIMULATOR_LIST_SEND_MESSAGE',function(data){
 
         //Option 1
-        console.log('SIMULATOR_LIST_SEND_MESSAGE:'+data);
+		console.log('SIMULATOR_LIST_SEND_MESSAGE:'+data);
 
         obj = {
             time: data.time==''?1000:data.time,
@@ -657,37 +657,37 @@ io.sockets.on('connection',function(socket){
                 clearTimeout(t3);
             }
         });
-    socket.on('SIMULATOR-GET-PARAMETER',function(data){
-        //io.sockets.emit('new message',data);
-        console.log('SIMULATOR-GET-PARAMETER:'+data);
-        SimulatorConfig('Channels','SIMULATOR-PARAMETER-CONFIG-CHANNELS');
-        SimulatorConfig('Products','SIMULATOR-PARAMETER-CONFIG-PRODUCT');
-        SimulatorConfig('TransactionTypes','SIMULATOR-PARAMETER-CONFIG-TRANSACTIONTYPES');
-        //console.log('msg:'+data);
-    });
+		socket.on('SIMULATOR-GET-PARAMETER',function(data){
+		//io.sockets.emit('new message',data);
+		console.log('SIMULATOR-GET-PARAMETER:'+data);
+		SimulatorConfig('Channels','SIMULATOR-PARAMETER-CONFIG-CHANNELS');
+		SimulatorConfig('Products','SIMULATOR-PARAMETER-CONFIG-PRODUCT');
+		SimulatorConfig('TransactionTypes','SIMULATOR-PARAMETER-CONFIG-TRANSACTIONTYPES');
+		//console.log('msg:'+data);
+	});
 });
 
 //-----------------connect mongodb------------------
 function SimulatorConfig(tablename,parameterconfig)
 {
-    //console.log('connMongodb');
-    MongoClient.connect(ADD_MONGODB_CLOUBBANK, function(err, db) {
-        if(err) { return console.dir(err); }
-
-        var collection = db.collection(tablename);
-        console.log(tablename);
-        collection.find(
-            //{FULLNAME: /^NGUYEN/ }
-        ).toArray(function(err, items) {
-                if(items!=null&&items.length>0)
-                {
-                    console.log('cnt:'+items.length);
-                    io.sockets.emit(parameterconfig, items);
-                }
-            });
-
-
-    });
+	//console.log('connMongodb');
+	MongoClient.connect(ADD_MONGODB_CLOUBBANK, function(err, db) {
+	  if(err) { return console.dir(err); }
+	  
+	  var collection = db.collection(tablename);
+			console.log(tablename);
+			collection.find(
+				//{FULLNAME: /^NGUYEN/ }
+			).toArray(function(err, items) {
+				if(items!=null&&items.length>0)
+				{
+					console.log('cnt:'+items.length);
+					io.sockets.emit(parameterconfig, items);
+				}
+			});
+			
+			
+	});
 }
 
 
