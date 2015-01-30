@@ -149,3 +149,82 @@ function setTime(slidingTime){
         redis_hmget_top('TopTen' + Transfer_From + '-Top' + z.toString() + "-" + slidingTime);
     }
 }
+
+//--------------------------------fake kafka ----------------------------------------------------------------------
+
+var ADD_KAFKA='localhost:2181';
+var kafka = require('kafka-node'),
+    Producer = kafka.Producer,
+    Client = kafka.Client,
+//client = new Client('10.20.252.201:2181');
+    client = new Client(ADD_KAFKA);
+var topic = 'TransactionTopic';
+var producer = new Producer(client);
+//On Ready
+producer.on('ready', function () {
+    console.log('Producer ready');
+});
+
+
+//On Error
+producer.on('error', function (err) {
+    console.log('error', err)
+})
+//partition
+var p = 0;
+//SIMULATOR_LIST_SEND_MESSAGE
+function send(message) {
+    producer.send([
+        {topic: topic, messages: [message] , partition: p}
+    ], function (err, data) {
+        if (err) console.log(arguments);
+    });
+}
+
+var obj = {
+    time: 1000,
+    countmessage: 0,
+    amountto: 0,
+    amountfrom: 0,
+    channel: '',
+    product: '',
+    transactiontype: '',
+    a: 5,
+    b: 5
+}
+var cnt=-1;
+var trans = {
+    trx_id: 0,
+    trx_code: "TranTypeFake",
+    ch_id: "ChannelFake",
+    amount: 0,
+    acc_no: "000-000-00000000",
+    prd_id: "ProductFake",
+    timestamp: new Date().getTime(),
+    count: 0
+};
+var msg = JSON.stringify(trans);
+
+recursive();
+function recursive()
+{
+
+    cnt++;
+    console.log('conf1 status:'+obj.status);
+    if (obj.countmessage!=''&&cnt >= obj.countmessage||obj.status=='stop') {
+        console.log('stop conf1');
+        clearTimeout(t);
+    }
+    else {
+        console.log('conf1'+obj.channel+':'+obj.countmessage+'-'+obj.amountto+':'+obj.amountfrom);
+        t = setTimeout(recursive, obj.time);
+        send(msg);
+    }
+
+
+}
+
+//Generator transaction
+
+
+
