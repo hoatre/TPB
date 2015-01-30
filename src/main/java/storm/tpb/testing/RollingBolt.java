@@ -1,5 +1,6 @@
 package storm.tpb.testing;
 
+import storm.tpb.topology.PARAM;
 import storm.trident.operation.BaseFilter;
 import storm.trident.tuple.TridentTuple;
 
@@ -12,7 +13,7 @@ public class RollingBolt extends BaseFilter{
         this.roll = roll;
     }
     public boolean isKeep(TridentTuple tuple) {
-        if(tuple.getString(0).equals(this.roll))
+        if(tuple.getString(0).equals(this.roll) || tuple.getString(0).equals(PARAM.TransCode.TRANTYPEFAKE.getValue()))
             return true;
         else
             return false;

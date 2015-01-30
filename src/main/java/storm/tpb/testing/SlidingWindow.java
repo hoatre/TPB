@@ -138,11 +138,14 @@ public class SlidingWindow implements Serializable {
         }
         Integer a=0;
 
-        while (listTransChart.get(0).gettimetamp() < this.lastChart) {
-            a++;
-            listTransChart.remove(0);
-            System.out.println("XOA" + a.toString());
-        }
+        if(!listTransChart.isEmpty())
+            while (listTransChart.get(0).gettimetamp() < this.lastChart) {
+                a++;
+                listTransChart.remove(0);
+                System.out.println("XOA" + a.toString());
+                if(listTransChart.isEmpty())
+                    break;
+            }
 
         countBranch1=0;
         countBranch2=0;
@@ -175,22 +178,26 @@ public class SlidingWindow implements Serializable {
                     sumCenter = sumCenter + listTransChart.get(i).getamount();
                 }
             }
-        }
+            this.lastChart = listTransChart.get(0).gettimetamp();
+        }else
+            this.lastChart = time-this.window;
 
-        this.lastChart = listTransChart.get(0).gettimetamp();
 
     }
 
-    public void listAmountAcc(long amount, String account, long timetamp) {
-        listAmountAcc(System.currentTimeMillis(), (int)amount, account, timetamp);
+    public void listAmountAcc(String TranType, long amount, String account, long timetamp) {
+        listAmountAcc(TranType, System.currentTimeMillis(), (int)amount, account, timetamp);
     }
-    public synchronized void listAmountAcc(long time, int amount, String account, long timetamp) {
+    public synchronized void listAmountAcc(String TranType, long time, int amount, String account, long timetamp) {
         cacheTimeAcc.add(time);
+
+        if(!TranType.equals(PARAM.TransCode.TRANTYPEFAKE.getValue())){
         Transaction tran = new Transaction();
         tran.settimetamp(timetamp);
         tran.setacc_no(account);
         tran.setamount(amount);
         listTransAcc.add(tran);
+        }
         if (this.sliding) {
             if ((time - this.lastAcc) > this.window) {
                 this.lastAcc = time-this.window;
@@ -198,11 +205,14 @@ public class SlidingWindow implements Serializable {
         }
         Integer a=0;
 
-        while (listTransAcc.get(0).gettimetamp() < this.lastAcc) {
-            a++;
-            listTransAcc.remove(0);
-            System.out.println("XOA" + a.toString());
-        }
+        if(!listTransAcc.isEmpty())
+            while (listTransAcc.get(0).gettimetamp() < this.lastAcc) {
+                a++;
+                listTransAcc.remove(0);
+                System.out.println("XOA" + a.toString());
+                if(listTransAcc.isEmpty())
+                    break;
+            }
         List<TransactionAcc> listTransAccTotalAmount = new ArrayList<TransactionAcc>();
         List<TransactionAcc> asList = new ArrayList<TransactionAcc>();;
         if(!listTransAcc.isEmpty()) {
@@ -237,7 +247,10 @@ public class SlidingWindow implements Serializable {
 
         }
 
-        this.lastAcc = listTransAcc.get(0).gettimetamp();
+        if(!listTransAcc.isEmpty())
+            this.lastAcc = listTransAcc.get(0).gettimetamp();
+        else
+            this.lastAcc = time-this.window;
 
     }
 

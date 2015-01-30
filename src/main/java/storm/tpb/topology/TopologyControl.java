@@ -70,8 +70,8 @@ public class TopologyControl {
         TopologySliding(parsedStream, 3600.0);
         TopologySliding(parsedStream, 86400.0);
 
-        spoutStream.each(new Fields("str"), new
-                StoreTransactionToMongoDB(), new Fields("StoreTransactionToMongoDB"));
+        spoutStream.each(new Fields("str"), new RollingSaveDBBolt())
+                .each(new Fields("str"), new StoreTransactionToMongoDB(), new Fields("StoreTransactionToMongoDB"));
 
         return topology.build();
     }
@@ -85,7 +85,7 @@ public class TopologyControl {
 
     private  static void TotalRankingByTranType(Stream st, SlidingWindow Sliding, String tranType){
         st.each(new Fields("trx_code"), new RollingBolt(tranType))
-                .each(new Fields("amount", "acc_no", "timestamp"), new RankingsBolt(Sliding, SlidingWindow.Time.SECONDS), RankingField)
+                .each(new Fields("amount", "acc_no", "timestamp", "trx_code"), new RankingsBolt(Sliding, SlidingWindow.Time.SECONDS), RankingField)
                 .each(RankingField, new SaveRedisTopBotBolt(tranType), new Fields("abc"));
     }
 
