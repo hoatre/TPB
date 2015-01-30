@@ -36,10 +36,10 @@ public class StoreTransactionToMongoDB extends BaseFunction {
 
             collection.insert(dbObject);
 
-            DBCursor cursorDoc = collection.find();
-            while (cursorDoc.hasNext()) {
-                System.out.println(cursorDoc.next());
-            }
+//            DBCursor cursorDoc = collection.find();
+//            while (cursorDoc.hasNext()) {
+//                //System.out.println(cursorDoc.next());
+//            }
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (MongoException e) {
