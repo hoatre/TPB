@@ -1,0 +1,712 @@
+<html>
+  <head>
+
+    <title>Heart Beat Dashboard</title>
+   
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+
+    <!--Load the AJAX API-->
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    <script type="text/javascript" src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <!--<script type="text/javascript" src="smoothie.js"></script>-->
+      <script type="text/javascript" src="http://github.com/joewalnes/smoothie/raw/master/smoothie.js"></script>
+    <script type="text/javascript" src="canvasjs.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+    <script type="text/javascript">
+      var socket = io.connect('http://localhost:3000/');
+
+      // Data
+      var line1 = new TimeSeries();
+      var line2 = new TimeSeries();
+      var line3 = new TimeSeries();
+      var line4 = new TimeSeries();
+
+      var line5 = new TimeSeries();
+      var line6 = new TimeSeries();
+      var line7 = new TimeSeries();
+      var line8 = new TimeSeries();
+
+      var Deposit = "DE";
+      var Withdrawal = "WI";
+      var Transfer_From = "TF";
+      var Branch1 = "B1";
+      var Branch2 = "B2";
+      var Branch3 = "B3";
+      var Contact_Center = "Contact";
+      var profileHost = 'http://localhost:3000/customerdetail/';
+
+      var countB1 = 0;
+      var sumB1 = 0;
+      var countB2 = 0;
+      var sumB2 = 0;
+      var countB3 = 0;
+      var sumB3 = 0;
+      var countCenter = 0;
+      var sumCenter = 0;
+
+      var time1 = 60000;
+      var time2 = 3600000;
+      var time3 = 86400000;
+
+      var totalCount = 0;
+      var totalSum = 0;
+      var Line11Checked = true;
+      var Line21Checked = true;
+      var Line31Checked = true;
+      var Line41Checked = true;
+      function TopTen(Top, slidingTime) {
+          socket.on('Top-' + Top + '-' + slidingTime, function (data1) {
+              var array = $.map(data1, function (value, index) {
+                  return [value];
+              });
+
+              var TopTenDepositTop1Acc = document.getElementById(Top + "-Account");
+              TopTenDepositTop1Acc.innerHTML = array[0];
+              TopTenDepositTop1Acc.href = profileHost + array[0];
+
+
+              var TopTenDepositTop1Amount = document.getElementById(Top + "-Amount");
+              TopTenDepositTop1Amount.innerHTML = array[1];
+          });
+      }
+
+      var chart = new SmoothieChart({
+                  millisPerPixel: time1/(window.innerWidth - 300),
+                  grid: {
+                      fillStyle: 'transparent',
+                      strokeStyle: 'rgba(166,197,103,0.20)',
+                      borderVisible: true
+                  },
+                  labels: { fillStyle: '#000000' }
+              }),canvas = document.getElementById('chart'),
+              series = new TimeSeries();
+
+      function Total(slidingTime){
+          socket.on('Total-TotalNoTran-' + slidingTime, function (data1) {
+              var TotalNoTran = document.getElementById("TotalNoTran");
+              TotalNoTran.innerHTML = data1.toString();
+          });
+          socket.on('Total-TotalAmount-' + slidingTime, function (data1) {
+              var TotalAmount = document.getElementById("TotalAmount");
+              TotalAmount.innerHTML = data1.toString();
+          });
+      }
+      setInterval(function() {
+          totalCount = countB1 + countB2 + countB3 + countCenter;
+          totalSum = sumB1 + sumB2 + sumB3 + sumCenter;
+          if(!Line11Checked)
+          {
+              totalCount = totalCount - countB1;
+              totalSum = totalSum - sumB1;
+          }
+          if(!Line21Checked)
+          {
+              totalCount = totalCount - countB2;
+              totalSum = totalSum - sumB2;
+          }
+          if(!Line31Checked)
+          {
+              totalCount = totalCount - countB3;
+              totalSum = totalSum - sumB3;
+          }
+          if(!Line41Checked) {
+              totalCount = totalCount - countCenter;
+              totalSum = totalSum - sumCenter;
+          }
+          var TotalNoTran = document.getElementById("TotalNoTran");
+          TotalNoTran.innerHTML = totalCount.toString();
+
+          var TotalAmount = document.getElementById("TotalAmount");
+          TotalAmount.innerHTML = totalSum.toString();
+
+      }, 1000);
+      function TopBot(slidingTime){
+          for(z = 1;z<=5;z++) {
+              TopTen('TopTen' + Deposit + '-Top' + z.toString(), slidingTime.toString());
+              TopTen('TopTen' + Deposit + '-Bot' + z.toString(), slidingTime.toString());
+              TopTen('TopTen' + Withdrawal + '-Top' + z.toString(), slidingTime.toString());
+              TopTen('TopTen' + Withdrawal + '-Bot' + z.toString(), slidingTime.toString());
+              TopTen('TopTen' + Transfer_From + '-Top' + z.toString(), slidingTime.toString());
+              TopTen('TopTen' + Transfer_From + '-Bot' + z.toString(), slidingTime.toString());
+          }
+      }
+      function LineChart(slidingTime){
+          socket.on('CountChart-real-time-count-' + Branch1 + '-' + slidingTime, function (data1) {
+              line1.append(new Date().getTime(), data1);
+              countB1 = parseInt(data1);
+
+          });
+          socket.on('CountChart-real-time-count-' + Branch2 + '-' + slidingTime, function (data1) {
+              line2.append(new Date().getTime(), data1);
+              countB2 = parseInt(data1);
+          });
+          socket.on('CountChart-real-time-count-' + Branch3 + '-' + slidingTime, function (data1) {
+              line3.append(new Date().getTime(), data1);
+              countB3 = parseInt(data1);
+          });
+          socket.on('CountChart-real-time-count-' + Contact_Center + '-' + slidingTime, function (data1) {
+              line4.append(new Date().getTime(), data1);
+              countCenter = parseInt(data1);
+          });
+      }
+      function SumPer(slidingTime){
+          socket.on('CountChart-real-time-sum-' + Branch1 + '-' + slidingTime, function (data1) {
+              sumB1 = parseInt(data1);
+          });
+          socket.on('CountChart-real-time-sum-' + Branch2 + '-' + slidingTime, function (data1) {
+              sumB2 = parseInt(data1);
+          });
+          socket.on('CountChart-real-time-sum-' + Branch3 + '-' + slidingTime, function (data1) {
+              sumB3 = parseInt(data1);
+          });
+          socket.on('CountChart-real-time-sum-' + Contact_Center + '-' + slidingTime, function (data1) {
+              sumCenter = parseInt(data1);
+          });
+      }
+      function createTimeline() {
+
+          $( "input" ).change(function() {
+              Line11Checked = $('input[name="Line11"]:checked').length > 0;
+              Line21Checked = $('input[name="Line21"]:checked').length > 0;
+              Line31Checked = $('input[name="Line31"]:checked').length > 0;
+              Line41Checked = $('input[name="Line41"]:checked').length > 0;
+          }).change();
+
+          $("#chart").attr({'width': window.innerWidth - 300, 'height': 200});
+
+          $('#line11').on('click', line11);
+          $('#line21').on('click', line21);
+          $('#line31').on('click', line31);
+          $('#line41').on('click', line41);
+
+          $('#SlidingTimeCbo').change(function() {
+              var str = "";
+              $( "select option:selected" ).each(function() {
+                  str += $( this ).text();
+              });
+              if(str.toLowerCase().localeCompare("1 Minute".toLowerCase()) == 0)
+              {
+                  socket.emit('open 1 Minute',"1 Minute");
+              }
+              else if(str.toLowerCase().localeCompare("1 hour".toLowerCase()) == 0)
+              {
+                  socket.emit('open 1 hour',"1 hour");
+
+              }
+              else if(str.toLowerCase().localeCompare("1 day".toLowerCase()) == 0)
+              {
+                  socket.emit('open 1 day',"1 day");
+              }
+          }).change();
+
+          TopBot(time1);
+          TopBot(time2);
+          TopBot(time3);
+          LineChart(time1);
+          LineChart(time2);
+          LineChart(time3);
+          SumPer(time1);
+          SumPer(time2);
+          SumPer(time3);
+//          Total(30000);
+//          Total(60000);
+//          Total(600000);
+          chart.addTimeSeries(line1,
+                  { strokeStyle: '#A6C567', lineWidth:3 });
+          chart.addTimeSeries(line2,
+                  { strokeStyle:'#0000FF', lineWidth:3 });
+          chart.addTimeSeries(line3,
+                  { strokeStyle:'#DC143C', lineWidth:3 });
+          chart.addTimeSeries(line4,
+                  { strokeStyle:'#FFD700', lineWidth:3 });
+
+          chart.streamTo(document.getElementById("chart"), 1000);
+      }
+
+      function line11() {
+          if($('#line11').is(':checked')) {
+              chart.addTimeSeries(line1,
+                      {strokeStyle: '#A6C567', lineWidth: 3});
+          }
+          else{
+              chart.removeTimeSeries(line1);
+          }
+      }
+
+
+      function line21() {
+          if($('#line21').is(':checked'))
+              chart.addTimeSeries(line2,
+                      { strokeStyle:'#0000FF', lineWidth:3 });
+
+          else{
+              chart.removeTimeSeries(line2);
+          }
+      }
+
+      function line31() {
+          if($('#line31').is(':checked'))
+              chart.addTimeSeries(line3,
+                      { strokeStyle:'#DC143C', lineWidth:3 });
+          else{
+              chart.removeTimeSeries(line3);
+          }
+      }
+
+      function line41() {
+          if($('#line41').is(':checked'))
+              chart.addTimeSeries(line4,
+                      { strokeStyle:'#FFD700', lineWidth:3 });
+          else{
+              chart.removeTimeSeries(line4);
+          }
+      }
+    </script>
+
+  </head>
+
+  <body onload="createTimeline()">
+  <table width="100%">
+      <colgroup>
+          <col width="80%">
+      </colgroup>
+      <tr>
+          <td style="padding-left: 50px; padding-right: 50px">
+              <input type="checkbox" id="line11" name="Line11" Checked/>Branch 1  <font  color="#A6C567">&#9642;</font></br>
+              <input type="checkbox" id="line21" name="Line21" Checked/>Branch 2  <font  color="#0000FF">&#9642;</font></br>
+              <input type="checkbox" id="line31" name="Line31" Checked/>Branch 3  <font  color="#DC143C">&#9642;</font></br>
+              <input type="checkbox" id="line41" name="Line41" Checked/>Contact Center  <font  color="#FFD700">&#9642;</font></br>
+              <select id="SlidingTimeCbo">
+                  <option >1 Minute</option>
+                  <option >1 hour</option>
+                  <option >1 day</option>
+              </select>
+          </td>
+          <td>
+          <canvas id="chart" height="200px"></canvas>
+          </td>
+
+      </tr>
+
+  </table>
+    <table width="100%">
+        <colgroup>
+            <col width="50%">
+        </colgroup>
+      <tr>
+          <td>
+              <b><i>Total No. of Transactions : </i></b><label id="TotalNoTran"></label>
+          </td>
+
+          <td> <b><i>Total Amount : </i></b><label id="TotalAmount"></label> </td>
+
+      </tr>
+        <tr>
+            <td colspan="2">
+                <table width="100%">
+                    <colgroup>
+                        <col width="33%">
+                    </colgroup>
+                    <tr>
+                        <td>
+                            <table style="	border: 1px solid black " width="100%">
+                                <colgroup>
+                                    <col width="70%">
+                                </colgroup>
+                                <tr>
+                                    <th colspan="2">
+                                        Top five Deposits
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <b>Account</b>
+                                    </td>
+                                    <td>
+                                        <b>Amount</b>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <!--<label id="TopTenDE-Top1-Account"></label>-->
+                                        <a id="TopTenDE-Top1-Account" href="#"></a>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenDE-Top1-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <!--<label type="text" id="TopTenDE-Top2-Account"></label>-->
+                                        <a id="TopTenDE-Top2-Account" href="#"></a>
+                                    </td>
+                                    <td>
+                                        <label type="text" id="TopTenDE-Top2-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <!--<label type="text" id="TopTenDE-Top3-Account"></label>-->
+                                        <a id="TopTenDE-Top3-Account" href="#"></a>
+                                    </td>
+                                    <td>
+                                        <label type="text" id="TopTenDE-Top3-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <!--<label type="text" id="TopTenDE-Top4-Account"></label>-->
+                                        <a id="TopTenDE-Top4-Account" href="#"></a>
+                                    </td>
+                                    <td>
+                                        <label type="text" id="TopTenDE-Top4-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <!--<label type="text" id="TopTenDE-Top5-Account"></label>-->
+                                        <a id="TopTenDE-Top5-Account" href="#"></a>
+                                    </td>
+                                    <td>
+                                        <label type="text" id="TopTenDE-Top5-Amount"></label>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td>
+                            <table style="	border: 1px solid black " width="100%">
+                                <colgroup>
+                                    <col width="70%">
+                                </colgroup>
+                                <tr>
+                                    <th colspan="2">
+                                        Top five Withdrawal
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <b>Account</b>
+                                    </td>
+                                    <td>
+                                        <b>Amount</b>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <!--<label id="TopTenWI-Top1-Account"></label>-->
+                                        <a id="TopTenWI-Top1-Account" href="#"></a>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenWI-Top1-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <!--<label id="TopTenWI-Top2-Account"></label>-->
+                                        <a id="TopTenWI-Top2-Account" href="#"></a>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenWI-Top2-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <!--<label id="TopTenWI-Top3-Account"></label>-->
+                                        <a id="TopTenWI-Top3-Account" href="#"></a>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenWI-Top3-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <!--<label id="TopTenWI-Top4-Account"></label>-->
+                                        <a id="TopTenWI-Top4-Account" href="#"></a>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenWI-Top4-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <!--<label id="TopTenWI-Top5-Account"></label>-->
+                                        <a id="TopTenWI-Top5-Account" href="#"></a>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenWI-Top5-Amount"></label>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td>
+                            <table style="	border: 1px solid black " width="100%">
+                                <colgroup>
+                                    <col width="70%">
+                                </colgroup>
+                                <tr>
+                                    <th colspan="2">
+                                        Top five Transfer
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <b>Account</b>
+                                    </td>
+                                    <td>
+                                        <b>Amount</b>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <!--<label id="TopTenTF-Top1-Account"></label>-->
+                                        <a id="TopTenTF-Top1-Account" href="#"></a>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenTF-Top1-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <!--<label id="TopTenTF-Top2-Account"></label>-->
+                                        <a id="TopTenTF-Top2-Account" href="#"></a>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenTF-Top2-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <!--<label id="TopTenTF-Top3-Account"></label>-->
+                                        <a id="TopTenTF-Top3-Account" href="#"></a>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenTF-Top3-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <!--<label id="TopTenTF-Top4-Account"></label>-->
+                                        <a id="TopTenTF-Top4-Account" href="#"></a>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenTF-Top4-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <!--<label id="TopTenTF-Top5-Account"></label>-->
+                                        <a id="TopTenTF-Top5-Account" href="#"></a>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenTF-Top5-Amount"></label>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <table style="	border: 1px solid black " width="100%">
+                                <colgroup>
+                                    <col width="70%">
+                                </colgroup>
+                                <tr>
+                                    <th colspan="2">
+                                        Bottom five Deposits
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <b>Account</b>
+                                    </td>
+                                    <td>
+                                        <b>Amount</b>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <!--<label id="TopTenDE-Bot5-Account"></label>-->
+                                        <a id="TopTenDE-Bot5-Account" href="#"></a>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenDE-Bot5-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <!--<label type="text" id="TopTenDE-Bot4-Account"></label>-->
+                                        <a id="TopTenDE-Bot4-Account" href="#"></a>
+                                    </td>
+                                    <td>
+                                        <label type="text" id="TopTenDE-Bot4-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <!--<label type="text" id="TopTenDE-Bot3-Account"></label>-->
+                                        <a id="TopTenDE-Bot3-Account" href="#"></a>
+                                    </td>
+                                    <td>
+                                        <label type="text" id="TopTenDE-Bot3-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <!--<label type="text" id="TopTenDE-Bot2-Account"></label>-->
+                                        <a id="TopTenDE-Bot2-Account" href="#"></a>
+                                    </td>
+                                    <td>
+                                        <label type="text" id="TopTenDE-Bot2-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <!--<label type="text" id="TopTenDE-Bot1-Account"></label>-->
+                                        <a id="TopTenDE-Bot1-Account" href="#"></a>
+                                    </td>
+                                    <td>
+                                        <label type="text" id="TopTenDE-Bot1-Amount"></label>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td>
+                            <table style="	border: 1px solid black " width="100%">
+                                <colgroup>
+                                    <col width="70%">
+                                </colgroup>
+                                <tr>
+                                    <th colspan="2">
+                                        Bottom five Withdrawal
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <b>Account</b>
+                                    </td>
+                                    <td>
+                                        <b>Amount</b>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <!--<label id="TopTenWI-Bot5-Account"></label>-->
+                                        <a id="TopTenWI-Bot5-Account" href="#"></a>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenWI-Bot5-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <!--<label id="TopTenWI-Bot4-Account"></label>-->
+                                        <a id="TopTenWI-Bot4-Account" href="#"></a>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenWI-Bot4-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <!--<label id="TopTenWI-Bot3-Account"></label>-->
+                                        <a id="TopTenWI-Bot3-Account" href="#"></a>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenWI-Bot3-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <!--<label id="TopTenWI-Bot2-Account"></label>-->
+                                        <a id="TopTenWI-Bot2-Account" href="#"></a>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenWI-Bot2-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <!--<label id="TopTenWI-Bot1-Account"></label>-->
+                                        <a id="TopTenWI-Bot1-Account" href="#"></a>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenWI-Bot1-Amount"></label>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td>
+                            <table style="	border: 1px solid black " width="100%">
+                                <colgroup>
+                                    <col width="70%">
+                                </colgroup>
+                                <tr>
+                                    <th colspan="2">
+                                        Bottom five Transfer
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <b>Account</b>
+                                    </td>
+                                    <td>
+                                        <b>Amount</b>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <!--<label id="TopTenTF-Bot5-Account"></label>-->
+                                        <a id="TopTenTF-Bot5-Account" href="#"></a>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenTF-Bot5-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <!--<label id="TopTenTF-Bot4-Account"></label>-->
+                                        <a id="TopTenTF-Bot4-Account" href="#"></a>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenTF-Bot4-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <!--<label id="TopTenTF-Bot3-Account"></label>-->
+                                        <a id="TopTenTF-Bot3-Account" href="#"></a>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenTF-Bot3-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <!--<label id="TopTenTF-Bot2-Account"></label>-->
+                                        <a id="TopTenTF-Bot2-Account" href="#"></a>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenTF-Bot2-Amount"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <!--<label id="TopTenTF-Bot1-Account"></label>-->
+                                        <a id="TopTenTF-Bot1-Account" href="#"></a>
+                                    </td>
+                                    <td>
+                                        <label id="TopTenTF-Bot1-Amount"></label>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                </table>
+        </tr>
+    </table>
+  </body>
+</html>
+
+
