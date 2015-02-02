@@ -34,7 +34,7 @@ public class TopologyControl {
     private static Fields totalCountAmount = new Fields("count", "sumAmount", "window");
     private static Fields valueChart = new Fields("countBranch1", "countBranch2", "countBranch3", "countCenter", "window"
                                                     ,"sumBranch1", "sumBranch2", "sumBranch3", "sumCenter");
-    private static Fields RankingField = new Fields("TopFive", "BotFive", "window");
+    private static Fields RankingField = new Fields("TopFiveDep", "BotFiveDep", "TopFiveWit", "BotFiveWit", "TopFiveTran", "BotFiveTran", "window");
 
     private static final String KAFKA_TOPIC =
             Properties.getString("storm.kafka_topic");
