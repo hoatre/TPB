@@ -180,7 +180,7 @@ function getDetail(customerID)
       var collection = db.collection('Customers');
             console.log('Customers');
             collection.find(
-                {_id: new require('mongodb').ObjectID(customerID) }
+                {ACCOUNTNUMBER: customerID }
             ).toArray(function(err, items) {
                 if(items!=null&&items.length>0)
                 {
