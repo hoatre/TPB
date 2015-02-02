@@ -17,7 +17,8 @@ var express = require('express')
   , io = require('socket.io').listen(server);
 
 //---------------variable--------------------------
-var ADD_KAFKA='localhost:2181';
+//var ADD_KAFKA='localhost:2181';
+var ADD_KAFKA='10.20.252.201:2181';
 var ADD_MONGODB_CIC="mongodb://10.20.252.202:27017/CIC";
 var ADD_MONGODB_CLOUBBANK="mongodb://10.20.252.202:27017/CloudBank";
 //---------------variable--------------------------
@@ -126,30 +127,39 @@ function connMongodb(data)
 	});
 }
 
-function GetTop5CustomerLogs(data)
+
+var acc_no='';
+function GetTop5CustomerLogs()
 {
-	MongoClient.connect(ADD_MONGODB_CLOUBBANK, function(err, db) {
-		if(err) { return console.dir(err); }
+    //console.log('------------------------: '+acc_no);
+    setTimeout(GetTop5CustomerLogs,2000);
+    if(acc_no!=''&&acc_no!=null)
+    {
+        MongoClient.connect(ADD_MONGODB_CLOUBBANK, function(err, db) {
+                if(err) { return console.dir(err); }
 
-		var collection = db.collection('CustomerLogs');
-		
-			//var obj={data:[],count:0}
-			//var seachValue = data.value.toUpperCase();
-			//var seachValue=data.value.toUpperCase();
-			console.log('GetTop5CustomerLogs');
-			collection.find(
-				{acc_no: data }
-			).sort({timestamp: -1}).skip(0).limit(5).toArray(function(err, items) {
-					if(items!=null&&items.length>0)
-					{
+                var collection = db.collection('CustomerLogs');
 
-								io.sockets.emit('CUSTOMERLOGS_TOP5_TRANSACTION_DATA', items);
-							
-					}
-				});
-		
-	});
+                //var obj={data:[],count:0}
+                //var seachValue = data.value.toUpperCase();
+                //var seachValue=data.value.toUpperCase();
+                console.log('GetTop5CustomerLogs: '+acc_no);
+                collection.find(
+                    {acc_no: acc_no }
+                ).sort({timestamp: -1}).skip(0).limit(5).toArray(function(err, items) {
+                        if(items!=null&&items.length>0)
+                        {
+
+                                    io.sockets.emit('CUSTOMERLOGS_TOP5_TRANSACTION_DATA', items);
+
+                        }
+                });
+
+        });
+    }
 }
+
+
 
 io.sockets.on('connection',function(socket){
 	socket.on('CUSTOMER_LIST_SEND_MESSAGE',function(data){
@@ -160,7 +170,8 @@ io.sockets.on('connection',function(socket){
 	socket.on('CUSTOMERLOGS_TOP5_TRANSACTION_SEND_MESSAGE',function(data){
 		//io.sockets.emit('new message',data);
 		//connMongodb(data);
-		GetTop5CustomerLogs(data);
+        acc_no=data;
+        GetTop5CustomerLogs();
 		console.log('CUSTOMERLOGS_TOP5_TRANSACTION_SEND_MESSAGE:'+data);
 	});
 
@@ -247,6 +258,10 @@ function send(message) {
  }
  */
 var obj = {
+    account: '',
+    account1: '',
+    account2: '',
+    account3: '',
     time: 0,
     time1: 0,
     time2: 0,
@@ -300,7 +315,7 @@ function recursive()
     else {
         console.log('conf1'+obj.channel+':'+obj.countmessage+'-'+obj.amountto+':'+obj.amountfrom);
         t = setTimeout(recursive, obj.time);
-        send(GeneratorTransaction(obj.amountto,obj.amountfrom,obj.channel, obj.product, obj.transactiontype, cnt));
+        send(GeneratorTransaction(obj.account,obj.amountto,obj.amountfrom,obj.channel, obj.product, obj.transactiontype, cnt));
     }
 
 }
@@ -315,7 +330,7 @@ function recursive1()
     else {
         console.log('conf2'+obj.channel1+':'+obj.countmessage1+'-'+obj.amountto1+':'+obj.amountfrom1);
         t1 = setTimeout(recursive1, obj.time1);
-        send(GeneratorTransaction(obj.amountto1,obj.amountfrom1,obj.channel1, obj.product1, obj.transactiontype1, cnt1));
+        send(GeneratorTransaction(obj.account1,obj.amountto1,obj.amountfrom1,obj.channel1, obj.product1, obj.transactiontype1, cnt1));
     }
 }
 function recursive2()
@@ -329,7 +344,7 @@ function recursive2()
     else {
         console.log('conf3'+obj.channel2+':'+obj.countmessage2+'-'+obj.amountto2+':'+obj.amountfrom2);
         t2 = setTimeout(recursive2, obj.time2);
-        send(GeneratorTransaction(obj.amountto2,obj.amountfrom2,obj.channel2, obj.product2, obj.transactiontype2, cnt2));
+        send(GeneratorTransaction(obj.account2,obj.amountto2,obj.amountfrom2,obj.channel2, obj.product2, obj.transactiontype2, cnt2));
     }
 }
 function recursive3()
@@ -345,7 +360,7 @@ function recursive3()
     {
         console.log('conf4'+obj.channel3+':'+obj.countmessage3+'-'+obj.amountto3+':'+obj.amountfrom3);
         t3 = setTimeout(recursive3,obj.time3);
-        send(GeneratorTransaction(obj.amountto3,obj.amountfrom3,obj.channel3, obj.product3, obj.transactiontype3, cnt3));
+        send(GeneratorTransaction(obj.account3,obj.amountto3,obj.amountfrom3,obj.channel3, obj.product3, obj.transactiontype3, cnt3));
     }
 }
 
@@ -356,7 +371,7 @@ function randomInt (low, high) {
 
 
 //Generator transaction
-var GeneratorTransaction = function(amountto,amountfrom,channal, product, transactionType, msgs)
+var GeneratorTransaction = function(account,amountto,amountfrom,channal, product, transactionType, msgs)
 {
     //ID
     var trx_id = randomInt(1,9999999);
@@ -374,14 +389,8 @@ var GeneratorTransaction = function(amountto,amountfrom,channal, product, transa
     product = product || products[randomInt(0,products.length)];
 
     //Generate Account
-    var acc_nos = ["906-472-60565432", "501-850-79434787", "232-227-22317914", "627-699-99735526", "570-360-53193751"
-        ,"762-445-16515789", "206-277-83523509", "479-353-37465657", "304-152-13728407", "402-778-35172794"
-        ,"231-951-25746867", "517-188-29779074", "778-382-32874037", "239-911-23093559", "844-236-93994165"
-        ,"211-806-44852348", "205-942-49869215", "512-934-58342425", "634-179-52661293", "922-651-83633753"
-        ,"932-511-12473453", "899-472-55449952", "630-561-33936692", "536-222-53456993", "351-977-80518275"
-        ,"100-121-12121216", "200-555-12313126", "100-643-10231326", "400-223-32424236", "500-123-23313446"];
         
-    var acc_no = acc_nos[randomInt(0,acc_nos.length)];
+    var acc_no = account==''?acc_nos[randomInt(0,acc_nos.length)]:account;
 
     //console.log('amountfrom: '+ amountfrom);
     //console.log('amountto: '+ amountto);
@@ -437,6 +446,10 @@ io.sockets.on('connection',function(socket){
 		console.log('SIMULATOR_LIST_SEND_MESSAGE:'+data);
 
         obj = {
+	    account: data.account,
+	    account1: data.account1,
+	    account2: data.account2,
+	    account3: data.account3,
             time: data.time==''?1000:data.time,
             time1: data.time1==''?1000:data.time1,
             time2: data.time2==''?1000:data.time2,
@@ -486,6 +499,10 @@ io.sockets.on('connection',function(socket){
             if(data.status=='start')
             {
                 obj = {
+		    account: data.account,
+		    account1: data.account1,
+		    account2: data.account2,
+		    account3: data.account3,
                     time: data.time==''?1000:data.time,
                     time1: data.time1==''?1000:data.time1,
                     time2: data.time2==''?1000:data.time2,
@@ -530,6 +547,10 @@ io.sockets.on('connection',function(socket){
             if(data.status1=='start')
             {
                 obj = {
+	            account: data.account,
+		    account1: data.account1,
+		    account2: data.account2,
+		    account3: data.account3,
                     time: data.time==''?1000:data.time,
                     time1: data.time1==''?1000:data.time1,
                     time2: data.time2==''?1000:data.time2,
@@ -574,6 +595,10 @@ io.sockets.on('connection',function(socket){
             if(data.status2=='start')
             {
                 obj = {
+		    account: data.account,
+		    account1: data.account1,
+		    account2: data.account2,
+		    account3: data.account3,
                     time: data.time==''?1000:data.time,
                     time1: data.time1==''?1000:data.time1,
                     time2: data.time2==''?1000:data.time2,
@@ -618,6 +643,10 @@ io.sockets.on('connection',function(socket){
             if(data.status3=='start')
             {
                 obj = {
+		    account: data.account,
+		    account1: data.account1,
+		    account2: data.account2,
+		    account3: data.account3,
                     time: data.time==''?1000:data.time,
                     time1: data.time1==''?1000:data.time1,
                     time2: data.time2==''?1000:data.time2,
@@ -689,8 +718,28 @@ function SimulatorConfig(tablename,parameterconfig)
 			
 	});
 }
+var acc_nos = [];
+//HieuLD add method GetAccountNumberList
+function GetAccountNumberList()
+{
+    MongoClient.connect(ADD_MONGODB_CLOUBBANK, function(err, db) {
+        if(err) { return console.dir(err); }
+
+        var collection = db.collection("AccNumbers");
+        console.log("AccNumbers");
+        collection.find({}, {ACCOUNTNUMBER:1, _id:0}
+        ).toArray(function(err, items) {
+                if(items!=null&&items.length>0)
+                {
+                    for (i=0; i<items.length; i++)
+                        acc_nos.push(items[i].ACCOUNTNUMBER);
+                }
+            });
 
 
+    });
+}
+GetAccountNumberList();
 //--------------------------------------------------
 
 //--------------------------------------simulator---------------------------------------------

@@ -172,6 +172,7 @@
 
 <!--<script src="assets/js/jquery.min.js"></script>-->
 <script src="/jquery-latest.min.js"></script>
+<script src="/jquery.timeago.js"></script>
 <script src="/socket.io/socket.io.js"></script>
 
 <script>
@@ -211,16 +212,17 @@
 			for(var i=0;i<data.length;i++)
 			{
 				var j=i+1;
-				strTableTop5+="<td>"+data[i].timestamp+"</td>";
-				strTableTop5+="<td>"+data[i].trx_id+"</td>";
+				strTableTop5+="<tr>";
+				strTableTop5+="<td>"+jQuery.timeago(new Date(data[i].timestamp))+"</td>";
+				strTableTop5+="<td>"+data[i].trx_id+'('+data[i].amount+')'+"</td>";
 				strTableTop5+="<td>"+data[i].acc_no+"</td>";
+				strTableTop5+="</tr>";
 			}
 			strTableTop5+="</table>";
 			//alert(strTableTop5);
 			document.getElementById('tdTableTop5').innerHTML=strTableTop5;
 		});
 	});
-
 </script>
 
 </body>
