@@ -18,31 +18,37 @@ import java.util.Map;
  */
 public class StoreTransactionToMongoDB extends BaseFunction {
 
+
     public void execute(TridentTuple tuple, TridentCollector
             collector) {
 
-
-
-
         try {
             String json = tuple.getString(0);
-            Mongo mongo = new Mongo(Properties.getString("MongoDB.host"), Properties.getInt("MongoDB.port"));
-            DB db = mongo.getDB(Properties.getString("MongoDB.Name"));
-            DBCollection collection = db.getCollection("CustomerLogs");
+            Map<String, Object> map = (Map<String, Object>)
+                    JSONValue.parse(json);
+            Values values = new Values();
+            if(!map.get("acc_no").equals("000-000-00000000")) {
+                Mongo mongo = new Mongo(Properties.getString("MongoDB.host"), Properties.getInt("MongoDB.port"));
+                DB db = mongo.getDB(Properties.getString("MongoDB.Name"));
 
-            // convert JSON to DBObject directly
-            DBObject dbObject = (DBObject) JSON
-                    .parse(json);
+                DBCollection collection = db.getCollection("CustomerLogs");
 
-            collection.insert(dbObject);
+                // convert JSON to DBObject directly
+                DBObject dbObject = (DBObject) JSON
+                        .parse(json);
 
-            DBCursor cursorDoc = collection.find();
-            while (cursorDoc.hasNext()) {
-                System.out.println(cursorDoc.next());
+                collection.insert(dbObject);
             }
+//            DBCursor cursorDoc = collection.find();
+//            while (cursorDoc.hasNext()) {
+//                //System.out.println(cursorDoc.next());
+//            }
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (MongoException e) {
+            e.printStackTrace();
+        }catch (Exception e)
+        {
             e.printStackTrace();
         }
     }

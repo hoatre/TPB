@@ -20,7 +20,7 @@ public class RankingsBolt extends BaseFunction{
         this.emitRatePer = emitRatePer;
     }
     public void execute(TridentTuple tuple, TridentCollector collector) {
-        this.sliding.listAmountAcc(tuple.getLongByField("amount"),
+        this.sliding.listAmountAcc(tuple.getStringByField("trx_code"), tuple.getLongByField("amount"),
                 tuple.getStringByField("acc_no"), tuple.getLongByField("timestamp"));
         System.out.println("TopFive : " + this.sliding.getTopFive());
         System.out.println("BotFive : " + this.sliding.getBotFive());

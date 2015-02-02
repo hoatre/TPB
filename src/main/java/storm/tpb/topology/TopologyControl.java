@@ -31,7 +31,10 @@ import java.util.Map;
  */
 public class TopologyControl {
 
-
+    private static Fields totalCountAmount = new Fields("count", "sumAmount", "window");
+    private static Fields valueChart = new Fields("countBranch1", "countBranch2", "countBranch3", "countCenter", "window"
+                                                    ,"sumBranch1", "sumBranch2", "sumBranch3", "sumCenter");
+    private static Fields RankingField = new Fields("TopFive", "BotFive", "window");
 
     private static final String KAFKA_TOPIC =
             Properties.getString("storm.kafka_topic");
@@ -63,45 +66,64 @@ public class TopologyControl {
         Stream parsedStream = spoutStream.each(new Fields("str"), new
                 JsonProjectFunction(jsonFields), jsonFields);
 
-        TopologySliding(parsedStream, 30.0);
         TopologySliding(parsedStream, 60.0);
-        TopologySliding(parsedStream, 600.0);
+        TopologySliding(parsedStream, 3600.0);
+        TopologySliding(parsedStream, 86400.0);
+
+        spoutStream.each(new Fields("str"), new RollingSaveDBBolt())
+                .each(new Fields("str"), new StoreTransactionToMongoDB(), new Fields("StoreTransactionToMongoDB"));
 
         return topology.build();
     }
 
+//    private  static void TotalTranAmountByChannel(Stream st, SlidingWindow Sliding, String channel){
+//        st.each(new Fields("ch_id"), new RollingBolt(channel))
+//                .each(new Fields("amount", "timestamp"), new TotalCountAmountBolt(Sliding, SlidingWindow.Time.SECONDS)
+//                        , totalCountAmount)
+//                .each(totalCountAmount, new SaveRedisTotalCountAmount(channel), new Fields("doneCountAmount"));
+//    }
+
+    private  static void TotalRankingByTranType(Stream st, SlidingWindow Sliding, String tranType){
+        st.each(new Fields("trx_code"), new RollingBolt(tranType))
+                .each(new Fields("amount", "acc_no", "timestamp", "trx_code"), new RankingsBolt(Sliding, SlidingWindow.Time.SECONDS), RankingField)
+                .each(RankingField, new SaveRedisTopBotBolt(tranType), new Fields("abc"));
+    }
+
     private static void TopologySliding(Stream parsedStream, double SlidingTime)
     {
-        Fields totalCountAmount = new Fields("count", "sumAmount", "window");
-        Fields valueChart = new Fields("countBranch1", "countBranch2", "countBranch3", "countCenter", "window");
-        Fields RankingField = new Fields("TopFive", "BotFive", "window");
+
 
         SlidingWindow Sliding = new SlidingWindow().sliding(SlidingTime, SlidingWindow.Time.SECONDS);
 
         //Total Tran & Amount
-        parsedStream.each(new Fields("amount", "timestamp"), new TotalCountAmountBolt(Sliding, SlidingWindow.Time.SECONDS)
-                , totalCountAmount)
-                .each(totalCountAmount, new SaveRedisTotalCountAmount(), new Fields("doneCountAmount"));
+//        parsedStream.each(new Fields("amount", "timestamp"), new TotalCountAmountBolt(Sliding, SlidingWindow.Time.SECONDS)
+//                , totalCountAmount)
+//                .each(totalCountAmount, new SaveRedisTotalCountAmount(), new Fields("doneCountAmount"));
+        //Total Tran & Amount B1
+//        TotalTranAmountByChannel(parsedStream, Sliding, PARAM.Channel.BRANCH1.getValue());
+//
+//        //Total Tran & Amount B2
+//        TotalTranAmountByChannel(parsedStream, Sliding, PARAM.Channel.BRANCH2.getValue());
+//
+//        //Total Tran & Amount B3
+//        TotalTranAmountByChannel(parsedStream, Sliding, PARAM.Channel.BRANCH3.getValue());
+//
+//        //Total Tran & Amount B4
+//        TotalTranAmountByChannel(parsedStream, Sliding, PARAM.Channel.BRANCH4.getValue());
 
         //Count channel for chart
-        parsedStream.each(new Fields("ch_id", "timestamp"), new ValueChartBolt(Sliding, SlidingWindow.Time.SECONDS)
+        parsedStream.each(new Fields("ch_id", "timestamp", "amount"), new ValueChartBolt(Sliding, SlidingWindow.Time.SECONDS)
                 , valueChart)
                 .each(valueChart, new SaveRedisForChart(), new Fields("doneValueChart"));
 
         //Rankings DEPOSIT
-        parsedStream.each(new Fields("trx_code"), new RollingBolt(PARAM.TransCode.DEPOSIT.getValue()))
-                .each(new Fields("amount", "acc_no", "timestamp"), new RankingsBolt(Sliding, SlidingWindow.Time.SECONDS), RankingField)
-                .each(RankingField, new SaveRedisTopBotBolt(PARAM.TransCode.DEPOSIT.getValue()), new Fields("abc"));
+        TotalRankingByTranType(parsedStream, Sliding, PARAM.TransCode.DEPOSIT.getValue());
 
         //Rankings TRANSFERFROM
-        parsedStream.each(new Fields("trx_code"), new RollingBolt(PARAM.TransCode.TRANSFERFROM.getValue()))
-                .each(new Fields("amount", "acc_no", "timestamp"), new RankingsBolt(Sliding, SlidingWindow.Time.SECONDS), RankingField)
-                .each(RankingField, new SaveRedisTopBotBolt(PARAM.TransCode.TRANSFERFROM.getValue()), new Fields("abc"));
+        TotalRankingByTranType(parsedStream, Sliding, PARAM.TransCode.TRANSFERFROM.getValue());
 
         //Rankings WITHDRAWAL
-        parsedStream.each(new Fields("trx_code"), new RollingBolt(PARAM.TransCode.WITHDRAWAL.getValue()))
-                .each(new Fields("amount", "acc_no", "timestamp"), new RankingsBolt(Sliding, SlidingWindow.Time.SECONDS), RankingField)
-                .each(RankingField, new SaveRedisTopBotBolt(PARAM.TransCode.WITHDRAWAL.getValue()), new Fields("abc"));
+        TotalRankingByTranType(parsedStream, Sliding, PARAM.TransCode.WITHDRAWAL.getValue());
     }
 
     public static class JsonProjectFunction extends BaseFunction {

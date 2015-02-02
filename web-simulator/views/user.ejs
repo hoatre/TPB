@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <p>Welcome user quangh to <%= title %></p>
+  </body>
+  <script src="jquery-latest.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+  	var socket = io.connect('http://localhost:3001/');
+  	socket.emit('send message','ALL');
+  </script>
+</html>

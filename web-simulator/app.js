@@ -1,22 +1,200 @@
+
+/**
+ * Module dependencies.
+ */
 var MongoClient = require('mongodb').MongoClient;
-var express = require('express');
-app = express(),
-    server = require('http').createServer(app),
-    io = require('socket.io').listen(server);
-
-server.listen(3003);
-
-app.get('/',function(req,res){
-    res.sendFile(__dirname+'/simulator-client.html')
-});
-console.log('Server running at http://127.0.0.1:3003/');
-app.use(express.static(__dirname + '/lib'));
+var express = require('express')
+  , routes = require('./routes')
+  , user = require('./routes/user')
+  , customerlist = require('./routes/customerlist')
+  , customerdetail = require('./routes/customerdetail')
+  , simulator = require('./routes/simulator')
+  , dashboad = require('./routes/dashboad')
+  //, http = require('http')
+  , app = express()
+  , path = require('path')
+  , server = require('http').createServer(app)
+  , io = require('socket.io').listen(server);
 
 //---------------variable--------------------------
 var ADD_KAFKA='localhost:2181';
 var ADD_MONGODB_CIC="mongodb://10.20.252.202:27017/CIC";
 var ADD_MONGODB_CLOUBBANK="mongodb://10.20.252.202:27017/CloudBank";
 //---------------variable--------------------------
+
+// all environments
+//app.set('port', process.env.PORT || 3000);
+app.set('views', __dirname + '/views');
+app.set('view engine', 'ejs');
+app.use(express.favicon());
+app.use(express.logger('dev'));
+app.use(express.bodyParser());
+app.use(express.methodOverride());
+app.use(app.router);
+app.use(express.static(path.join(__dirname, 'public')));
+
+// development only
+if ('development' == app.get('env')) {
+  app.use(express.errorHandler());
+}
+
+app.get('/', routes.index);
+app.get('/users', user.list);
+app.get('/customerlist', customerlist.list);
+app.get('/customerdetail/:quang_id', customerdetail.list);
+app.get('/simulator', simulator.list);
+app.get('/dashboad', dashboad.list);
+
+
+server.listen(3000);
+console.log('Server running at http://127.0.0.1:3000/');
+app.use(express.static(__dirname + '/lib'));
+/*http.createServer(app).listen(app.get('port'), function(){
+  console.log('Express server listening on port ' + app.get('port'));
+});*/
+//--------------------------------------customer---------------------------------------------
+var customer={
+	fullname:''
+}
+var lstcustormer=[];
+var arr;
+function connMongodb(data)
+{
+	MongoClient.connect(ADD_MONGODB_CLOUBBANK, function(err, db) {
+		if(err) { return console.dir(err); }
+
+		var collection = db.collection('Customers');
+
+		/*collection.find(
+		 {FULLNAME: /^NGUYEN/ }
+		 ).skip(1).limit(10).toArray(function(err, items) {
+		 if(items!=null&&items.length>0)
+		 {
+		 console.log('FULLNAME:'+items[0].FULLNAME);
+		 io.sockets.emit('CUSTOMER_LIST_DATA', items);
+		 }
+		 });*/
+		if(data.value=='ALL')
+		{
+			var obj={data:[],count:0}
+			collection.find(
+				//{FULLNAME: /^NGUYEN/ }
+			).skip(data.start).limit(data.end).toArray(function(err, items) {
+					if(items!=null&&items.length>0)
+					{
+						//console.log('FULLNAME:'+items[0].FULLNAME);
+						obj.data=items;
+						//io.sockets.emit('CUSTOMER_LIST_DATA', items);
+						collection.count(function(err, count) {
+							if(count>0)
+							{
+								console.log('FULLNAME:'+obj.data[0].FULLNAME);
+								obj.count=count;
+								io.sockets.emit('CUSTOMER_LIST_DATA', obj);
+							}
+						});
+					}
+				});
+
+
+		}
+		else
+		{
+			var obj={data:[],count:0}
+			var seachValue = data.value.toUpperCase();
+			//var seachValue=data.value.toUpperCase();
+			console.log('value:'+seachValue);
+			collection.find(
+				{FULLNAME: new RegExp(seachValue) }
+			).skip(data.start).limit(data.end).toArray(function(err, items) {
+					if(items!=null&&items.length>0)
+					{
+						//console.log('FULLNAME:'+items[0].FULLNAME);
+						obj.data=items;
+						//io.sockets.emit('CUSTOMER_LIST_DATA', items);
+						collection.count({FULLNAME: new RegExp(seachValue)} ,function(err, count) {
+							if(count>0)
+							{
+								console.log('FULLNAME:'+obj.data[0].FULLNAME);
+								obj.count=count;
+								io.sockets.emit('CUSTOMER_LIST_DATA', obj);
+							}
+						});
+					}
+				});
+		}
+	});
+}
+
+function GetTop5CustomerLogs(data)
+{
+	MongoClient.connect(ADD_MONGODB_CLOUBBANK, function(err, db) {
+		if(err) { return console.dir(err); }
+
+		var collection = db.collection('CustomerLogs');
+		
+			//var obj={data:[],count:0}
+			//var seachValue = data.value.toUpperCase();
+			//var seachValue=data.value.toUpperCase();
+			console.log('GetTop5CustomerLogs');
+			collection.find(
+				{acc_no: data }
+			).sort({timestamp: -1}).skip(0).limit(5).toArray(function(err, items) {
+					if(items!=null&&items.length>0)
+					{
+
+								io.sockets.emit('CUSTOMERLOGS_TOP5_TRANSACTION_DATA', items);
+							
+					}
+				});
+		
+	});
+}
+
+io.sockets.on('connection',function(socket){
+	socket.on('CUSTOMER_LIST_SEND_MESSAGE',function(data){
+		//io.sockets.emit('new message',data);
+		connMongodb(data);
+		console.log('msg:'+data.value+"--start:"+data.start+"--end:"+data.end);
+	});
+	socket.on('CUSTOMERLOGS_TOP5_TRANSACTION_SEND_MESSAGE',function(data){
+		//io.sockets.emit('new message',data);
+		//connMongodb(data);
+		GetTop5CustomerLogs(data);
+		console.log('CUSTOMERLOGS_TOP5_TRANSACTION_SEND_MESSAGE:'+data);
+	});
+
+    socket.on('customerID',function(data){
+        getDetail(data);
+        //console.log('msg:'+data.value+"--start:"+data.start+"--end:"+data.end);
+    });
+});
+
+function getDetail(customerID)
+{
+    console.log('customerID:'+customerID);
+    
+    MongoClient.connect(ADD_MONGODB_CLOUBBANK, function(err, db) {
+      if(err) { return console.dir(err); }
+      
+      var collection = db.collection('Customers');
+            console.log('Customers');
+            collection.find(
+                {_id: new require('mongodb').ObjectID(customerID) }
+            ).toArray(function(err, items) {
+                if(items!=null&&items.length>0)
+                {
+                    console.log('cnt:'+items.length);
+                    io.sockets.emit('_customerDetail', items);
+                }
+            });
+            
+            
+    });
+}
+//--------------------------------------customer---------------------------------------------
+
+//--------------------------------------simulator---------------------------------------------
 
 var kafka = require('kafka-node'),
     Producer = kafka.Producer,
@@ -32,8 +210,6 @@ var p = 0;
 
 //Count message
 var  count = 0;
-
-var acc_nos = [];
 
 
 var producer = new Producer(client);
@@ -198,15 +374,13 @@ var GeneratorTransaction = function(amountto,amountfrom,channal, product, transa
     product = product || products[randomInt(0,products.length)];
 
     //Generate Account
-    //var acc_nos = ["100-121-12121212", "200-555-12313123", "100-643-10231323", "400-223-32424234", "500-123-23313443"
-    //    ,"100-121-12121212", "200-555-12313121", "100-643-10231321", "400-223-32424231", "500-123-23313441"
-    //    ,"100-121-12121213", "200-555-12313122", "100-643-10231322", "400-223-32424232", "500-123-23313442"
-    //    ,"100-121-12121214", "200-555-12313124", "100-643-10231324", "400-223-32424233", "500-123-23313444"
-    //    ,"100-121-12121215", "200-555-12313125", "100-643-10231325", "400-223-32424235", "500-123-23313445"
-    //    ,"100-121-12121216", "200-555-12313126", "100-643-10231326", "400-223-32424236", "500-123-23313446"
-    //    ,"100-121-12121217", "200-555-12313127", "100-643-10231327", "400-223-32424237", "500-123-23313447"
-    //    ,"100-121-12121218", "200-555-12313128", "100-643-10231328", "400-223-32424238", "500-123-23313448"
-    //    ,"100-121-12121219", "200-555-12313129", "100-643-10231329", "400-223-32424239", "500-123-23313449"];
+    var acc_nos = ["906-472-60565432", "501-850-79434787", "232-227-22317914", "627-699-99735526", "570-360-53193751"
+        ,"762-445-16515789", "206-277-83523509", "479-353-37465657", "304-152-13728407", "402-778-35172794"
+        ,"231-951-25746867", "517-188-29779074", "778-382-32874037", "239-911-23093559", "844-236-93994165"
+        ,"211-806-44852348", "205-942-49869215", "512-934-58342425", "634-179-52661293", "922-651-83633753"
+        ,"932-511-12473453", "899-472-55449952", "630-561-33936692", "536-222-53456993", "351-977-80518275"
+        ,"100-121-12121216", "200-555-12313126", "100-643-10231326", "400-223-32424236", "500-123-23313446"];
+        
     var acc_no = acc_nos[randomInt(0,acc_nos.length)];
 
     //console.log('amountfrom: '+ amountfrom);
@@ -215,19 +389,44 @@ var GeneratorTransaction = function(amountto,amountfrom,channal, product, transa
     var amount = randomInt(amountto, amountfrom);
 
     var timestamp = new Date().getTime();
-
     var trans = {
-        trx_id: trx_id,
-        trx_code: transactionType,
-        ch_id: channal,
-        amount: amount,
-        acc_no: acc_no,
-        prd_id: product,
-        timestamp: timestamp,
-        count: msgs
-    };
-    var msg = JSON.stringify(trans);
-    return msg;
+						trx_id: trx_id,
+						trx_code: transactionType,
+						ch_id: channal,
+						amount: amount,
+						acc_no: acc_no,
+						prd_id: product,
+						timestamp: timestamp,
+						count: msgs
+					    };
+    //-------------------------------------------------
+	 /*MongoClient.connect(ADD_MONGODB_CLOUBBANK, function(err, db) {
+	 if(err) { return console.dir(err); }
+	  
+	  var collection = db.collection("AccNumbers");
+			console.log("AccNumbers");
+			collection.find(
+				//{FULLNAME: /^NGUYEN/ }
+			).toArray(function(err, items) {
+				if(items!=null&&items.length>0)
+				{
+					//console.log('cnt:'+items.length);
+					//io.sockets.emit(parameterconfig, items);
+				        //acc_no=items[randomInt(0,acc_nos.length)].ACCOUNTNUMBER;
+					trans.acc_no=items[0].ACCOUNTNUMBER;
+					//console.log('ACCOUNTNUMBER:'+acc_no);
+					//console.log('ACCOUNTNUMBER:'+acc_no);
+				}
+			});
+		
+					    	
+			
+	});*/
+	//-------------------------------------------------
+	console.log('ACCOUNTNUMBER:'+trans.acc_no);
+    
+	var msg = JSON.stringify(trans);
+	return msg;	
 }
 
 
@@ -491,26 +690,159 @@ function SimulatorConfig(tablename,parameterconfig)
 	});
 }
 
-//HieuLD add method GetAccountNumberList
-function GetAccountNumberList()
-{
-    MongoClient.connect(ADD_MONGODB_CLOUBBANK, function(err, db) {
-        if(err) { return console.dir(err); }
-
-        var collection = db.collection("AccNumbers");
-        console.log("AccNumbers");
-        collection.find({}, {ACCOUNTNUMBER:1, _id:0}
-        ).toArray(function(err, items) {
-                if(items!=null&&items.length>0)
-                {
-                    for (i=0; i<items.length; i++)
-                        acc_nos.push(items[i].ACCOUNTNUMBER);
-                }
-            });
-
-
-    });
-}
-GetAccountNumberList();
 
 //--------------------------------------------------
+
+//--------------------------------------simulator---------------------------------------------
+
+//--------------------------------------dashboad-----------------------------------------------
+
+/*
+ Node.js server script
+ Required node packages: express, redis, socket.io
+ */
+
+var t1, t2, t3;
+var Deposit = "DE";
+var Withdrawal = "WI";
+var Transfer_From = "TF";
+var Branch1 = "B1";
+var Branch2 = "B2";
+var Branch3 = "B3";
+var Contact_Center = "Contact";
+var totalNoTran = 0;
+var totalAmount = 0;
+var time1 = 60000;
+var time2 = 3600000;
+var time3 = 86400000;
+
+
+const redis = require('redis');
+//const client1 = redis.createClient(6379, '10.20.252.201', {});
+const client1 = redis.createClient();
+//log('info', 'connected to redis server');
+
+//server.listen(3000);
+//const socket  = io.listen(server);
+
+//app.get('/',function(req,res){
+//    res.sendFile(__dirname+'/client.html')
+//});
+//console.log('Server running at http://10.20.252.201:3000/');
+//app.use(express.static(__dirname + '/lib'));
+
+function log(type, msg) {
+
+    var color   = '\u001b[0m',
+        reset = '\u001b[0m';
+
+    switch(type) {
+        case "info":
+            color = '\u001b[36m';
+            break;
+        case "warn":
+            color = '\u001b[33m';
+            break;
+        case "error":
+            color = '\u001b[31m';
+            break;
+        case "msg":
+            color = '\u001b[34m';
+            break;
+        default:
+            color = '\u001b[0m'
+    }
+
+    console.log(color + '   ' + type + '  - ' + reset + msg);
+}
+
+function redis_get(key){
+    client1.get(key, function(err, items) {
+        if (err) {
+            log('error', "error");
+        } else {
+            socket.emit('CountChart-' + key,items);
+            log('info', "CountChart-" + key + " : " + items);
+        }
+    });
+}
+function redis_get_total(key){
+    client1.get(key, function(err, items) {
+        if (err) {
+            log('error', "error");
+        } else {
+            socket.emit('Total-' + key,items);
+            log('info', "Total-" + key + " : " + items);
+        }
+    });
+}
+function redis_hmget_top(key){
+    client1.hmget(key, "Acc", "Amount", function (err, items) {
+        if (err) {
+            log('error', "error");
+        } else {
+            socket.emit('Top-' + key, items);
+            log('info', "Top-" + key + " : " + items);
+        }
+    });
+}
+t1 = setInterval(function() {
+    setTime(time1);
+}, 1000);
+t2 = setInterval(function() {
+    setTime(time2);
+}, 1000);
+t3 = setInterval(function() {
+    setTime(time3);
+}, 1000);
+
+clearInterval(t2);
+clearInterval(t3);
+clearInterval(t1);
+io.sockets.on('connection',function(socket){
+    socket.on('open 1 Minute', function (data1) {
+        log('warn', "open 1 Minute");
+        clearInterval(t2);
+        clearInterval(t3);
+        t1 = setInterval(function() {
+            setTime(time1);
+        }, 1000);
+    }),
+        socket.on('open 1 hour', function (data1) {
+            log('warn', "open 1 hour");
+            clearInterval(t1);
+            clearInterval(t3);
+            t2 = setInterval(function() {
+                setTime(time2);
+            }, 1000);
+        }),
+        socket.on('open 1 day', function (data1) {
+            log('warn', "open 1 day");
+            clearInterval(t2);
+            clearInterval(t1);
+            t3 = setInterval(function() {
+                setTime(time3);
+            }, 1000);
+        })
+});
+
+function setTime(slidingTime){
+    redis_get('real-time-count-' + Branch1 + '-' + slidingTime);
+    redis_get('real-time-count-' + Branch2 + '-' + slidingTime);
+    redis_get('real-time-count-' + Branch3 + '-' + slidingTime);
+    redis_get('real-time-count-' + Contact_Center + '-' + slidingTime);
+    redis_get('real-time-sum-' + Branch1 + '-' + slidingTime);
+    redis_get('real-time-sum-' + Branch2 + '-' + slidingTime);
+    redis_get('real-time-sum-' + Branch3 + '-' + slidingTime);
+    redis_get('real-time-sum-' + Contact_Center + '-' + slidingTime);
+    for(z=1; z <= 5; z++) {
+        redis_hmget_top('TopTen' + Deposit + '-Top' + z.toString() + "-" + slidingTime);
+        redis_hmget_top('TopTen' + Withdrawal + '-Top' + z.toString() + "-" + slidingTime);
+        redis_hmget_top('TopTen' + Deposit + '-Bot' + z.toString() + "-" + slidingTime);
+        redis_hmget_top('TopTen' + Withdrawal + '-Bot' + z.toString() + "-" + slidingTime);
+        redis_hmget_top('TopTen' + Transfer_From + '-Bot' + z.toString() + "-" + slidingTime);
+        redis_hmget_top('TopTen' + Transfer_From + '-Top' + z.toString() + "-" + slidingTime);
+    }
+}
+
+//--------------------------------------dashboad-----------------------------------------------
