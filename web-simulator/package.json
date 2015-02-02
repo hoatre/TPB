@@ -1,24 +1,25 @@
 {
-  "name" : "nodejs-kafka-new",
+  "name" : "nodejs-kafka",
   "description" : "Realtime stats using node.js, socket.io and redis",
   "version" : "0.0.1",
   "author": {
-	"name": "TPB Team",
-	"email": ""
+    "name": "TPB Team",
+    "email": ""
   },
   "dependencies" : {
-	"redis": "0.12.1",
-	"socket.io": "1.2.1",
-	"express": "3.2.6",
-	"smoothie": "1.27.0",
-	"kafka-node":"0.2.14",
-	"mongodb": "1.4.29"
+    "redis": "0.12.1",
+    "socket.io": "1.2.1",
+    "express": "3.2.6",
+    "smoothie": "1.27.0",
+    "kafka-node":"0.2.14",
+    "mongodb":"",
+    "ejs": "*"
   },
   "repository" : {
-	"type": "git",
-	"url": "http://github.com/hoatre/TPB"
+    "type": "git",
+    "url": "http://github.com/hoatre/TPB"
   },
   "engines" : {
-	"node": ">=0.4.0"
+    "node": ">=0.4.0"
   }
 }
