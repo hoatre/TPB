@@ -36,9 +36,11 @@ public class StoreTransactionToMongoDB extends BaseFunction {
                 DBCollection collectionChannel = db.getCollection("Channels");
                 DBCollection collectionTransactionTypes = db.getCollection("TransactionTypes");
 
+                //Query Channel
                 BasicDBObject query = new BasicDBObject("ChannelCode", map.get("ch_id"));
                 BasicDBObject cursorDoc = (BasicDBObject) collectionChannel.findOne(query);
 
+                //Query Transaction
                 BasicDBObject queryTransaction = new BasicDBObject("TransactionCode", map.get("trx_code"));
                 BasicDBObject cursorDocTrx = (BasicDBObject) collectionTransactionTypes.findOne(queryTransaction);
 
