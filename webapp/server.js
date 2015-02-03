@@ -27,7 +27,7 @@ const redis = require('redis');
 const client1 = redis.createClient();
 log('info', 'connected to redis server');
 
-server.listen(3000);
+server.listen(4000);
 const socket  = io.listen(server);
 
 app.get('/',function(req,res){

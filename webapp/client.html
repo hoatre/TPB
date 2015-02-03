@@ -7,14 +7,14 @@
 
     <!--Load the AJAX API-->
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-    <script type="text/javascript" src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="http://localhost:4000/socket.io/socket.io.js"></script>
     <!--<script type="text/javascript" src="smoothie.js"></script>-->
       <script type="text/javascript" src="http://github.com/joewalnes/smoothie/raw/master/smoothie.js"></script>
     <script type="text/javascript" src="canvasjs.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 
     <script type="text/javascript">
-      var socket = io.connect('http://localhost:3000/');
+      var socket = io.connect('http://localhost:4000/');
 
       // Data
       var line1 = new TimeSeries();
@@ -34,7 +34,7 @@
       var Branch2 = "B2";
       var Branch3 = "B3";
       var Contact_Center = "Contact";
-      var profileHost = 'http://localhost:3002/customerdetail/';
+      var profileHost = 'http://localhost:3000/customerdetail/';
 
       var countB1 = 0;
       var sumB1 = 0;
