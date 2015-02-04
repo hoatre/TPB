@@ -1,185 +1,713 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<meta charset="utf-8">
-	<title>Customer Detail</title>
+  <head>
+    <meta charset="utf-8">
+    <title>User Profile</title>
+	
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-	<style type="text/css">
-		table.myTable { border-collapse:collapse; }
-		table.myTable td, table.myTable th { border:1px solid black;padding:5px; }
-		.CSSTableGenerator {
-			margin:0px;padding:0px;
-			width:100%;
-			box-shadow: 10px 10px 5px FF6600;
-			border:1px solid #000000;
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/css/fonts.css">
+	<link rel="stylesheet" href="/assets/font-awesome/css/font-awesome.min.css">
+	
+	<!-- PAGE LEVEL PLUGINS STYLES -->
+	<link rel="stylesheet" href="/assets/css/plugins/bootstrap-wysihtml/bootstrap-wysihtml5.css">
+	<link rel="stylesheet" href="/assets/css/plugins/bootstrap-editable/bootstrap-editable.css">
+	<link rel="stylesheet" href="/assets/css/plugins/bootstrap-datepicker/datepicker.css">
+	<!-- REQUIRE FOR SPEECH COMMANDS -->
+	<link rel="stylesheet" type="text/css" href="/assets/css/plugins/gritter/jquery.gritter.css" />
 
-			-moz-border-radius-bottomleft:0px;
-			-webkit-border-bottom-left-radius:0px;
-			border-bottom-left-radius:0px;
+    <!-- Tc core CSS -->
+	<link id="qstyle" rel="stylesheet" href="/assets/css/themes/style.css">	
+	<!--[if lte IE 8]>
+		<link rel="stylesheet" href="assets/css/ie-fix.css" />
+	<![endif]-->
+	
+	
+    <!-- Add custom CSS here -->
 
-			-moz-border-radius-bottomright:0px;
-			-webkit-border-bottom-right-radius:0px;
-			border-bottom-right-radius:0px;
-
-			-moz-border-radius-topright:0px;
-			-webkit-border-top-right-radius:0px;
-			border-top-right-radius:0px;
-
-			-moz-border-radius-topleft:0px;
-			-webkit-border-top-left-radius:0px;
-			border-top-left-radius:0px;
-		}.CSSTableGenerator table{
-			 width:100%;
-			 height:100%;
-			 margin:0px;padding:0px;
-		 }.CSSTableGenerator tr:last-child td:last-child {
-			  -moz-border-radius-bottomright:0px;
-			  -webkit-border-bottom-right-radius:0px;
-			  border-bottom-right-radius:0px;
-		  }
-		.CSSTableGenerator table tr:first-child td:first-child {
-			-moz-border-radius-topleft:0px;
-			-webkit-border-top-left-radius:0px;
-			border-top-left-radius:0px;
-		}
-		.CSSTableGenerator table tr:first-child td:last-child {
-			-moz-border-radius-topright:0px;
-			-webkit-border-top-right-radius:0px;
-			border-top-right-radius:0px;
-		}.CSSTableGenerator tr:last-child td:first-child{
-			 -moz-border-radius-bottomleft:0px;
-			 -webkit-border-bottom-left-radius:0px;
-			 border-bottom-left-radius:0px;
-		 }.CSSTableGenerator tr:hover td{
-
-		  }
-		.CSSTableGenerator tr:nth-child(odd){ background-color:#FFCCCC; }
-		.CSSTableGenerator tr:nth-child(even)    { background-color:#FFFFCC; }.CSSTableGenerator td{
-																				  vertical-align:middle;
-
-
-																				  border:1px solid #000000;
-																				  border-width:0px 1px 1px 0px;
-																				  text-align:left;
-																				  padding:10px;
-																				  font-size:12px;
-																				  font-family:Arial;
-																				  font-weight:normal;
-																				  color:#000000;
-																			  }.CSSTableGenerator tr:last-child td{
-																				   border-width:0px 1px 0px 0px;
-																			   }.CSSTableGenerator tr td:last-child{
-																					border-width:0px 0px 1px 0px;
-																				}.CSSTableGenerator tr:last-child td:last-child{
-																					 border-width:0px 0px 0px 0px;
-																				 }
-		.CSSTableGenerator tr:first-child td{
-			background:-o-linear-gradient(bottom, #FF6600 5%, #FF6600 100%);	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #FF6600), color-stop(1, #FF6600) );
-			background:-moz-linear-gradient( center top, #FF6600 5%, #FF6600 100% );
-			filter:progid:DXImageTransform.Microsoft.gradient(startColorstr="#FF6600", endColorstr="#FF6600");	background: -o-linear-gradient(top,#FF6600,007fff);
-
-			background-color:#FF6600;
-			border:0px solid #000000;
-			text-align:center;
-			border-width:0px 0px 1px 1px;
-			font-size:14px;
-			font-family:Arial;
-			font-weight:bold;
-			color:#ffffff;
-		}
-		.CSSTableGenerator tr:first-child:hover td{
-			background:-o-linear-gradient(bottom, #FF6600 5%, #FF6600 100%);	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #FF6600), color-stop(1, #FF6600) );
-			background:-moz-linear-gradient( center top, #FF6600 5%, #FF6600 100% );
-			filter:progid:DXImageTransform.Microsoft.gradient(startColorstr="#FF6600", endColorstr="#FF6600");	background: -o-linear-gradient(top,#FF6600,007fff);
-
-			background-color:#FF6600;
-		}
-		.CSSTableGenerator tr:first-child td:first-child{
-			border-width:0px 0px 1px 0px;
-		}
-		.CSSTableGenerator tr:first-child td:last-child{
-			border-width:0px 0px 1px 1px;
-		}
-	</style>
-</head>
+	<!-- End custom CSS here -->
+	
+    <!--[if lt IE 9]>
+    <script src="assets/js/html5shiv.js"></script>
+    <script src="assets/js/respond.min.js"></script>
+    <![endif]-->
+	
+  </head>
 
 <body>
-<div id='dataCustomerDetail' class="well white">
-	<table border="1">
-		<tr>
-			<td width="80%"><div id='divInfomationDetail' align="center">
-				<p>fullname</p>
-				<p>birthday</p>
-				<p>sex</p>
-				<p>add</p>
-				<p>mobile</p>
-				<p>mobile</p></div></td>
-			<td width="20%" rowspan="2">
-				<table width="100%">
-					<tr>
-						<td width="100%">
-							<div id="fb-root"></div>
-							<img src="http://hayageek.com/examples/oauth/facebook/oauth-javascript/LoginWithFacebook.png" width="98%" style="cursor:pointer;" onclick="Login()"/>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<div id="message">
-								Logs:<br/>
+<div id="wrapper">
+		<div id="main-container">		
+			<!-- BEGIN TOP NAVIGATION -->
+				<nav class="navbar-top" role="navigation">
+					<!-- BEGIN BRAND HEADING -->
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle pull-right" data-toggle="collapse" data-target=".top-collapse">
+							<i class="fa fa-bars"></i>
+						</button>
+						<div class="navbar-brand">
+							<a href="index.html">
+								<!--<img src="assets/images/logo.png" alt="logo" class="img-responsive">-->
+							</a>
+						</div>
+					</div>
+					<!-- END BRAND HEADING -->
+					<div class="nav-top">
+						<!-- BEGIN RIGHT SIDE DROPDOWN BUTTONS -->
+							<ul class="nav navbar-right">
+								<li class="dropdown">
+									<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar-collapse">
+										<i class="fa fa-bars"></i>
+									</button>
+								</li>
+								<li class="dropdown">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+										<i class="fa fa-envelope"></i> <span class="badge up badge-primary">2</span></a>
+											<ul class="dropdown-menu dropdown-scroll dropdown-messages">
+												<li class="dropdown-header">
+													<i class="fa fa-envelope"></i> 2 New Messages
+												</li>
+												<li id="messageScroll">
+													<ul class="list-unstyled">
+														<li>
+															<a href="#">
+																<div class="row">
+																	<div class="col-xs-2">
+																		<img class="img-circle" src="/assets/images/user-profile-1.jpg" alt="">
+																	</div>
+																	<div class="col-xs-10">
+																		<p>
+																			<strong>John Smith</strong>: Hi again! I wanted to let you know that the order...
+																		</p>
+																		<p class="small">
+																			<i class="fa fa-clock-o"></i> 5 minutes ago
+																		</p>
+																	</div>
+																</div>
+															</a>
+														</li>
+														<li>
+															<a href="#">
+																<div class="row">
+																	<div class="col-xs-2">
+																		<img class="img-circle" src="/assets/images/user-profile-2.jpg" alt="">
+																	</div>
+																	<div class="col-xs-10">
+																		<p>
+																			<strong>Roddy Austin</strong>: Thanks for the info, if you need anything...
+																		</p>
+																		<p class="small">
+																			<i class="fa fa-clock-o"></i> 3:39 PM
+																		</p>
+																	</div>
+																</div>
+															</a>
+														</li>
+													</ul>
+												</li>
+												<li class="dropdown-footer">
+													<a href="#">
+														Read All Messages
+													</a>
+												</li>
+											</ul>
+								</li>
+								<li class="dropdown">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+										<i class="fa fa-bell"></i> <span class="badge up badge-success">3</span>
+									</a>
+										<ul class="dropdown-menu dropdown-scroll dropdown-alerts">
+											<li class="dropdown-header">
+												<i class="fa fa-bell"></i> 3 New Alerts
+											</li>
+											<li id="alertScroll">
+												<ul class="list-unstyled">
+													<li>
+														<a href="#">
+															<div class="alert-icon bg-info pull-left">
+																<i class="fa fa-download"></i>
+															</div>
+																Downloads <span class="badge badge-info pull-right">16</span>
+														</a>
+													</li>
+													<li>
+														<a href="#">
+															<div class="alert-icon bg-success pull-left">
+																<i class="fa fa-cloud-upload"></i>
+															</div>
+																Server #8 Rebooted <span class="small pull-right"><strong><em>12 hours ago</em></strong></span>
+														</a>
+													</li>
+													<li>
+														<a href="#">
+															<div class="alert-icon bg-danger pull-left">
+																<i class="fa fa-bolt"></i>
+															</div>
+																Server #8 Crashed <span class="small pull-right"><strong><em>12 hours ago</em></strong></span>
+														</a>
+													</li>
+												</ul>
+											</li>
+											<li class="dropdown-footer">
+												<a href="#">
+													View All Alerts
+												</a>
+											</li>
+										</ul>
+								</li>
+								<li class="dropdown">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+										<i class="fa fa-tasks"></i> <span class="badge up badge-info">7</span>
+									</a>
+										<ul class="dropdown-menu dropdown-scroll dropdown-tasks">
+											<li class="dropdown-header">
+												<i class="fa fa-tasks"></i> 10 Pending Tasks
+											</li>
+											<li id="taskScroll">
+												<ul class="list-unstyled">
+													<li>
+														<a href="#">
+															<p>
+																Purchase Order #439 <span class="pull-right"><strong>52%</strong></span>
+															</p>
+															<div class="progress progress-striped">
+																	<div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="52" aria-valuemin="0" aria-valuemax="100" style="width: 52%;"></div>
+															</div>
+														</a>
+													</li>
+													<li>
+														<a href="#">
+															<p>
+																March Content Update <span class="pull-right"><strong>14%</strong></span>
+															</p>
+															<div class="progress">
+																<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="14" aria-valuemin="0" aria-valuemax="100" style="width: 14%;"></div>
+															</div>
+														</a>
+													</li>
+													<li>
+														<a href="#">
+															<p>
+																Client #42 Data Scrubbing <span class="pull-right"><strong>68%</strong></span>
+															</p>
+															<div class="progress progress-striped">
+																<div class="progress-bar" role="progressbar" aria-valuenow="68" aria-valuemin="0" aria-valuemax="100" style="width: 68%;"></div>
+															</div>
+														</a>
+													</li>
+													<li>
+														<a href="#">
+															<p>
+																PHP Upgrade Server #6 <span class="pull-right"><strong>85%</strong></span>
+															</p>
+															<div class="progress">
+																<div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" style="width: 85%;"></div>
+															</div>
+														</a>
+													</li>
+													<li>
+														<a href="#">
+															<p>
+																Malware Scan <span class="pull-right"><strong>66%</strong></span>
+															</p>
+															<div class="progress progress-striped active">
+																<div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100" style="width: 66%;"></div>
+															</div>
+														</a>
+													</li>
+												</ul>
+											</li>
+											<li class="dropdown-footer">
+												<a href="#">
+													View All Tasks
+												</a>
+											</li>
+										</ul>
+								</li>
+								<!--Speech Icon-->
+								<li class="dropdown">
+									<a href="#" class="speech-button">
+										<i class="fa fa-microphone"></i>
+									</a>
+								</li>
+								<!--Speech Icon-->
+								<li class="dropdown user-box">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+										<img class="img-circle" src="/assets/images/user.jpg" alt=""> <span class="user-info">John Smith</span> <b class="caret"></b>
+									</a>
+										<ul class="dropdown-menu dropdown-user">
+											<li>
+												<a href="profile.html">
+													<i class="fa fa-user"></i> My Profile
+												</a>
+											</li>
+											<li>
+												<a href="#">
+													<i class="fa fa-envelope"></i> My Messages
+												</a>
+											</li>
+											<li>
+												<a href="#">
+													<i class="fa fa-tasks"></i> My Tasks
+												</a>
+											</li>
+											<li>
+												<a href="#">
+													<i class="fa fa-gear"></i> Settings
+												</a>
+											</li>											
+											<li>
+												<a href="login.html">
+													<i class="fa fa-power-off"></i> Logout
+												</a>
+											</li>
+										</ul>
+								</li>
+								<!--Search Box-->
+								<li class="dropdown nav-search-icon">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+										<span class="glyphicon glyphicon-search"></span>
+									</a>
+									<ul class="dropdown-menu dropdown-search">
+										<li>
+											<div class="search-box">
+												<form class="" role="search">
+													<input type="text" class="form-control" placeholder="Search" />
+												</form>
+											</div>
+										</li>
+									</ul>
+								</li>
+								<!--Search Box-->
+							</ul>
+						<!-- END RIGHT SIDE DROPDOWN BUTTONS -->							
+						<!-- BEGIN TOP MENU -->
+							<div class="collapse navbar-collapse top-collapse">
+								<!-- .nav -->
+								<ul class="nav navbar-left navbar-nav">
+									<li><a href="index.html">Dashboard</a></li>
+									<li class="dropdown">
+										<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+											Components <b class="caret"></b>
+										</a>
+										<ul class="dropdown-menu">
+											<li><a href="elements-ui.html">Elements</a></li>
+											<li><a href="button-ui.html">Buttons & Icons</a></li>
+											<li><a href="portlet.html">Portlet</a></li>
+											<li><a href="jquery-ui.html">jQuery UI</a></li>
+										</ul>
+									</li>
+									<li><a href="front/index.html">FrontEnd <span class="badge badge-primary">New</span></a></li>
+								</ul><!-- /.nav -->
 							</div>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<div style="border: solid 1px #FF6600;border-radius: 5px 10px 5px 10px	">
-								<div style="font-weight:bold;text-align:center">
-									Promotor Activity
-								</div>
-								<div style="width:70%;float:left">
-									Sent
-								</div>
-								<div style="width:30%;float:right;text-align:right">
-									50
-								</div>
-								<div style="width:70%;float:left">
-									Accepted
-								</div>
-								<div style="width:30%;float:right;text-align:right">
-									5
-								</div>
-								<div style="width:70%;float:left">
-									Pending
-								</div>
-								<div style="width:30%;float:right;text-align:right">
-									20
-								</div>
-								<br style="clear:both"/>
-							</div>
-						</td>
-					</tr>
-				</table>
-			</td>
-		</tr>
-		<tr>
-			<td id="tdTableTop5" height="50%">
+						<!-- END TOP MENU -->
+					</div><!-- /.nav-top -->
+				</nav><!-- /.navbar-top -->
+				<!-- END TOP NAVIGATION -->
+
 				
-			</td>
-		</tr>
-	</table>
-</div>
+				<!-- BEGIN SIDE NAVIGATION -->				
+				<nav class="navbar-side" role="navigation">							
+					<div class="navbar-collapse sidebar-collapse collapse">
+					
+						<!-- BEGIN SHORTCUT BUTTONS -->
+						<div class="media">							
+							<ul class="sidebar-shortcuts">
+								<li><a class="btn"><i class="fa fa-user icon-only"></i></a></li>
+								<li><a class="btn"><i class="fa fa-envelope icon-only"></i></a></li>
+								<li><a class="btn"><i class="fa fa-th icon-only"></i></a></li>
+								<li><a class="btn"><i class="fa fa-gear icon-only"></i></a></li>
+							</ul>	
+						</div>
+						<!-- END SHORTCUT BUTTONS -->	
+							
+						<!-- BEGIN FIND MENU ITEM INPUT -->
+						<div class="media-search">	
+							<input type="text" class="input-menu" id="input-items" placeholder="Find...">
+						</div>						
+						<!-- END FIND MENU ITEM INPUT -->
+					
+						<ul id="side" class="nav navbar-nav side-nav">
+							<!-- BEGIN SIDE NAV MENU -->							
+							<!-- Navigation category -->
+							<li>
+								<h4>Navigation</h4> 								
+							</li>
+							<!-- END Navigation category -->
+							
+							<li>
+								<a class="active" href="index.html">
+									<i class="fa fa-dashboard"></i> Dashboard
+								</a>
+							</li>													
+							<li>
+								<a href="/customerlist">
+									<i class="fa fa-list"></i> Form List
+								</a>
+							</li>
+              <li>
+                <a href="forms.html">
+                  <i class="fa fa-angle-double-right"></i> Form Add/Edit
+                </a>
+              </li>
+							<li>
+                <a href="profile.html">
+                  <i class="fa fa-angle-double-right"></i> User Profile 
+                </a>
+              </li>							
+						</ul><!-- /.side-nav -->						
+					</div><!-- /.navbar-collapse -->
+				</nav><!-- /.navbar-side -->
+			<!-- END SIDE NAVIGATION -->
+				
 
+				<!-- BEGIN MAIN PAGE CONTENT -->
+				<div id="page-wrapper">
+					<!-- BEGIN PAGE HEADING ROW -->
+						<div class="row">
+							<div class="col-lg-12">
+								<!-- BEGIN BREADCRUMB -->
+								<div class="breadcrumbs">
+									<ul class="breadcrumb">
+										<li>
+											<a href="#">Home</a>
+										</li>
+										<li><a href="#">Additional Pages</a></li>
+										<li class="active">User Profile</li>
+									</ul>
+									
+									<div class="b-right hidden-xs">
+										<ul>
+											<li><a href="#" title=""><i class="fa fa-signal"></i></a></li>
+											<li><a href="#" title=""><i class="fa fa-comments"></i></a></li>
+											<li class="dropdown"><a href="#" title="" data-toggle="dropdown"><i class="fa fa-plus"></i><span> Tasks</span></a>
+												<ul class="dropdown-menu dropdown-primary dropdown-menu-right">
+													<li><a href="#">Add new task</a></li>
+													<li><a href="#">Statement</a></li>
+													<li><a href="#">Settings</a></li>
+												</ul>
+											</li>
+										</ul>
+									</div>
+								</div>
+								<!-- END BREADCRUMB -->
+								
+								<div class="page-header title">
+								<!-- PAGE TITLE ROW -->
+									<!--<h1>John's Profile <span class="sub-title">sub tile</span></h1>-->									
+								</div>
+								
+								<!-- /#ek-layout-button -->	
+								<div class="qs-layout-menu">
+									<div class="btn btn-gray qs-setting-btn" id="qs-setting-btn">
+										<i class="fa fa-cog bigger-150 icon-only"></i>
+									</div>
+									<div class="qs-setting-box" id="qs-setting-box">
+									
+										<div class="hidden-xs hidden-sm">
+											<span class="bigger-120">Layout Options</span>
+											
+											<div class="hr hr-dotted hr-8"></div>
+											<label>
+												<input type="checkbox" class="tc" id="fixed-navbar" />
+													<span id="#fixed-navbar" class="labels"> Fixed NavBar</span>
+											</label>
+											<label>
+												<input type="checkbox" class="tc" id="fixed-sidebar" />
+													<span id="#fixed-sidebar" class="labels"> Fixed NavBar+SideBar</span>
+											</label>
+											<label>
+												<input type="checkbox" class="tc" id="sidebar-toggle" />
+													<span id="#sidebar-toggle" class="labels"> Sidebar Toggle</span>
+											</label>
+											<label>
+												<input type="checkbox" class="tc" id="in-container" />
+													<span id="#in-container" class="labels"> Inside<strong>.container</strong></span>
+											</label>
+										
+											<div class="space-4"></div>
+										</div>
+										
+										<span class="bigger-120">Color Options</span>
+										
+										<div class="hr hr-dotted hr-8"></div>
+										
+										<label>
+											<input type="checkbox" class="tc" id="side-bar-color" />
+											<span id="#side-bar-color" class="labels"> SideBar (Light)</span>
+										</label>
+										
+										<ul>									
+											<li><button class="btn" style="background-color:#d15050;" onclick="swapStyle('/assets/css/themes/style.css')"></button></li>
+											<li><button class="btn" style="background-color:#86618f;" onclick="swapStyle('/assets/css/themes/style-1.css')"></button></li> 
+											<li><button class="btn" style="background-color:#ba5d32;" onclick="swapStyle('/assets/css/themes/style-2.css')"></button></li>
+											<li><button class="btn" style="background-color:#488075;" onclick="swapStyle('/assets/css/themes/style-3.css')"></button></li>
+											<li><button class="btn" style="background-color:#4e72c2;" onclick="swapStyle('/assets/css/themes/style-4.css')"></button></li>
+										</ul>
+										
+									</div>
+								</div>
+								<!-- /#ek-layout-button -->	
+								
+							</div><!-- /.col-lg-12 -->
+						</div><!-- /.row -->
+					<!-- END PAGE HEADING ROW -->					
+						<div class="row">
+							<div class="col-lg-12">
+							
+					<!-- START YOUR CONTENT HERE -->
+							<div class="row">
+								<div class="col-lg-3 col-md-3">
+									<div class="well well-sm white">
+										<div class="profile-pic">
+											<a href="#">
+												<img src="/assets/images/icon-user-default.png" class="img-responsive"  alt="">
+											</a>
+										</div>
+										<p class="text-center">
+											<button type="button" class="btn btn-facebook btn-xs" data-placement="top" data-rel="tooltip" title="Visit My Facebook" role="button"><i class="fa fa-facebook icon-only"></i></button>
+											<button type="button" class="btn btn-twitter btn-xs" data-placement="top" data-rel="tooltip" title="Visit My Twitter" role="button"><i class="fa fa-twitter icon-only"></i></button>
+											<button type="button" class="btn btn-googleplus btn-xs" role="button" data-placement="top" data-rel="tooltip" title="Google +"><i class="fa fa-google-plus icon-only"></i></button>
+										</p>
+									</div>
+									<div class="alert bg-primary">
+										<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+										<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin nunc lorem, rutrum non porta.</p>
+									</div>
+								</div>
+								<div class="col-lg-9 col-md-9">
+									<div class="tc-tabs"><!-- Nav tabs style 1 -->
+										<ul class="nav nav-tabs tab-lg-button tab-color-dark background-dark white">
+											<li class="active"><a href="#p1" data-toggle="tab"><i class="fa fa-desktop bigger-130"></i>Overview</a></li>											
+										</ul>
+												<!-- Tab panes -->
+										<div class="tab-content">
+											<div class="tab-pane fade in active" id="p1">
+												<div class="row">
+													<div class="col-lg-8 col-md-8 col-sm-6 col-xs-12">
+														<div class="portlet no-border">
+															<div class="portlet-heading">
+																<div class="portlet-title" id='divCustomerTitle'>
+																	
+																</div>
+																<div class="clearfix"></div>
+															</div>
+															<div class="portlet-body" id='divCustomerDesscription'>
+																<dl class="no-margin-bottom">
+																	<!--<dt>Fullname</dt>
+																	<dd>Nguyen Van A</dd>
+																	<dt>Birthday</dt>
+																	<dd>20/10/2015</dd>
+																	<dt>Gender</dt>
+																	<dd>Male</dd>
+																	<dt>Address</dt>
+																	<dd>Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</dd>-->																	
+																</dl>
+															</div>
+														</div>
+													</div>
+													<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+														<div class="portlet no-border">
+															<div class="portlet-heading dark">
+																<div class="portlet-title">
+																	<h4>Interests</h4>
+																</div>
+																<div class="portlet-widgets">
+																	<i class="fa fa-sort-alpha-desc bigger-110"></i>
+																</div>
+																<div class="clearfix"></div>
+															</div>
+															<div class="portlet-body skills light">
+																<div class="progress" data-percent="75%">
+																	<div class="progress-bar progress-bar-success" role="progressbar" style="width: 75%">
+																		<span class="sr-only">75% Complete</span>
+																	</div>
+																	<span class="progress-type">Lorem ipsum dolor</span>
+																	<span class="progress-completed">75%</span>
+																</div>
+																<div class="progress" data-percent="40%">
+																	<div class="progress-bar progress-bar-warning" role="progressbar" style="width: 40%">
+																		<span class="sr-only">40% Complete</span>
+																	</div>
+																	<span class="progress-type">Lorem ipsum dolor</span>
+																	<span class="progress-completed">40%</span>
+																</div>
+																<div class="progress" data-percent="26%">
+																	<div class="progress-bar progress-bar-danger" role="progressbar" style="width: 26%">
+																		<span class="sr-only">26% Complete</span>
+																	</div>
+																	<span class="progress-type">Lorem ipsum dolor</span>
+																	<span class="progress-completed">26%</span>
+																</div>
+																<div class="progress" data-percent="80%">
+																	<div class="progress-bar" role="progressbar" style="width: 80%">
+																		<span class="sr-only">80% Complete</span>
+																	</div>
+																	<span class="progress-type">Lorem ipsum dolor</span>
+																	<span class="progress-completed">80%</span>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-md-12">
+														<div class="portlet"><!-- /Portlet -->
+															<div class="portlet-heading dark">
+																<div class="portlet-title">
+																	<h4>Recent Interactions</h4>
+																</div>
+																<div class="portlet-widgets">
+																	<a data-toggle="collapse" data-parent="#accordion" href="#basic"><i class="fa fa-chevron-down"></i></a>
+																	<span class="divider"></span>
+																	<a href="#" class="box-close"><i class="fa fa-times"></i></a>
+																</div>
+																<div class="clearfix"></div>
+															</div>
+															<div id="basic" class="panel-collapse collapse in">
+																<div class="portlet-body no-padding" id='divCustomerTop5'>
+																	<table class="table table-bordered table-hover tc-table">
+																		<thead>
+																			<tr>
+																				<th class="hidden-xs">Time</th>
+																				<th class="hidden-xs">Activity</th>																				
+																				<th class="hidden-xs">Detail</th>																				
+																			</tr>
+																		</thead>
+																		<!--<tbody>
+																			<tr>	
+																				<td class="hidden-xs">35</td>
+																				<td class="hidden-xs">387</td>
+																				<td class="hidden-xs">$70</td>
+																			</tr>
+																			<tr>	
+																				<td class="hidden-xs">35</td>
+																				<td class="hidden-xs">387</td>
+																				<td class="hidden-xs">$70</td>
+																			</tr>																		
+																		</tbody>-->
+																	</table>												
+																</div>
+															</div>
+														</div><!-- /Portlet -->														
+													</div>
+												</div>
+											</div>
+											
+										</div>
+									</div><!--nav-tabs style 1-->
+								</div>
+							</div>		
+					<!-- END YOUR CONTENT HERE -->
+					
+							</div>
+						</div>
+						
+					<!-- BEGIN FOOTER CONTENT -->		
+						<div class="footer">
+							<div class="footer-inner">
+								<!-- basics/footer -->
+								<div class="footer-content">
+									&copy; 2015 
+								</div>
+								<!-- /basics/footer -->
+							</div>
+						</div>
+						<button type="button" id="back-to-top" class="btn btn-primary btn-sm back-to-top">
+							<i class="fa fa-angle-double-up icon-only bigger-110"></i>
+						</button>
+					<!-- END FOOTER CONTENT -->
+						
+				</div><!-- /#page-wrapper -->	  
+			<!-- END MAIN PAGE CONTENT -->
+		</div>  
+	</div>
+	 
+    <!-- core JavaScript -->
+    <script src="/assets/js/jquery.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+	<script src="/assets/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+	<script src="/assets/js/plugins/pace/pace.min.js"></script>
+	
+	<!-- PAGE LEVEL PLUGINS JS -->
+	<script src="/assets/js/plugins/bootstrap-wysihtml/wysihtml.min.js"></script>
+	<script src="/assets/js/plugins/bootstrap-wysihtml/bootstrap-wysihtml.js"></script>
+	<script src="/assets/js/plugins/bootstrap-editable/bootstrap-editable.min.js"></script>
+	<script src="/assets/js/plugins/bootstrap-datepicker/bootstrap-datepicker.js"></script>
+	
+    <!-- Themes Core Scripts -->	
+	<script src="/assets/js/main.js"></script>
+
+	<!-- REQUIRE FOR SPEECH COMMANDS -->
+	<script src="/assets/js/speech-commands.js"></script>
+	<script src="/assets/js/plugins/gritter/jquery.gritter.min.js"></script>
+
+	<!-- initial page level scripts for examples -->
+	<script src="/assets/js/plugins/slimscroll/jquery.slimscroll.init.js"></script>
+	<script type="text/javaScript">
+		$(document).ready(function() {
+			// password checkbox function
+			$(":checkbox").click(function(event) {
+			if ($(this).is(":checked"))
+				$(".myPassword").show();
+			else
+				$(".myPassword").hide();
+			});
+			
+			// wysihtml editor
+			$('#about-editor').wysihtml5();
+			
+			//toggle `popup` / `inline` mode
+			$.fn.editable.defaults.mode = 'inline';     
+    
+			//make email editable
+			$(function(){
+				$('#email').editable({
+			//uncomment bellow lines to send data on server
+					//pk: 1,
+					//url: '/post',
+					title: 'Update your email',
+					mode: 'inline', //can also use popup
+				});
+			});
+			//make date editable with bootstrap datepicker plugin
+			$(function(){
+				$('#dob').editable({
+					type: 'date',
+					format: 'yyyy-mm-dd',    
+					viewformat: 'dd/mm/yyyy',
+					title: 'Date of Birth',
+					placement:'right',
+					datepicker: {
+							weekStart: 1
+						}
+				});
+			});				
+			//custome button style for editable			
+			$.fn.editableform.buttons = 
+				'<button type="submit" class="btn btn-primary editable-submit btn-sm"><i class="fa fa-check icon-only"></i></button>' +
+				'<button type="button" class="btn editable-cancel btn-inverse btn-sm"><i class="fa fa-times icon-only"></i></button>';         			
+			
+			// for more document http://vitalets.github.io/x-editable/docs.html
+			
+			$('.datepicker').datepicker();			
+		});
+	</script>	
 <input type='hidden' value='<%= _id %>' name='_CustomerID' id='_CustomerID' />
-
 <!--<script src="assets/js/jquery.min.js"></script>-->
-<script src="/jquery-latest.min.js"></script>
+<!--<script src="/jquery-latest.min.js"></script>-->
 <script src="/jquery.timeago.js"></script>
 <script src="/socket.io/socket.io.js"></script>
-
 <script>
 	//for tables checkbox demo
+	//var datacustomer =[];
+	
 	var arr=[];
 	var totalrecord=0;
-	var socket = io.connect('http://127.0.0.1:3000/');
+	var socket = io.connect('http://127.0.0.1:3001/');
 	var objPage={value:'',start:0,end:50}
 	jQuery(function($) {
 		var customerID = $("#_CustomerID").val();
@@ -188,41 +716,48 @@
 		socket.emit('customerID',customerID);
 		
 		socket.on('_customerDetail',function(data){
-			var str='';
+			document.getElementById('divCustomerTitle').innerHTML="<h2>"+data[0].FULLNAME+"</h2>";
 			var sex = data[0].GENDER==1?"MALE":"FEMALE";
-			str+="<p>FullName: "+data[0].FULLNAME+"</p>";
-			str+="<p>Sex: "+sex+"</p>";
-			str+="<p>BithDay: "+data[0].DOB+"</p>";
-			str+="<p>Mobile: "+data[0].PHONENUMBER+"</p>";
-			str+="<p>Address: "+data[0].ADDRESS+"</p>";
-			document.getElementById('divInfomationDetail').innerHTML=str;
+			var strDesscription='';
+			strDesscription ="<dt>Birthday</dt>";
+			strDesscription +="<dd>"+data[0].DOB+"</dt>"
+			strDesscription +="<dt>Gender</dt>";
+			strDesscription +="<dd>"+sex+"</dt>";
+			strDesscription +="<dt>Address</dt>";
+			strDesscription +="<dd>"+data[0].ADDRESS+"</dt>";
+			
+			document.getElementById('divCustomerDesscription').innerHTML = strDesscription;
 			socket.emit('CUSTOMERLOGS_TOP5_TRANSACTION_SEND_MESSAGE',data[0].ACCOUNTNUMBER);
 		});
 		socket.on('CUSTOMERLOGS_TOP5_TRANSACTION_DATA', function(data){
 			//alert(data[0].trx_id);
 			var strTableTop5='';
-			strTableTop5="<span style='font-weight:bold;font-size:16px'>Recent Interactions</span>";
-			strTableTop5+="<table class='CSSTableGenerator'  width='100%'>";
-			strTableTop5+="<tr>";
-			strTableTop5+="<td width='20%'>Time</td>";
-			strTableTop5+="<td width='40%'>Activity</td>";
-			strTableTop5+="<td width='40%'>Details</td>";
-			strTableTop5+="</tr>";
+			strTableTop5="<table class='table table-bordered table-hover tc-table'>";
+			strTableTop5+="<thead><tr>";
+			strTableTop5+="<th class='hidden-xs'>Time</th>";
+			strTableTop5+="<th class='hidden-xs'>Activity</th>";
+			strTableTop5+="<th class='hidden-xs'>Detail</th>";
+			strTableTop5+="</tr></thead><tbody>";
 			
 			for(var i=0;i<data.length;i++)
 			{
-				var j=i+1;
-				strTableTop5+="<tr>";
-				strTableTop5+="<td>"+jQuery.timeago(new Date(data[i].timestamp))+"</td>";
-				strTableTop5+="<td>"+data[i].trx_id+'('+data[i].amount+')'+"</td>";
-				strTableTop5+="<td>"+data[i].acc_no+"</td>";
-				strTableTop5+="</tr>";
+
+				var transname=data[i].trx_name==null?'':data[i].trx_name;
+				var chanelname=data[i].ch_name==null?'':data[i].ch_name+", ";
+				var chaneladd=data[i].ch_add==null?'':data[i].ch_add;
+				var activity = "["+data[i].trx_id+"] "+transname+' ('+data[i].amount+' VND, '+data[i].acc_no+')';				
+				var detail=chanelname+chaneladd;
+				strTableTop5+="<tr><td class='hidden-xs'>"+jQuery.timeago(new Date(data[i].timestamp))+"</td>";
+				
+				strTableTop5+="<td class='hidden-xs'>"+activity+"</td>";
+				strTableTop5+="<td class='hidden-xs'>"+detail+"</td></tr>";
 			}
-			strTableTop5+="</table>";
+			strTableTop5+="</tbody></table>";
 			//alert(strTableTop5);
-			document.getElementById('tdTableTop5').innerHTML=strTableTop5;
+			document.getElementById('divCustomerTop5').innerHTML=strTableTop5;
 		});
 	});
+
 </script>
 
 </body>
