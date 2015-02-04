@@ -27,22 +27,32 @@ public class StoreTransactionToMongoDB extends BaseFunction {
             Map<String, Object> map = (Map<String, Object>)
                     JSONValue.parse(json);
             Values values = new Values();
+
             if(!map.get("acc_no").equals("000-000-00000000")) {
                 Mongo mongo = new Mongo(Properties.getString("MongoDB.host"), Properties.getInt("MongoDB.port"));
                 DB db = mongo.getDB(Properties.getString("MongoDB.Name"));
 
                 DBCollection collection = db.getCollection("CustomerLogs");
+                DBCollection collectionChannel = db.getCollection("Channels");
+                DBCollection collectionTransactionTypes = db.getCollection("TransactionTypes");
+
+                //Query Channel
+                BasicDBObject query = new BasicDBObject("ChannelCode", map.get("ch_id"));
+                BasicDBObject cursorDoc = (BasicDBObject) collectionChannel.findOne(query);
+
+                //Query Transaction
+                BasicDBObject queryTransaction = new BasicDBObject("TransactionCode", map.get("trx_code"));
+                BasicDBObject cursorDocTrx = (BasicDBObject) collectionTransactionTypes.findOne(queryTransaction);
 
                 // convert JSON to DBObject directly
-                DBObject dbObject = (DBObject) JSON
+                BasicDBObject dbObject = (BasicDBObject) JSON
                         .parse(json);
+                dbObject.append("ch_name", cursorDoc.getString("ChannelName"));
+                dbObject.append("ch_add", cursorDoc.getString("ChannelAddress"));
+                dbObject.append("trx_name", cursorDocTrx.getString("TransactionName"));
 
                 collection.insert(dbObject);
             }
-//            DBCursor cursorDoc = collection.find();
-//            while (cursorDoc.hasNext()) {
-//                //System.out.println(cursorDoc.next());
-//            }
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (MongoException e) {

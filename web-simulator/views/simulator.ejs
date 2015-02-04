@@ -28,6 +28,20 @@
 			</td>
 		</tr>
 		<tr>
+        			<td>
+        				Account
+        			</td>
+        			<td>
+        				<input id="txtAccount" style="width:200px;"></input>
+        			</td>
+        			<td>
+        				Account
+        			</td>
+        			<td>
+        				<input id="txtAccount1" style="width:200px;"></input>
+        			</td>
+        		</tr>
+		<tr>
 			<td>
 				Time
 			</td>
@@ -155,6 +169,20 @@
 				<input type="button" id="btnConfig4" value="start" />
 			</td>
 		</tr>
+		<tr>
+                			<td>
+                				Account
+                			</td>
+                			<td>
+                				<input id="txtAccount2" style="width:200px;"></input>
+                			</td>
+                			<td>
+                				Account
+                			</td>
+                			<td>
+                				<input id="txtAccount3" style="width:200px;"></input>
+                			</td>
+                		</tr>
 		<tr>
 			<td>
 				Time
@@ -287,6 +315,10 @@
 		var $btnConfig3 = $('#btnConfig3');
 		var $btnConfig4 = $('#btnConfig4');
 		var $messageForm = $('#send-message');
+		var $txtAccount = $('#txtAccount');
+		var $txtAccount1 = $('#txtAccount1');
+		var $txtAccount2 = $('#txtAccount2');
+		var $txtAccount3 = $('#txtAccount3');
 		var $txtTime = $('#txtTime');
 		var $txtTime1 = $('#txtTime1');
 		var $txtTime2 = $('#txtTime2');
@@ -420,6 +452,10 @@
 		function setobj()
 		{
 			var obj = {
+				account: $txtAccount.val(),
+				account1: $txtAccount1.val(),
+				account2: $txtAccount2.val(),
+				account3: $txtAccount3.val(),
 				time: $txtTime.val(),
 				time1: $txtTime1.val(),
 				time2: $txtTime2.val(),

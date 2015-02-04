@@ -46,6 +46,8 @@ public class TopologyControl {
             cluster.submitTopology("log-analysis", conf,
                     createTopology());
         } else {
+            int workers = Properties.getInt("storm.workers");
+            conf.setNumWorkers(workers);
             StormSubmitter.submitTopology(args[0], conf,
                     createTopology());
         }
