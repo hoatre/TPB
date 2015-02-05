@@ -46,7 +46,7 @@ public class PARAM implements Serializable  {
     }
 
     public static enum Channel {
-        BRANCH1("B1"), BRANCH2("B2"), BRANCH3("B3"), BRANCH4("Contact"), TOTAL("Total"), ;
+        BRANCH1("B1"), BRANCH2("B2"), BRANCH3("B3"), BRANCH4("Contact"), TOTAL("Total"), CHANNELFAKE("ChannelFake");
         private String value;
         private Channel(String value) {
             this.value = value;
