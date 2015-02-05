@@ -12,13 +12,12 @@ import storm.trident.tuple.TridentTuple;
 public class ValueChartBolt extends BaseFunction{
     private SlidingWindow sliding;
     private SlidingWindow.Time emitRatePer;
-    private Jedis jedis;
     public ValueChartBolt(SlidingWindow ewma, SlidingWindow.Time emitRatePer){
         this.sliding = ewma;
         this.emitRatePer = emitRatePer;
     }
     public void execute(TridentTuple tuple, TridentCollector collector) {
-        this.sliding.chart(tuple.getStringByField("ch_id"), tuple.getLongByField("timestamp"), tuple.getLongByField("amount"));
+        this.sliding.TotalCountAmount(tuple.getStringByField("ch_id"), tuple.getLongByField("timestamp"), tuple.getLongByField("amount"));
         collector.emit(new Values(this.sliding.getCountBranch1(),this.sliding.getCountBranch2()
                                     ,this.sliding.getCountBranch3(),this.sliding.getCountCenter(), this.sliding.getWindow(),this.sliding.getSumBranch1()
                                     ,this.sliding.getSumBranch2(),this.sliding.getSumBranch3(),this.sliding.getSumCenter()));

@@ -27,6 +27,7 @@ public class SaveRedisTopBotBolt extends BaseFunction {
 
             if (!tuple.isEmpty()) {
                 for (int z = 1; z <= 5; z++) {
+
                     jedis.hdel("TopTen" + this.TranType + "-Top" + Integer.toString(z) + "-" + Long.toString(tuple.getLongByField("window")), "Acc", "Amount");
                     jedis.hdel("TopTen" + this.TranType + "-Bot" + Integer.toString(z) + "-" + Long.toString(tuple.getLongByField("window")), "Acc", "Amount");
                 }

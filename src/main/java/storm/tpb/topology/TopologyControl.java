@@ -13,6 +13,7 @@ import storm.kafka.StringScheme;
 import storm.kafka.ZkHosts;
 import storm.kafka.trident.OpaqueTridentKafkaSpout;
 import storm.kafka.trident.TridentKafkaConfig;
+import storm.kafka.trident.ZkBrokerReader;
 import storm.tpb.testing.*;
 import storm.tpb.util.Properties;
 import storm.trident.Stream;
@@ -46,8 +47,8 @@ public class TopologyControl {
             cluster.submitTopology("log-analysis", conf,
                     createTopology());
         } else {
-            int workers = Properties.getInt("storm.workers");
-            conf.setNumWorkers(workers);
+//            int workers = Properties.getInt("storm.workers");
+//            conf.setNumWorkers(workers);
             StormSubmitter.submitTopology(args[0], conf,
                     createTopology());
         }
@@ -57,11 +58,11 @@ public class TopologyControl {
 
         TridentTopology topology = new TridentTopology();
         BrokerHosts zk = new ZkHosts(Properties.getString("storm.zkhosts"));
+
         TridentKafkaConfig spoutConf = new TridentKafkaConfig(zk,KAFKA_TOPIC);
         spoutConf.scheme = new SchemeAsMultiScheme(new StringScheme());
         spoutConf.startOffsetTime =-1;
         OpaqueTridentKafkaSpout spout = new OpaqueTridentKafkaSpout(spoutConf);
-
 
         Stream spoutStream = topology.newStream("kafka-stream",spout);
         Fields jsonFields = new Fields("trx_id", "trx_code","ch_id","amount","acc_no","prd_id","timestamp");
@@ -77,13 +78,6 @@ public class TopologyControl {
 
         return topology.build();
     }
-
-//    private  static void TotalTranAmountByChannel(Stream st, SlidingWindow Sliding, String channel){
-//        st.each(new Fields("ch_id"), new RollingBolt(channel))
-//                .each(new Fields("amount", "timestamp"), new TotalCountAmountBolt(Sliding, SlidingWindow.Time.SECONDS)
-//                        , totalCountAmount)
-//                .each(totalCountAmount, new SaveRedisTotalCountAmount(channel), new Fields("doneCountAmount"));
-//    }
 
     private  static void TotalRankingByTranType(Stream st, SlidingWindow Sliding, String tranType){
         st.each(new Fields("trx_code"), new RollingBolt(tranType))
@@ -116,7 +110,7 @@ public class TopologyControl {
         //Count channel for chart
         parsedStream.each(new Fields("ch_id", "timestamp", "amount"), new ValueChartBolt(Sliding, SlidingWindow.Time.SECONDS)
                 , valueChart)
-                .each(valueChart, new SaveRedisForChart(), new Fields("doneValueChart"));
+                .each(valueChart, new SaveRedisForChart(Sliding, SlidingWindow.Time.SECONDS), new Fields("doneValueChart"));
 
         //Rankings DEPOSIT
         TotalRankingByTranType(parsedStream, Sliding, PARAM.TransCode.DEPOSIT.getValue());
