@@ -4,21 +4,21 @@
  */
 var MongoClient = require('mongodb').MongoClient;
 var express = require('express')
-  , routes = require('./routes')
-  , user = require('./routes/user')
-  , customerlist = require('./routes/customerlist')
-  , customerdetail = require('./routes/customerdetail')
-  , simulator = require('./routes/simulator')
-  , dashboad = require('./routes/dashboad')
-  //, http = require('http')
-  , app = express()
-  , path = require('path')
-  , server = require('http').createServer(app)
-  , io = require('socket.io').listen(server);
+    , routes = require('./routes')
+    , user = require('./routes/user')
+    , customerlist = require('./routes/customerlist')
+    , customerdetail = require('./routes/customerdetail')
+    , simulator = require('./routes/simulator')
+    , dashboad = require('./routes/dashboad')
+//, http = require('http')
+    , app = express()
+    , path = require('path')
+    , server = require('http').createServer(app)
+    , io = require('socket.io').listen(server);
 
 //---------------variable--------------------------
-var ADD_KAFKA='localhost:2181';
-//var ADD_KAFKA='10.20.252.201:2181';
+//var ADD_KAFKA='localhost:2181';
+var ADD_KAFKA='10.20.252.201:2181';
 var ADD_MONGODB_CIC="mongodb://10.20.252.202:27017/CIC";
 var ADD_MONGODB_CLOUBBANK="mongodb://10.20.252.202:27017/CloudBank";
 //---------------variable--------------------------
@@ -36,7 +36,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // development only
 if ('development' == app.get('env')) {
-  app.use(express.errorHandler());
+    app.use(express.errorHandler());
 }
 
 app.get('/', routes.index);
@@ -47,88 +47,89 @@ app.get('/simulator', simulator.list);
 app.get('/dashboad', dashboad.list);
 
 
-server.listen(3001);
-console.log('Server running at http://127.0.0.1:3001/');
+server.listen(3002);
+console.log('Server running at http://127.0.0.1:3002/');
 app.use(express.static(__dirname + '/lib'));
 /*http.createServer(app).listen(app.get('port'), function(){
-  console.log('Express server listening on port ' + app.get('port'));
-});*/
+ console.log('Express server listening on port ' + app.get('port'));
+ });*/
 //--------------------------------------customer---------------------------------------------
 var customer={
-	fullname:''
+    fullname:''
 }
 var lstcustormer=[];
 var arr;
 function connMongodb(data)
 {
-	MongoClient.connect(ADD_MONGODB_CLOUBBANK, function(err, db) {
-		if(err) { return console.dir(err); }
+    MongoClient.connect(ADD_MONGODB_CLOUBBANK, function(err, db) {
+        if(err) { return console.dir(err); }
 
-		var collection = db.collection('Customers');
+        var collection = db.collection('Customers');
 
-		/*collection.find(
-		 {FULLNAME: /^NGUYEN/ }
-		 ).skip(1).limit(10).toArray(function(err, items) {
-		 if(items!=null&&items.length>0)
-		 {
-		 console.log('FULLNAME:'+items[0].FULLNAME);
-		 io.sockets.emit('CUSTOMER_LIST_DATA', items);
-		 }
-		 });*/
-		if(data.value=='ALL')
-		{
-			var obj={data:[],count:0}
-			collection.find(
-				//{FULLNAME: /^NGUYEN/ }
-			).skip(data.start).limit(data.end).toArray(function(err, items) {
-					if(items!=null&&items.length>0)
-					{
-						//console.log('FULLNAME:'+items[0].FULLNAME);
-						obj.data=items;
-						//io.sockets.emit('CUSTOMER_LIST_DATA', items);
-						collection.count(function(err, count) {
-							if(count>0)
-							{
-								console.log('FULLNAME:'+obj.data[0].FULLNAME);
-								obj.count=count;
-								io.sockets.emit('CUSTOMER_LIST_DATA', obj);
-							}
-						});
-					}
-				});
+        /*collection.find(
+         {FULLNAME: /^NGUYEN/ }
+         ).skip(1).limit(10).toArray(function(err, items) {
+         if(items!=null&&items.length>0)
+         {
+         console.log('FULLNAME:'+items[0].FULLNAME);
+         io.sockets.emit('CUSTOMER_LIST_DATA', items);
+         }
+         });*/
+        if(data.value=='ALL')
+        {
+            var obj={data:[],count:0}
+            collection.find(
+                //{FULLNAME: /^NGUYEN/ }
+            ).skip(data.start).limit(data.end).toArray(function(err, items) {
+                    if(items!=null&&items.length>0)
+                    {
+                        //console.log('FULLNAME:'+items[0].FULLNAME);
+                        obj.data=items;
+                        //io.sockets.emit('CUSTOMER_LIST_DATA', items);
+                        collection.count(function(err, count) {
+                            if(count>0)
+                            {
+                                console.log('FULLNAME:'+obj.data[0].FULLNAME);
+                                obj.count=count;
+                                io.sockets.emit('CUSTOMER_LIST_DATA', obj);
+                            }
+                        });
+                    }
+                });
 
 
-		}
-		else
-		{
-			var obj={data:[],count:0}
-			var seachValue = data.value.toUpperCase();
-			//var seachValue=data.value.toUpperCase();
-			console.log('value:'+seachValue);
-			collection.find(
-				{FULLNAME: new RegExp(seachValue) }
-			).skip(data.start).limit(data.end).toArray(function(err, items) {
-					if(items!=null&&items.length>0)
-					{
-						//console.log('FULLNAME:'+items[0].FULLNAME);
-						obj.data=items;
-						//io.sockets.emit('CUSTOMER_LIST_DATA', items);
-						collection.count({FULLNAME: new RegExp(seachValue)} ,function(err, count) {
-							if(count>0)
-							{
-								console.log('FULLNAME:'+obj.data[0].FULLNAME);
-								obj.count=count;
-								io.sockets.emit('CUSTOMER_LIST_DATA', obj);
-							}
-						});
-					}
-				});
-		}
-	});
+        }
+        else
+        {
+            var obj={data:[],count:0}
+            var seachValue = data.value.toUpperCase();
+            //var seachValue=data.value.toUpperCase();
+            console.log('value:'+seachValue);
+            collection.find(
+                {FULLNAME: new RegExp(seachValue) }
+            ).skip(data.start).limit(data.end).toArray(function(err, items) {
+                    if(items!=null&&items.length>0)
+                    {
+                        //console.log('FULLNAME:'+items[0].FULLNAME);
+                        obj.data=items;
+                        //io.sockets.emit('CUSTOMER_LIST_DATA', items);
+                        collection.count({FULLNAME: new RegExp(seachValue)} ,function(err, count) {
+                            if(count>0)
+                            {
+                                console.log('FULLNAME:'+obj.data[0].FULLNAME);
+                                obj.count=count;
+                                io.sockets.emit('CUSTOMER_LIST_DATA', obj);
+                            }
+                        });
+                    }
+                });
+        }
+    });
 }
 
 
 var acc_no='';
+GetTop5CustomerLogs();
 function GetTop5CustomerLogs()
 {
     //console.log('------------------------: '+acc_no);
@@ -136,23 +137,24 @@ function GetTop5CustomerLogs()
     if(acc_no!=''&&acc_no!=null)
     {
         MongoClient.connect(ADD_MONGODB_CLOUBBANK, function(err, db) {
-                if(err) { return console.dir(err); }
+            if(err) { return console.dir(err); }
 
-                var collection = db.collection('CustomerLogs');
+            var collection = db.collection('CustomerLogs');
 
-                //var obj={data:[],count:0}
-                //var seachValue = data.value.toUpperCase();
-                //var seachValue=data.value.toUpperCase();
-                console.log('GetTop5CustomerLogs: '+acc_no);
-                collection.find(
-                    {acc_no: acc_no }
-                ).sort({timestamp: -1}).skip(0).limit(5).toArray(function(err, items) {
-                        if(items!=null&&items.length>0)
-                        {
+            //var obj={data:[],count:0}
+            //var seachValue = data.value.toUpperCase();
+            //var seachValue=data.value.toUpperCase();
+            console.log('GetTop5CustomerLogs: '+acc_no);
+            collection.find(
+                {acc_no: acc_no }
+            ).sort({timestamp: -1}).skip(0).limit(5).toArray(function(err, items) {
+                    if(items!=null&&items.length>0)
+                    {
 
-                                    io.sockets.emit('CUSTOMERLOGS_TOP5_TRANSACTION_DATA', items);
+                        io.sockets.emit('CUSTOMERLOGS_TOP5_TRANSACTION_DATA', items);
+                        db.close();
 
-                        }
+                    }
                 });
 
         });
@@ -162,18 +164,17 @@ function GetTop5CustomerLogs()
 
 
 io.sockets.on('connection',function(socket){
-	socket.on('CUSTOMER_LIST_SEND_MESSAGE',function(data){
-		//io.sockets.emit('new message',data);
-		connMongodb(data);
-		console.log('msg:'+data.value+"--start:"+data.start+"--end:"+data.end);
-	});
-	socket.on('CUSTOMERLOGS_TOP5_TRANSACTION_SEND_MESSAGE',function(data){
-		//io.sockets.emit('new message',data);
-		//connMongodb(data);
+    socket.on('CUSTOMER_LIST_SEND_MESSAGE',function(data){
+        //io.sockets.emit('new message',data);
+        connMongodb(data);
+        console.log('msg:'+data.value+"--start:"+data.start+"--end:"+data.end);
+    });
+    socket.on('CUSTOMERLOGS_TOP5_TRANSACTION_SEND_MESSAGE',function(data){
+        //io.sockets.emit('new message',data);
+        //connMongodb(data);
         acc_no=data;
-        GetTop5CustomerLogs();
-		console.log('CUSTOMERLOGS_TOP5_TRANSACTION_SEND_MESSAGE:'+data);
-	});
+        console.log('CUSTOMERLOGS_TOP5_TRANSACTION_SEND_MESSAGE:'+data);
+    });
 
     socket.on('customerID',function(data){
         getDetail(data);
@@ -184,23 +185,23 @@ io.sockets.on('connection',function(socket){
 function getDetail(customerID)
 {
     console.log('customerID:'+customerID);
-    
+
     MongoClient.connect(ADD_MONGODB_CLOUBBANK, function(err, db) {
-      if(err) { return console.dir(err); }
-      
-      var collection = db.collection('Customers');
-            console.log('Customers');
-            collection.find(
-                {ACCOUNTNUMBER: customerID }
-            ).toArray(function(err, items) {
+        if(err) { return console.dir(err); }
+
+        var collection = db.collection('Customers');
+        console.log('Customers');
+        collection.find(
+            {ACCOUNTNUMBER: customerID }
+        ).toArray(function(err, items) {
                 if(items!=null&&items.length>0)
                 {
                     console.log('cnt:'+items.length);
                     io.sockets.emit('_customerDetail', items);
                 }
             });
-            
-            
+
+
     });
 }
 //--------------------------------------customer---------------------------------------------
@@ -210,7 +211,7 @@ function getDetail(customerID)
 var kafka = require('kafka-node'),
     Producer = kafka.Producer,
     Client = kafka.Client,
-    //client = new Client('10.20.252.201:2181');
+//client = new Client('10.20.252.201:2181');
     client = new Client(ADD_KAFKA);
 
 //Topic
@@ -389,7 +390,7 @@ var GeneratorTransaction = function(account,amountto,amountfrom,channal, product
     product = product || products[randomInt(0,products.length)];
 
     //Generate Account
-        
+
     var acc_no = account==''?acc_nos[randomInt(0,acc_nos.length)]:account;
 
     //console.log('amountfrom: '+ amountfrom);
@@ -399,57 +400,57 @@ var GeneratorTransaction = function(account,amountto,amountfrom,channal, product
 
     var timestamp = new Date().getTime();
     var trans = {
-						trx_id: trx_id,
-						trx_code: transactionType,
-						ch_id: channal,
-						amount: amount,
-						acc_no: acc_no,
-						prd_id: product,
-						timestamp: timestamp,
-						count: msgs
-					    };
+        trx_id: trx_id,
+        trx_code: transactionType,
+        ch_id: channal,
+        amount: amount,
+        acc_no: acc_no,
+        prd_id: product,
+        timestamp: timestamp,
+        count: msgs
+    };
     //-------------------------------------------------
-	 /*MongoClient.connect(ADD_MONGODB_CLOUBBANK, function(err, db) {
-	 if(err) { return console.dir(err); }
-	  
-	  var collection = db.collection("AccNumbers");
-			console.log("AccNumbers");
-			collection.find(
-				//{FULLNAME: /^NGUYEN/ }
-			).toArray(function(err, items) {
-				if(items!=null&&items.length>0)
-				{
-					//console.log('cnt:'+items.length);
-					//io.sockets.emit(parameterconfig, items);
-				        //acc_no=items[randomInt(0,acc_nos.length)].ACCOUNTNUMBER;
-					trans.acc_no=items[0].ACCOUNTNUMBER;
-					//console.log('ACCOUNTNUMBER:'+acc_no);
-					//console.log('ACCOUNTNUMBER:'+acc_no);
-				}
-			});
-		
-					    	
-			
-	});*/
-	//-------------------------------------------------
-	console.log('ACCOUNTNUMBER:'+trans.acc_no);
-    
-	var msg = JSON.stringify(trans);
-	return msg;	
+    /*MongoClient.connect(ADD_MONGODB_CLOUBBANK, function(err, db) {
+     if(err) { return console.dir(err); }
+
+     var collection = db.collection("AccNumbers");
+     console.log("AccNumbers");
+     collection.find(
+     //{FULLNAME: /^NGUYEN/ }
+     ).toArray(function(err, items) {
+     if(items!=null&&items.length>0)
+     {
+     //console.log('cnt:'+items.length);
+     //io.sockets.emit(parameterconfig, items);
+     //acc_no=items[randomInt(0,acc_nos.length)].ACCOUNTNUMBER;
+     trans.acc_no=items[0].ACCOUNTNUMBER;
+     //console.log('ACCOUNTNUMBER:'+acc_no);
+     //console.log('ACCOUNTNUMBER:'+acc_no);
+     }
+     });
+
+
+
+     });*/
+    //-------------------------------------------------
+    console.log('ACCOUNTNUMBER:'+trans.acc_no);
+
+    var msg = JSON.stringify(trans);
+    return msg;
 }
 
 
 io.sockets.on('connection',function(socket){
-		socket.on('SIMULATOR_LIST_SEND_MESSAGE',function(data){
+    socket.on('SIMULATOR_LIST_SEND_MESSAGE',function(data){
 
         //Option 1
-		console.log('SIMULATOR_LIST_SEND_MESSAGE:'+data);
+        console.log('SIMULATOR_LIST_SEND_MESSAGE:'+data);
 
         obj = {
-	    account: data.account,
-	    account1: data.account1,
-	    account2: data.account2,
-	    account3: data.account3,
+            account: data.account,
+            account1: data.account1,
+            account2: data.account2,
+            account3: data.account3,
             time: data.time==''?1000:data.time,
             time1: data.time1==''?1000:data.time1,
             time2: data.time2==''?1000:data.time2,
@@ -499,10 +500,10 @@ io.sockets.on('connection',function(socket){
             if(data.status=='start')
             {
                 obj = {
-		    account: data.account,
-		    account1: data.account1,
-		    account2: data.account2,
-		    account3: data.account3,
+                    account: data.account,
+                    account1: data.account1,
+                    account2: data.account2,
+                    account3: data.account3,
                     time: data.time==''?1000:data.time,
                     time1: data.time1==''?1000:data.time1,
                     time2: data.time2==''?1000:data.time2,
@@ -547,10 +548,10 @@ io.sockets.on('connection',function(socket){
             if(data.status1=='start')
             {
                 obj = {
-	            account: data.account,
-		    account1: data.account1,
-		    account2: data.account2,
-		    account3: data.account3,
+                    account: data.account,
+                    account1: data.account1,
+                    account2: data.account2,
+                    account3: data.account3,
                     time: data.time==''?1000:data.time,
                     time1: data.time1==''?1000:data.time1,
                     time2: data.time2==''?1000:data.time2,
@@ -595,10 +596,10 @@ io.sockets.on('connection',function(socket){
             if(data.status2=='start')
             {
                 obj = {
-		    account: data.account,
-		    account1: data.account1,
-		    account2: data.account2,
-		    account3: data.account3,
+                    account: data.account,
+                    account1: data.account1,
+                    account2: data.account2,
+                    account3: data.account3,
                     time: data.time==''?1000:data.time,
                     time1: data.time1==''?1000:data.time1,
                     time2: data.time2==''?1000:data.time2,
@@ -643,10 +644,10 @@ io.sockets.on('connection',function(socket){
             if(data.status3=='start')
             {
                 obj = {
-		    account: data.account,
-		    account1: data.account1,
-		    account2: data.account2,
-		    account3: data.account3,
+                    account: data.account,
+                    account1: data.account1,
+                    account2: data.account2,
+                    account3: data.account3,
                     time: data.time==''?1000:data.time,
                     time1: data.time1==''?1000:data.time1,
                     time2: data.time2==''?1000:data.time2,
@@ -686,37 +687,37 @@ io.sockets.on('connection',function(socket){
                 clearTimeout(t3);
             }
         });
-		socket.on('SIMULATOR-GET-PARAMETER',function(data){
-		//io.sockets.emit('new message',data);
-		console.log('SIMULATOR-GET-PARAMETER:'+data);
-		SimulatorConfig('Channels','SIMULATOR-PARAMETER-CONFIG-CHANNELS');
-		SimulatorConfig('Products','SIMULATOR-PARAMETER-CONFIG-PRODUCT');
-		SimulatorConfig('TransactionTypes','SIMULATOR-PARAMETER-CONFIG-TRANSACTIONTYPES');
-		//console.log('msg:'+data);
-	});
+    socket.on('SIMULATOR-GET-PARAMETER',function(data){
+        //io.sockets.emit('new message',data);
+        console.log('SIMULATOR-GET-PARAMETER:'+data);
+        SimulatorConfig('Channels','SIMULATOR-PARAMETER-CONFIG-CHANNELS');
+        SimulatorConfig('Products','SIMULATOR-PARAMETER-CONFIG-PRODUCT');
+        SimulatorConfig('TransactionTypes','SIMULATOR-PARAMETER-CONFIG-TRANSACTIONTYPES');
+        //console.log('msg:'+data);
+    });
 });
 
 //-----------------connect mongodb------------------
 function SimulatorConfig(tablename,parameterconfig)
 {
-	//console.log('connMongodb');
-	MongoClient.connect(ADD_MONGODB_CLOUBBANK, function(err, db) {
-	  if(err) { return console.dir(err); }
-	  
-	  var collection = db.collection(tablename);
-			console.log(tablename);
-			collection.find(
-				//{FULLNAME: /^NGUYEN/ }
-			).toArray(function(err, items) {
-				if(items!=null&&items.length>0)
-				{
-					console.log('cnt:'+items.length);
-					io.sockets.emit(parameterconfig, items);
-				}
-			});
-			
-			
-	});
+    //console.log('connMongodb');
+    MongoClient.connect(ADD_MONGODB_CLOUBBANK, function(err, db) {
+        if(err) { return console.dir(err); }
+
+        var collection = db.collection(tablename);
+        console.log(tablename);
+        collection.find(
+            //{FULLNAME: /^NGUYEN/ }
+        ).toArray(function(err, items) {
+                if(items!=null&&items.length>0)
+                {
+                    console.log('cnt:'+items.length);
+                    io.sockets.emit(parameterconfig, items);
+                }
+            });
+
+
+    });
 }
 var acc_nos = [];
 //HieuLD add method GetAccountNumberList
