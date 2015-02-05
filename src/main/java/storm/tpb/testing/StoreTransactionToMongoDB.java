@@ -29,12 +29,9 @@ public class StoreTransactionToMongoDB extends BaseFunction {
             Values values = new Values();
 
             if(!map.get("acc_no").equals("000-000-00000000")) {
-                Mongo mongo = new Mongo(Properties.getString("MongoDB.host"), Properties.getInt("MongoDB.port"));
-                DB db = mongo.getDB(Properties.getString("MongoDB.Name"));
-
-                DBCollection collection = db.getCollection("CustomerLogs");
-                DBCollection collectionChannel = db.getCollection("Channels");
-                DBCollection collectionTransactionTypes = db.getCollection("TransactionTypes");
+                DBCollection collection = Utils.checkConnection("CustomerLogs");
+                DBCollection collectionChannel = Utils.checkConnection("Channels");
+                DBCollection collectionTransactionTypes = Utils.checkConnection("TransactionTypes");
 
                 //Query Channel
                 BasicDBObject query = new BasicDBObject("ChannelCode", map.get("ch_id"));
