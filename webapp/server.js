@@ -107,7 +107,7 @@ io.sockets.on('connection',function(socket){
     }
 
     function redis_lrange(key){
-        client1.lrange(key, 0, 1000000, function(err, items) {
+        client1.lrange(key, 0, lengthRange, function(err, items) {
             if (err) {
                 log('error', "error");
             } else {
