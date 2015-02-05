@@ -47,8 +47,8 @@ app.get('/simulator', simulator.list);
 app.get('/dashboad', dashboad.list);
 
 
-server.listen(3000);
-console.log('Server running at http://127.0.0.1:3000/');
+server.listen(3001);
+console.log('Server running at http://127.0.0.1:3001/');
 app.use(express.static(__dirname + '/lib'));
 /*http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
