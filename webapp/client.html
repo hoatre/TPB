@@ -402,21 +402,7 @@
 
   <body onload="createTimeline()">
   <table width="100%">
-      <colgroup>
-          <col width="20%">
-      </colgroup>
       <tr>
-          <td style="padding-left: 50px; padding-right: 50px">
-              <!--<input type="checkbox" id="line11" name="Line11" Checked/>Branch 1  <font  color="#A6C567">&#9642;</font></br>-->
-              <!--<input type="checkbox" id="line21" name="Line21" Checked/>Branch 2  <font  color="#0000FF">&#9642;</font></br>-->
-              <!--<input type="checkbox" id="line31" name="Line31" Checked/>Branch 3  <font  color="#DC143C">&#9642;</font></br>-->
-              <!--<input type="checkbox" id="line41" name="Line41" Checked/>Contact Center  <font  color="#FFD700">&#9642;</font></br>-->
-              <select id="SlidingTimeCbo">
-                  <option >1 Minute</option>
-                  <option >1 hour</option>
-                  <option >1 day</option>
-              </select>
-          </td>
           <td>
             <!--<canvas id="chart" height="200px" ></canvas>-->
               <div id="chartCD" style="height: 250px; width: 100%;" ></div>
@@ -425,6 +411,11 @@
       </tr>
 
   </table>
+  <select id="SlidingTimeCbo">
+      <option >1 Minute</option>
+      <option >1 hour</option>
+      <option >1 day</option>
+  </select>
     <table width="100%">
         <colgroup>
             <col width="50%">
