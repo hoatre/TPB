@@ -187,7 +187,7 @@
 	//for tables checkbox demo
 	var arr=[];
 	var totalrecord=0;
-	var socket = io.connect('http://127.0.0.1:3001/');
+	var socket = io.connect('http://127.0.0.1:3002/');
 	var objPage={value:'',start:0,end:50}
 	jQuery(function($) {
 		objPage.value=$( "#txtSeach" ).val()==''?"ALL":$( "#txtSeach" ).val();
