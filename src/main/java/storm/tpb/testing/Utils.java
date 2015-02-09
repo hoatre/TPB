@@ -1,11 +1,15 @@
 package storm.tpb.testing;
 
 import backtype.storm.tuple.Tuple;
-import backtype.storm.tuple.Values;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.MongoClient;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
+import storm.tpb.util.Properties;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -15,6 +19,7 @@ import java.util.Date;
  */
 public class Utils {
     private static final ObjectMapper mapper = new ObjectMapper();
+    private static DB db = null;
     public static Transaction GetTransactionFromJSon(Tuple input)
     {
         String json = input.getString(0);
@@ -42,5 +47,12 @@ public class Utils {
 
         }
         return _transaction;
+    }
+
+    public static DBCollection checkConnection(String collection) throws UnknownHostException {
+        if(db == null){
+            db = (new MongoClient(Properties.getString("MongoDB.host"), Properties.getInt("MongoDB.port"))).getDB(Properties.getString("MongoDB.Name"));
+        }
+        return db.getCollection(collection);
     }
 }
