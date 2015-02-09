@@ -14,8 +14,15 @@ import java.net.SocketTimeoutException;
  */
 public class SaveRedisForChart extends BaseFunction {
     private Jedis jedis;
+    private SlidingWindow sliding;
+    private SlidingWindow.Time emitRatePer;
+    public SaveRedisForChart(SlidingWindow ewma, SlidingWindow.Time emitRatePer){
+        this.sliding = ewma;
+        this.emitRatePer = emitRatePer;
+    }
     public synchronized void execute(TridentTuple tuple, TridentCollector collector) {
         try {
+            this.sliding.chartFlot(tuple.getLongByField("countBranch1"), tuple.getLongByField("countBranch2"), tuple.getLongByField("countBranch3"), tuple.getLongByField("countCenter"));
             jedis = new Jedis(Properties.getString("redis.host"), Properties.getInt("redis.port"));
             jedis.set("real-time-count-" + PARAM.Channel.BRANCH1.getValue() + "-" + Long.toString(tuple.getLongByField("window")), Long.toString(tuple.getLongByField("countBranch1")));
             jedis.set("real-time-count-" + PARAM.Channel.BRANCH2.getValue() + "-" + Long.toString(tuple.getLongByField("window")), Long.toString(tuple.getLongByField("countBranch2")));

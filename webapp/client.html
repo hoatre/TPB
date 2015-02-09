@@ -6,26 +6,27 @@
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 
     <!--Load the AJAX API-->
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    <script type="text/javascript" src="jquery.min.js"></script>
     <script type="text/javascript" src="http://localhost:4000/socket.io/socket.io.js"></script>
     <!--<script type="text/javascript" src="smoothie.js"></script>-->
-      <script type="text/javascript" src="http://github.com/joewalnes/smoothie/raw/master/smoothie.js"></script>
+      <script type="text/javascript" src="smoothie.js"></script>
     <script type="text/javascript" src="canvasjs.min.js"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
 
     <script type="text/javascript">
       var socket = io.connect('http://localhost:4000/');
 
       // Data
-      var line1 = new TimeSeries();
-      var line2 = new TimeSeries();
-      var line3 = new TimeSeries();
-      var line4 = new TimeSeries();
 
-      var line5 = new TimeSeries();
-      var line6 = new TimeSeries();
-      var line7 = new TimeSeries();
-      var line8 = new TimeSeries();
+//      var line1 = new TimeSeries();
+//      var line2 = new TimeSeries();
+//      var line3 = new TimeSeries();
+//      var line4 = new TimeSeries();
+//
+//      var line5 = new TimeSeries();
+//      var line6 = new TimeSeries();
+//      var line7 = new TimeSeries();
+//      var line8 = new TimeSeries();
 
       var Deposit = "DE";
       var Withdrawal = "WI";
@@ -71,16 +72,16 @@
           });
       }
 
-      var chart = new SmoothieChart({
-                  millisPerPixel: time1/(window.innerWidth - 300),
-                  grid: {
-                      fillStyle: 'transparent',
-                      strokeStyle: 'rgba(166,197,103,0.20)',
-                      borderVisible: true
-                  },
-                  labels: { fillStyle: '#000000' }
-              }),canvas = document.getElementById('chart'),
-              series = new TimeSeries();
+//      var chart = new SmoothieChart({
+//                  millisPerPixel: time1/(window.innerWidth - 300),
+//                  grid: {
+//                      fillStyle: 'transparent',
+//                      strokeStyle: 'rgba(166,197,103,0.20)',
+//                      borderVisible: true
+//                  },
+//                  labels: { fillStyle: '#000000' }
+//              }),canvas = document.getElementById('chart'),
+//              series = new TimeSeries();
 
       function Total(slidingTime){
           socket.on('Total-TotalNoTran-' + slidingTime, function (data1) {
@@ -133,20 +134,20 @@
       }
       function LineChart(slidingTime){
           socket.on('CountChart-real-time-count-' + Branch1 + '-' + slidingTime, function (data1) {
-              line1.append(new Date().getTime(), data1);
+              //line1.append(new Date().getTime(), data1);
               countB1 = parseInt(data1);
 
           });
           socket.on('CountChart-real-time-count-' + Branch2 + '-' + slidingTime, function (data1) {
-              line2.append(new Date().getTime(), data1);
+              //line2.append(new Date().getTime(), data1);
               countB2 = parseInt(data1);
           });
           socket.on('CountChart-real-time-count-' + Branch3 + '-' + slidingTime, function (data1) {
-              line3.append(new Date().getTime(), data1);
+              //line3.append(new Date().getTime(), data1);
               countB3 = parseInt(data1);
           });
           socket.on('CountChart-real-time-count-' + Contact_Center + '-' + slidingTime, function (data1) {
-              line4.append(new Date().getTime(), data1);
+              //line4.append(new Date().getTime(), data1);
               countCenter = parseInt(data1);
           });
       }
@@ -166,19 +167,20 @@
       }
       function createTimeline() {
 
-          $( "input" ).change(function() {
-              Line11Checked = $('input[name="Line11"]:checked').length > 0;
-              Line21Checked = $('input[name="Line21"]:checked').length > 0;
-              Line31Checked = $('input[name="Line31"]:checked').length > 0;
-              Line41Checked = $('input[name="Line41"]:checked').length > 0;
-          }).change();
+//          $( "input" ).change(function() {
+//              Line11Checked = $('input[name="Line11"]:checked').length > 0;
+//              Line21Checked = $('input[name="Line21"]:checked').length > 0;
+//              Line31Checked = $('input[name="Line31"]:checked').length > 0;
+//              Line41Checked = $('input[name="Line41"]:checked').length > 0;
+//          }).change();
 
-          $("#chart").attr({'width': window.innerWidth - 300, 'height': 200});
-
-          $('#line11').on('click', line11);
-          $('#line21').on('click', line21);
-          $('#line31').on('click', line31);
-          $('#line41').on('click', line41);
+          //$("#chart").attr({'width': window.innerWidth - 300, 'height': 200});
+//          $("#chart").attr({'width': 0});
+//
+//          $('#line11').on('click', line11);
+//          $('#line21').on('click', line21);
+//          $('#line31').on('click', line31);
+//          $('#line41').on('click', line41);
 
           $('#SlidingTimeCbo').change(function() {
               var str = "";
@@ -188,18 +190,21 @@
               if(str.toLowerCase().localeCompare("1 Minute".toLowerCase()) == 0)
               {
                   socket.emit('open 1 Minute',"1 Minute");
+                  createLineChart(time1);
               }
               else if(str.toLowerCase().localeCompare("1 hour".toLowerCase()) == 0)
               {
                   socket.emit('open 1 hour',"1 hour");
+                  createLineChart(time2);
 
               }
               else if(str.toLowerCase().localeCompare("1 day".toLowerCase()) == 0)
               {
                   socket.emit('open 1 day',"1 day");
+                  createLineChart(time3);
               }
           }).change();
-
+          //createLineChart(time1);
           TopBot(time1);
           TopBot(time2);
           TopBot(time3);
@@ -212,84 +217,205 @@
 //          Total(30000);
 //          Total(60000);
 //          Total(600000);
-          chart.addTimeSeries(line1,
-                  { strokeStyle: '#A6C567', lineWidth:3 });
-          chart.addTimeSeries(line2,
-                  { strokeStyle:'#0000FF', lineWidth:3 });
-          chart.addTimeSeries(line3,
-                  { strokeStyle:'#DC143C', lineWidth:3 });
-          chart.addTimeSeries(line4,
-                  { strokeStyle:'#FFD700', lineWidth:3 });
-
-          chart.streamTo(document.getElementById("chart"), 1000);
+//          chart.addTimeSeries(line1,
+//                  { strokeStyle: '#A6C567', lineWidth:3 });
+//          chart.addTimeSeries(line2,
+//                  { strokeStyle:'#0000FF', lineWidth:3 });
+//          chart.addTimeSeries(line3,
+//                  { strokeStyle:'#DC143C', lineWidth:3 });
+//          chart.addTimeSeries(line4,
+//                  { strokeStyle:'#FFD700', lineWidth:3 });
+//
+//          chart.streamTo(document.getElementById("chart"), 1000);
       }
 
-      function line11() {
-          if($('#line11').is(':checked')) {
-              chart.addTimeSeries(line1,
-                      {strokeStyle: '#A6C567', lineWidth: 3});
-          }
-          else{
-              chart.removeTimeSeries(line1);
-          }
+//      function line11() {
+//          if($('#line11').is(':checked')) {
+//              chart.addTimeSeries(line1,
+//                      {strokeStyle: '#A6C567', lineWidth: 3});
+//          }
+//          else{
+//              chart.removeTimeSeries(line1);
+//          }
+//      }
+//
+//
+//      function line21() {
+//          if($('#line21').is(':checked'))
+//              chart.addTimeSeries(line2,
+//                      { strokeStyle:'#0000FF', lineWidth:3 });
+//
+//          else{
+//              chart.removeTimeSeries(line2);
+//          }
+//      }
+//
+//      function line31() {
+//          if($('#line31').is(':checked'))
+//              chart.addTimeSeries(line3,
+//                      { strokeStyle:'#DC143C', lineWidth:3 });
+//          else{
+//              chart.removeTimeSeries(line3);
+//          }
+//      }
+//
+//      function line41() {
+//          if($('#line41').is(':checked'))
+//              chart.addTimeSeries(line4,
+//                      { strokeStyle:'#FFD700', lineWidth:3 });
+//          else{
+//              chart.removeTimeSeries(line4);
+//          }
+//      }
+      function createLineChart(time) {
+          //var socket1 = io.connect('http://localhost:4000/');
+          socket.on('listChart-real-time-count-chart-' + time,function(data1){
+              var jsonObj = $.parseJSON('[' + data1 + ']');
+              var y = 0;
+              var data = [];
+              var dataSeriesB1 = { type: "line", showInLegend: true, name: "TPBank Ben Thanh" };
+              var dataPointsB1 = [];
+              var dataSeriesB2 = { type: "line", showInLegend: true, name: "TPBank Da Nang" };
+              var dataPointsB2 = [];
+              var dataSeriesB3 = { type: "line", showInLegend: true, name: "TPBank Can Tho" };
+              var dataPointsB3 = [];
+              var dataSeriesCen = { type: "line", showInLegend: true, name: "Contact Center" };
+              var dataPointsCen = [];
+              for (var i = 0; i < jsonObj.length; i += 1) {
+                  if(Line11Checked) {
+                      dataPointsB1.push({
+                          x: new Date(jsonObj[i]["time"]),
+                          y: parseInt(jsonObj[i]["B1"])
+                      });
+                  }
+                  if(Line21Checked) {
+                      dataPointsB2.push({
+                          x: new Date(jsonObj[i]["time"]),
+                          y: parseInt(jsonObj[i]["B2"])
+                      });
+                  }
+                  if(Line31Checked) {
+                      dataPointsB3.push({
+                          x: new Date(jsonObj[i]["time"]),
+                          y: parseInt(jsonObj[i]["B3"])
+                      });
+                  }
+                  if(Line41Checked){
+                      dataPointsCen.push({
+                          x: new Date(jsonObj[i]["time"]),
+                          y: parseInt(jsonObj[i]["Contact"])
+                      });
+                  }
+              }
+              if(!Line11Checked) {
+                  dataSeriesB1.visible = false;
+              }
+              else
+              {
+                  dataSeriesB1.visible = true;
+              }
+              if(!Line21Checked) {
+                  dataSeriesB2.visible = false;
+              }
+              else
+              {
+                  dataSeriesB2.visible = true;
+              }
+              if(!Line31Checked) {
+                  dataSeriesB3.visible = false;
+              }
+              else
+              {
+                  dataSeriesB3.visible = true;
+              }
+              if(!Line41Checked){
+                  dataSeriesCen.visible = false;
+              }
+              else
+              {
+                  dataSeriesCen.visible = true;
+              }
+              dataSeriesB1.dataPoints = dataPointsB1;
+              dataSeriesB2.dataPoints = dataPointsB2;
+              dataSeriesB3.dataPoints = dataPointsB3;
+              dataSeriesCen.dataPoints = dataPointsCen;
+
+                data.push(dataSeriesB1);
+                data.push(dataSeriesB2);
+                data.push(dataSeriesB3);
+                data.push(dataSeriesCen);
+              var chartCD1 = new CanvasJS.Chart("chartCD",
+                      {
+                          title: {
+                              text: "Line Chart TPB"
+                          },
+                          legend: {
+                              cursor: "pointer",
+                              itemclick: function (e) {
+                                  if((e.dataSeries.name === "TPBank Ben Thanh" && e.dataSeries.visible)){
+                                      Line11Checked = false;
+                                      e.dataSeries.visible = false;
+                                  } else if(e.dataSeries.name === "TPBank Ben Thanh") {
+                                      Line11Checked = true;
+                                      e.dataSeries.visible = true;
+                                  }
+                                  if((e.dataSeries.name === "TPBank Da Nang" && e.dataSeries.visible)){
+                                      Line21Checked = false;
+                                      e.dataSeries.visible = false;
+                                  } else if(e.dataSeries.name === "TPBank Da Nang")  {
+                                      Line21Checked = true;
+                                      e.dataSeries.visible = true;
+                                  }
+                                  if((e.dataSeries.name === "TPBank Can Tho" && e.dataSeries.visible)){
+                                      Line31Checked = false;
+                                      e.dataSeries.visible = false;
+                                  } else if(e.dataSeries.name === "TPBank Can Tho")  {
+                                      Line31Checked = true;
+                                      e.dataSeries.visible = true;
+                                  }
+                                  if((e.dataSeries.name === "Contact Center" && e.dataSeries.visible)){
+                                      Line41Checked = false;
+                                      e.dataSeries.visible = false;
+                                  } else if(e.dataSeries.name === "Contact Center")  {
+                                      Line41Checked = true;
+                                      e.dataSeries.visible = true;
+                                  }
+                                  e.chart.render();
+                              }
+                          },
+                          data: data
+
+                      });
+
+              chartCD1.render();
+          });
+
+
       }
+      setInterval(function() {
 
 
-      function line21() {
-          if($('#line21').is(':checked'))
-              chart.addTimeSeries(line2,
-                      { strokeStyle:'#0000FF', lineWidth:3 });
-
-          else{
-              chart.removeTimeSeries(line2);
-          }
-      }
-
-      function line31() {
-          if($('#line31').is(':checked'))
-              chart.addTimeSeries(line3,
-                      { strokeStyle:'#DC143C', lineWidth:3 });
-          else{
-              chart.removeTimeSeries(line3);
-          }
-      }
-
-      function line41() {
-          if($('#line41').is(':checked'))
-              chart.addTimeSeries(line4,
-                      { strokeStyle:'#FFD700', lineWidth:3 });
-          else{
-              chart.removeTimeSeries(line4);
-          }
-      }
+      }, 2000);
     </script>
 
   </head>
 
   <body onload="createTimeline()">
   <table width="100%">
-      <colgroup>
-          <col width="80%">
-      </colgroup>
       <tr>
-          <td style="padding-left: 50px; padding-right: 50px">
-              <input type="checkbox" id="line11" name="Line11" Checked/>Branch 1  <font  color="#A6C567">&#9642;</font></br>
-              <input type="checkbox" id="line21" name="Line21" Checked/>Branch 2  <font  color="#0000FF">&#9642;</font></br>
-              <input type="checkbox" id="line31" name="Line31" Checked/>Branch 3  <font  color="#DC143C">&#9642;</font></br>
-              <input type="checkbox" id="line41" name="Line41" Checked/>Contact Center  <font  color="#FFD700">&#9642;</font></br>
-              <select id="SlidingTimeCbo">
-                  <option >1 Minute</option>
-                  <option >1 hour</option>
-                  <option >1 day</option>
-              </select>
-          </td>
           <td>
-          <canvas id="chart" height="200px"></canvas>
+            <!--<canvas id="chart" height="200px" ></canvas>-->
+              <div id="chartCD" style="height: 250px; width: 100%;" ></div>
           </td>
 
       </tr>
 
   </table>
+  <select id="SlidingTimeCbo">
+      <option >1 Minute</option>
+      <option >1 hour</option>
+      <option >1 day</option>
+  </select>
     <table width="100%">
         <colgroup>
             <col width="50%">
@@ -706,6 +832,7 @@
                 </table>
         </tr>
     </table>
+
   </body>
 </html>
 
