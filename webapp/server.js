@@ -63,16 +63,6 @@ function log(type, msg) {
     console.log(color + '   ' + type + '  - ' + reset + msg);
 }
 
-//t1 = setInterval(function() {
-//    setTime(time1);
-//}, 1000);
-//t2 = setInterval(function() {
-//    setTime(time2);
-//}, 1000);
-//t3 = setInterval(function() {
-//    setTime(time3);
-//}, 1000);
-
 clearInterval(t2);
 clearInterval(t3);
 clearInterval(t1);
@@ -116,11 +106,6 @@ io.sockets.on('connection',function(socket){
             }
         });
     }
-    //setInterval(function() {
-    //
-    //
-    //
-    //}, 1000);
     function setTime(slidingTime){
         redis_get('real-time-count-' + Branch1 + '-' + slidingTime);
         redis_get('real-time-count-' + Branch2 + '-' + slidingTime);

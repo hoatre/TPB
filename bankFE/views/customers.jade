@@ -1,0 +1,37 @@
+extends layout
+
+block content
+  // START YOUR CONTENT HERE
+  .page-header.no-padding-bottom
+    h4
+      | Form List
+      small                    
+  .well.white
+    table#SampleDT.datatable.table.table-hover.table-striped.table-bordered.tc-table
+      thead
+        tr
+          th(data-hide='phone,tablet') Account
+          th(data-class='expand') Full name
+          th(data-hide='phone,tablet') Gender
+          th(data-hide='phone,tablet') Bob
+          th(data-hide='phone,tablet') Phonenumber
+          th Address
+      tbody
+      if(customers == null || customers.lenght == 0)
+        | Khong co du lieu
+      else
+        each customer, index in customers
+          tr
+            td 
+              a(href='/profile/#{customer.ACCOUNTNUMBER}') #{customer.ACCOUNTNUMBER}                      
+            td #{customer.FULLNAME}
+            td 
+              if(customer.GENDER == 1)
+                | Male
+              else
+                | Female
+            td #{customer.BOD}
+            td #{customer.PHONENUMBER}
+            td #{customer.ADDRESS}             
+  // End jQuery Datatable
+  // END YOUR CONTENT HERE
