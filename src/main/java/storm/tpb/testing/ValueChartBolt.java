@@ -18,10 +18,10 @@ public class ValueChartBolt extends BaseFunction{
     }
     public void execute(TridentTuple tuple, TridentCollector collector) {
         this.sliding.TotalCountAmount(tuple.getStringByField("ch_id"), tuple.getLongByField("timestamp"), tuple.getLongByField("amount"));
-        collector.emit(new Values(this.sliding.getCountBranch1(),this.sliding.getCountBranch2()
-                                    ,this.sliding.getCountBranch3(),this.sliding.getCountCenter(), this.sliding.getWindow(),this.sliding.getSumBranch1()
-                                    ,this.sliding.getSumBranch2(),this.sliding.getSumBranch3(),this.sliding.getSumCenter()));
-        System.out.println("getCountBranch1 : " + this.sliding.getCountBranch1() + " getCountBranch2 : " + this.sliding.getCountBranch2()
-                + " getCountBranch3 : " + this.sliding.getCountBranch3() + " getCountCenter : " + this.sliding.getCountCenter());
+//        collector.emit(new Values(this.sliding.getCountBranch1(),this.sliding.getCountBranch2()
+//                                    ,this.sliding.getCountBranch3(),this.sliding.getCountCenter(), this.sliding.getWindow(),this.sliding.getSumBranch1()
+//                                    ,this.sliding.getSumBranch2(),this.sliding.getSumBranch3(),this.sliding.getSumCenter()));
+        collector.emit(new Values(this.sliding.getWindow(),this.sliding.getListTotal()));
+        System.out.println(this.sliding.getListTotal());
     }
 }

@@ -7,7 +7,7 @@ import storm.tpb.topology.PARAM;
 import storm.tpb.topology.TopologyControl;
 import storm.tpb.topology.TopologyMain;
 import storm.tpb.util.Properties;
-
+import storm.tpb.tools.function;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,7 +38,9 @@ public class SlidingWindow implements Serializable {
     public static final double FIFTEEN_MINUTE_ALPHA = 1 - Math.exp(-5d
             / 60d / 15d);
 
-    private Jedis jedis;
+    private List<String> ChannelCode = new ArrayList<String>();
+    private List<String> TransactionCode = new ArrayList<String>();
+    private List<JSONObject> TotalJson = new ArrayList<JSONObject>();
     private long window;
     private long alphaWindow;
     private long last=System.currentTimeMillis();
@@ -61,6 +63,8 @@ public class SlidingWindow implements Serializable {
     ArrayList<Long> cacheTimeAccTran = new ArrayList<Long>();
     List<TransactionCount> listTransCount = new ArrayList<TransactionCount>();
     ArrayList<Long> cacheTimeCount = new ArrayList<Long>();
+    private List<TransactionTotal> listTotal = new ArrayList<TransactionTotal>();
+
     private long count=0;
     private long sumAmount=0;
     private long countBranch1=0;
@@ -79,14 +83,33 @@ public class SlidingWindow implements Serializable {
     private List<String> BotFiveTran = new ArrayList<String>();;
 
     public SlidingWindow() {
+        this.ChannelCode = function.GetListMongo(Properties.getString("MongoDB.Channel"), "ChannelCode");
+        this.TransactionCode = function.GetListMongo(Properties.getString("MongoDB.TransactionTypes"), "TransactionCode");
     }
     public SlidingWindow sliding(double count, Time time) {
         return this.sliding((long) (time.getTime() * count));
     }
     public SlidingWindow sliding(long window) {
-        this.sliding = true;
-        this.window = window;
+
+            this.sliding = true;
+            this.window = window;
+            AddCount();
         return this;
+    }
+    public synchronized void AddCount(){
+        try {
+            Jedis jedis = new Jedis(Properties.getString("redis.host"), Properties.getInt("redis.port"));
+            long lenghtRedis = jedis.llen("real-time-count-chart-" + Long.toString(this.window));
+            if (lenghtRedis > 0) {
+                List<String> list = jedis.lrange("real-time-count-chart-" + Long.toString(this.window), 0, lenghtRedis);
+                for (String a : list) {
+                    JSONObject jsonObj = new JSONObject(a);
+                    this.listTransCount.add(new TransactionCount(jsonObj.getLong("time")));
+                }
+        }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
     public SlidingWindow withAlpha(double alpha) {
         if (!(alpha > 0.0D && alpha <= 1.0D)) {
@@ -140,80 +163,81 @@ public class SlidingWindow implements Serializable {
         TotalCountAmount(System.currentTimeMillis(), channel, timetamp, (int) amount);
     }
     public synchronized void TotalCountAmount(long time, String channel, long timetamp, int amount) {
-        if (!channel.equals(PARAM.Channel.CHANNELFAKE.getValue())) {
-            cacheTimeChart.add(time);
-            Transaction tran = new Transaction();
-            tran.settimetamp(timetamp);
-            tran.setch_id(channel);
-            tran.setamount(amount);
-            listTransChart.add(tran);
-            if (this.sliding) {
-                if ((time - this.lastChart) > this.window) {
-                    this.lastChart = time - this.window;
+        try {
+            if (!channel.equals(PARAM.Channel.CHANNELFAKE.getValue())) {
+                cacheTimeChart.add(time);
+                Transaction tran = new Transaction();
+                tran.settimetamp(timetamp);
+                tran.setch_id(channel);
+                tran.setamount(amount);
+                listTransChart.add(tran);
+                if (this.sliding) {
+                    if ((time - this.lastChart) > this.window) {
+                        this.lastChart = time - this.window;
+                    }
                 }
             }
-        }
-        Integer a=0;
+            Integer a = 0;
 
-        if(!listTransChart.isEmpty())
-            while (listTransChart.get(0).gettimetamp() < this.lastChart) {
-                a++;
-                listTransChart.remove(0);
-                System.out.println("XOA" + a.toString());
-                if(listTransChart.isEmpty())
-                    break;
+            if (!listTransChart.isEmpty())
+                while (listTransChart.get(0).gettimetamp() < this.lastChart) {
+                    a++;
+                    listTransChart.remove(0);
+                    System.out.println("XOA" + a.toString());
+                    if (listTransChart.isEmpty())
+                        break;
+                }
+
+            JSONObject obj = new JSONObject();
+            List<TransactionTotal> listTransTotal= new ArrayList<TransactionTotal>();
+            List<TransactionTotal> asList = new ArrayList<TransactionTotal>();
+            if (!listTransChart.isEmpty()) {
+                for (int i = 0; i < listTransChart.size(); i++) {
+                    listTransTotal.add(new TransactionTotal(listTransChart.get(i).getamount(), listTransChart.get(i).getch_id(), 0));
+                }
+
+                HashMap<String, TransactionTotal> aggregate = new HashMap<String, TransactionTotal>();
+                //int counts = 0;
+                for (TransactionTotal as : listTransTotal) {
+                    String key = as.getchannel();
+                    TransactionTotal existing = aggregate.get(key);
+                    if (existing == null) {
+                        as.setcount(1);
+                        aggregate.put(key, as);
+                        //continue;
+                    }else {
+                        long counts = aggregate.get(key).getcount();
+                        counts++;
+
+                        TransactionTotal combined = new TransactionTotal(as.getamount() + existing.getamount(), as.getchannel(), counts);
+                        aggregate.put(key, combined);
+                    }
+                }
+
+                asList = new ArrayList<TransactionTotal>(aggregate.values());
             }
+            
+            this.listTotal = asList;
+            if(listTransChart.isEmpty())
+                this.lastChart = time - this.window;
+            else
+                this.lastChart = listTransChart.get(0).gettimetamp();
 
-        countBranch1=0;
-        countBranch2=0;
-        countBranch3=0;
-        countCenter=0;
-        sumBranch1=0;
-        sumBranch2=0;
-        sumBranch3=0;
-        sumCenter=0;
-
-
-        if(!listTransChart.isEmpty())
+        }catch (Exception e)
         {
-            for(int i = 0; i < listTransChart.size(); i++)
-            {
-                if(listTransChart.get(i).getch_id().equals(PARAM.Channel.BRANCH1.getValue())) {
-                    countBranch1++;
-                    sumBranch1 = sumBranch1 + listTransChart.get(i).getamount();
-                }
-                if(listTransChart.get(i).getch_id().equals(PARAM.Channel.BRANCH2.getValue())) {
-                    countBranch2++;
-                    sumBranch2 = sumBranch2 + listTransChart.get(i).getamount();
-                }
-                if(listTransChart.get(i).getch_id().equals(PARAM.Channel.BRANCH3.getValue())) {
-                    countBranch3++;
-                    sumBranch3 = sumBranch3 + listTransChart.get(i).getamount();
-                }
-                if(listTransChart.get(i).getch_id().equals(PARAM.Channel.BRANCH4.getValue())) {
-                    countCenter++;
-                    sumCenter = sumCenter + listTransChart.get(i).getamount();
-                }
-            }
-            this.lastChart = listTransChart.get(0).gettimetamp();
-        }else
-            this.lastChart = time-this.window;
-
-
+            e.printStackTrace();
+        }
     }
 
-    public void chartFlot(long count1, long count2, long count3, long countCen) {
-        chartFlot(System.currentTimeMillis(), count1, count2, count3, countCen);
+    public void chartFlot(List<TransactionTotal> listTotal) {
+        chartFlot(System.currentTimeMillis(), listTotal);
     }
-    public synchronized void chartFlot(long time, long count1, long count2, long count3, long countCen) {
+    public synchronized void chartFlot(long time, List<TransactionTotal> listTotal) {
         try {
             cacheTimeCount.add(time);
             TransactionCount tran = new TransactionCount();
             tran.settimestamp(time);
-            tran.setCountB1(count1);
-            tran.setCountB2(count2);
-            tran.setCountB3(count3);
-            tran.setCountCen(countCen);
+            tran.setListTotal(listTotal);
             listTransCount.add(tran);
 
             if (this.sliding) {
@@ -221,40 +245,24 @@ public class SlidingWindow implements Serializable {
                     this.lastChart = time - this.window;
                 }
             }
-
+            Jedis jedis = new Jedis(Properties.getString("redis.host"), Properties.getInt("redis.port"));
             if(!listTransCount.isEmpty()) {
                 while (listTransCount.get(0).gettimestamp() < this.lastChart) {
                     listTransCount.remove(0);
-//                    jedis.blpop(0, "real-time-count-chart-" + PARAM.Channel.BRANCH1.getValue() + "-" + Long.toString(this.window));
-//                    jedis.blpop(0, "real-time-count-chart-" + PARAM.Channel.BRANCH2.getValue() + "-" + Long.toString(this.window));
-//                    jedis.blpop(0, "real-time-count-chart-" + PARAM.Channel.BRANCH3.getValue() + "-" + Long.toString(this.window));
                     jedis.blpop(0, "real-time-count-chart-" + Long.toString(this.window));
                     if (listTransCount.isEmpty())
                         break;
                 }
             }
 
-            jedis = new Jedis(Properties.getString("redis.host"), Properties.getInt("redis.port"));
-            if (!listTransChart.isEmpty()) {
+
+            if (!listTransCount.isEmpty()) {
                 JSONObject obj = new JSONObject();
-                obj.put("B1", listTransCount.get(listTransCount.size() - 1).getCountB1());
-                obj.put("B2", listTransCount.get(listTransCount.size() - 1).getCountB2());
-                obj.put("B3", listTransCount.get(listTransCount.size() - 1).getCountB3());
-                obj.put("Contact", listTransCount.get(listTransCount.size() - 1).getCountCen());
+                for(TransactionTotal a : listTransCount.get(listTransCount.size() - 1).getListTotal()) {
+                    obj.put(a.getchannel(), a.getcount());
+                }
                 obj.put("time", listTransCount.get(listTransCount.size() - 1).gettimestamp());
                 jedis.rpush("real-time-count-chart-" + Long.toString(this.window), obj.toString());
-//                    JSONObject objB2 = new JSONObject();
-//                    objB2.put("B2", listTransCount.get(listTransCount.size() - 1).getCountB2());
-//                    objB2.put("time", listTransCount.get(listTransCount.size() - 1).gettimestamp());
-//                    jedis.rpush("real-time-count-chart-" + PARAM.Channel.BRANCH2.getValue() + "-" + Long.toString(this.window), objB2.toString());
-//                    JSONObject objB3 = new JSONObject();
-//                    objB3.put("B3", listTransCount.get(listTransCount.size() - 1).getCountB3());
-//                    objB3.put("time", listTransCount.get(listTransCount.size() - 1).gettimestamp());
-//                    jedis.rpush("real-time-count-chart-" + PARAM.Channel.BRANCH3.getValue() + "-" + Long.toString(this.window), objB3.toString());
-//                    JSONObject objCen = new JSONObject();
-//                    objCen.put("Contact", listTransCount.get(listTransCount.size() - 1).getCountCen());
-//                    objCen.put("time", listTransCount.get(listTransCount.size() - 1).gettimestamp());
-//                    jedis.rpush("real-time-count-chart-" + PARAM.Channel.BRANCH4.getValue() + "-" + Long.toString(this.window), objCen.toString());
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -262,7 +270,7 @@ public class SlidingWindow implements Serializable {
     }
 
     public void listAmountAcc(String TranType, long amount, String account, long timetamp) {
-        listAmountAcc(TranType, System.currentTimeMillis(), (int)amount, account, timetamp);
+        listAmountAcc(TranType, System.currentTimeMillis(), (int) amount, account, timetamp);
     }
     public synchronized void listAmountAcc(String TranType, long time, int amount, String account, long timetamp) {
         if(TranType.equals(PARAM.TransCode.TRANTYPEFAKE.getValue()) || TranType.equals(PARAM.TransCode.DEPOSIT.getValue())) {
@@ -417,7 +425,6 @@ public class SlidingWindow implements Serializable {
                 }
             List<TransactionAcc> listTransAccTotalAmount = new ArrayList<TransactionAcc>();
             List<TransactionAcc> asList = new ArrayList<TransactionAcc>();
-            ;
             if (!listTransAccTran.isEmpty()) {
                 for (int i = 0; i < listTransAccTran.size(); i++) {
                     listTransAccTotalAmount.add(new TransactionAcc(listTransAccTran.get(i).getamount(), listTransAccTran.get(i).getacc_no()));
@@ -499,6 +506,10 @@ public class SlidingWindow implements Serializable {
         return this.sumCenter;
     }
 
+    public List<TransactionTotal> getListTotal() {
+        return this.listTotal;
+    }
+
     public List<String> getTopFiveDep(){return this.TopFiveDep; }
 
     public List<String> getBotFiveDep(){return this.BotFiveDep; }
@@ -510,6 +521,10 @@ public class SlidingWindow implements Serializable {
     public List<String> getTopFiveTran(){return this.TopFiveTran; }
 
     public List<String> getBotFiveTran(){return this.BotFiveTran; }
+
+    public List<String> getTransactionCode(){return this.TransactionCode; }
+
+    public List<String> getChannelCode(){return this.ChannelCode; }
 
     public class TransactionAcc implements Comparable<TransactionAcc>{
         private Integer amount;
@@ -551,56 +566,67 @@ public class SlidingWindow implements Serializable {
 
         }
     }
-    public class TransactionCount {
-        private Long countB1;
-        private Long countB2;
-        private Long countB3;
-        private Long countCen;
+
+    public class TransactionTotal {
+        private Integer amount;
+        private String channel;
+        private long count;
+        public TransactionTotal(){
+        }
+        public TransactionTotal(Integer amount,String channel, long count){
+            this.amount = amount;
+            this.channel = channel;
+            this.count = count;
+        }
+        public Integer getamount()
+        {
+            return amount;
+        }
+        public void setamount(Integer amount)
+        {
+            this.amount = amount;
+        }
+
+        public long getcount()
+        {
+            return count;
+        }
+        public void setcount(long count)
+        {
+            this.count = count;
+        }
+
+        public String getchannel()
+        {
+            return channel;
+        }
+        public void setchannel(String channel)
+        {
+            this.channel = channel;
+        }
+    }
+
+    public class TransactionCount implements Serializable {
+        private List<TransactionTotal> listTotal;
         private Long timestamp;
         public TransactionCount(){
 
         }
-        public TransactionCount(Long count,Long timestamp, String channel){
-            this.countB1 = countB1;
-            this.countB2 = countB2;
-            this.countB3 = countB3;
-            this.countCen = countCen;
+        public TransactionCount(Long timestamp){
+            this.listTotal = new ArrayList<TransactionTotal>();
             this.timestamp = timestamp;
         }
-        public Long getCountB1()
-        {
-            return countB1;
+        public TransactionCount(Long timestamp, List<TransactionTotal> listTotal){
+            this.listTotal = listTotal;
+            this.timestamp = timestamp;
         }
-        public void setCountB1(Long countB1)
+        public List<TransactionTotal> getListTotal()
         {
-            this.countB1 = countB1;
+            return listTotal;
         }
-
-        public Long getCountB2()
+        public void setListTotal(List<TransactionTotal> listTotal)
         {
-            return countB2;
-        }
-        public void setCountB2(Long countB2)
-        {
-            this.countB2 = countB2;
-        }
-
-        public Long getCountB3()
-        {
-            return countB3;
-        }
-        public void setCountB3(Long countB3)
-        {
-            this.countB3 = countB3;
-        }
-
-        public Long getCountCen()
-        {
-            return countCen;
-        }
-        public void setCountCen(Long countCen)
-        {
-            this.countCen = countCen;
+            this.listTotal = listTotal;
         }
 
         public Long gettimestamp()
