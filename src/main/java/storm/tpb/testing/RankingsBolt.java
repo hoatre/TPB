@@ -22,11 +22,5 @@ public class RankingsBolt extends BaseFunction{
     public void execute(TridentTuple tuple, TridentCollector collector) {
         this.sliding.listAmountAcc(tuple.getStringByField("trx_code"), tuple.getLongByField("amount"),
                 tuple.getStringByField("acc_no"), tuple.getLongByField("timestamp"));
-//        System.out.println("TopFive : " + this.sliding.getTopFive());
-//        System.out.println("BotFive : " + this.sliding.getBotFive());
-        collector.emit(new Values(this.sliding.getTopFiveDep(),this.sliding.getBotFiveDep()
-                                , this.sliding.getTopFiveWit(),this.sliding.getBotFiveWit()
-                                , this.sliding.getTopFiveTran(),this.sliding.getBotFiveTran()
-                                , this.sliding.getWindow()));
     }
 }

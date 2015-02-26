@@ -42,8 +42,6 @@ public class TopologyControl {
     private static final String KAFKA_TOPIC =
             Properties.getString("storm.kafka_topic");
 
-    //private static List<String> TransactionCode = new ArrayList<String>();
-
     public static void main(String[] args) throws Exception {
         Config conf = new Config();
         if (args.length == 0) {
@@ -75,6 +73,7 @@ public class TopologyControl {
 
         List<String> TransactionCode = function.GetListMongo(Properties.getString("MongoDB.TransactionTypes"), "TransactionCode");
         List<String> ChannelCode = function.GetListMongo(Properties.getString("MongoDB.Channel"), "ChannelCode");
+
         TopologySliding(parsedStream, 60.0, TransactionCode, ChannelCode);
         TopologySliding(parsedStream, 3600.0, TransactionCode, ChannelCode);
         TopologySliding(parsedStream, 86400.0, TransactionCode, ChannelCode);
@@ -86,9 +85,7 @@ public class TopologyControl {
 
     private  static void TotalRankingByTranType(Stream st, SlidingWindow Sliding, String tranType){
         st
-            //.each(new Fields("trx_code"), new RollingBolt(tranType))
-            .each(new Fields("amount", "acc_no", "timestamp", "trx_code"), new RankingsBolt(Sliding, SlidingWindow.Time.SECONDS), RankingField)
-            .each(RankingField, new SaveRedisTopBotBolt(tranType), new Fields("abc"));
+            .each(new Fields("amount", "acc_no", "timestamp", "trx_code"), new RankingsBolt(Sliding, SlidingWindow.Time.SECONDS), RankingField);
     }
 
     private static void TopologySliding(Stream parsedStream, double SlidingTime, List<String> TransactionCode, List<String> ChannelCode)
@@ -99,15 +96,6 @@ public class TopologyControl {
         parsedStream.each(new Fields("ch_id", "timestamp", "amount"), new ValueChartBolt(Sliding, SlidingWindow.Time.SECONDS)
                 , valueChartNew)
                 .each(valueChartNew, new SaveRedisForChart(Sliding, SlidingWindow.Time.SECONDS, ChannelCode), new Fields("doneValueChart"));
-
-//        //Rankings DEPOSIT
-//        TotalRankingByTranType(parsedStream, Sliding, PARAM.TransCode.DEPOSIT.getValue());
-//
-//        //Rankings TRANSFERFROM
-//        TotalRankingByTranType(parsedStream, Sliding, PARAM.TransCode.TRANSFERFROM.getValue());
-//
-//        //Rankings WITHDRAWAL
-//        TotalRankingByTranType(parsedStream, Sliding, PARAM.TransCode.WITHDRAWAL.getValue());
 
         for(String code : TransactionCode)
             TotalRankingByTranType(parsedStream, Sliding, code);
