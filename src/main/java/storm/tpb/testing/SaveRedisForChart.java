@@ -28,24 +28,9 @@ public class SaveRedisForChart extends BaseFunction {
     }
     public synchronized void execute(TridentTuple tuple, TridentCollector collector) {
         try {
-
-            jedis = new Jedis(Properties.getString("redis.host"), Properties.getInt("redis.port"));
-            jedis.connect();
             List<SlidingWindow.TransactionTotal> listTotal = (ArrayList<SlidingWindow.TransactionTotal>)tuple.get(1);
 
             this.sliding.chartFlot(listTotal);
-            if(!listTotal.isEmpty()) {
-                for (SlidingWindow.TransactionTotal a : listTotal) {
-                    jedis.set("real-time-count-" + a.getchannel() + "-" + Long.toString(tuple.getLongByField("window")), Long.toString(a.getcount()));
-                    jedis.set("real-time-sum-" + a.getchannel() + "-" + Long.toString(tuple.getLongByField("window")), Long.toString(a.getamount()));
-                }
-            }else{
-                for(String a : this.ChannelCode) {
-                    jedis.set("real-time-count-" + a + "-" + Long.toString(tuple.getLongByField("window")), Integer.toString(0));
-                    jedis.set("real-time-sum-" + a + "-" + Long.toString(tuple.getLongByField("window")), Integer.toString(0));
-                }
-            }
-            jedis.disconnect();
         }catch (Exception e)
         {
 

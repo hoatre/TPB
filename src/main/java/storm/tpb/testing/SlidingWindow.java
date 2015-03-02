@@ -1,11 +1,8 @@
 package storm.tpb.testing;
 
 import org.json.JSONObject;
-import org.mortbay.util.ajax.JSON;
 import redis.clients.jedis.Jedis;
 import storm.tpb.topology.PARAM;
-import storm.tpb.topology.TopologyControl;
-import storm.tpb.topology.TopologyMain;
 import storm.tpb.util.Properties;
 import storm.tpb.tools.function;
 import java.io.Serializable;
@@ -58,14 +55,6 @@ public class SlidingWindow implements Serializable {
 
     private long count=0;
     private long sumAmount=0;
-    private long countBranch1=0;
-    private long countBranch2=0;
-    private long countBranch3=0;
-    private long countCenter=0;
-    private long sumBranch1=0;
-    private long sumBranch2=0;
-    private long sumBranch3=0;
-    private long sumCenter=0;
     private List<String> TopFive = new ArrayList<String>();
     private List<String> BotFive = new ArrayList<String>();;
 
@@ -77,7 +66,6 @@ public class SlidingWindow implements Serializable {
         return this.sliding((long) (time.getTime() * count));
     }
     public SlidingWindow sliding(long window) {
-
             this.sliding = true;
             this.window = window;
             AddCount();
@@ -244,17 +232,16 @@ public class SlidingWindow implements Serializable {
                         break;
                 }
             }
-
-
             if (!listTransCount.isEmpty()) {
                 JSONObject obj = new JSONObject();
                 for(TransactionTotal a : listTransCount.get(listTransCount.size() - 1).getListTotal()) {
-                    obj.put(a.getchannel(), a.getcount());
+                    obj.put(a.getchannel() + "-count", a.getcount());
+                    obj.put(a.getchannel() + "-sum", a.getamount());
                 }
                 obj.put("time", listTransCount.get(listTransCount.size() - 1).gettimestamp());
                 jedis.rpush("real-time-count-chart-" + Long.toString(this.window), obj.toString());
-                jedis.disconnect();
             }
+            jedis.disconnect();
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -376,38 +363,6 @@ public class SlidingWindow implements Serializable {
 
     public long getSum() {
         return this.sumAmount;
-    }
-
-    public long getCountBranch1() {
-        return this.countBranch1;
-    }
-
-    public long getCountBranch2() {
-        return this.countBranch2;
-    }
-
-    public long getCountBranch3() {
-        return this.countBranch3;
-    }
-
-    public long getCountCenter() {
-        return this.countCenter;
-    }
-
-    public long getSumBranch1() {
-        return this.sumBranch1;
-    }
-
-    public long getSumBranch2() {
-        return this.sumBranch2;
-    }
-
-    public long getSumBranch3() {
-        return this.sumBranch3;
-    }
-
-    public long getSumCenter() {
-        return this.sumCenter;
     }
 
     public List<TransactionTotal> getListTotal() {
