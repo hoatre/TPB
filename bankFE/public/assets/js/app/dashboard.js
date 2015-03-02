@@ -116,17 +116,20 @@ function buidData(data)
 {
     for(var k=0;k<data.length;k++) {
         for (var i = 0; i < channelCode.length; i++) {
-            var dataPoints = [];
+
 
             if(data[k].name == channelCode[i].ChannelName) {
+                var dataPoints = [];
                 var visible = false;
                 for (var j = 0; j < jsonObj.length; j += 1) {
 
                     if (visible == false && jsonObj[j][channelCode[i].ChannelCode + "-count"] != null && jsonObj[j][channelCode[i].ChannelCode + "-count"] != "") visible = true;
-                    dataPoints.push({
-                        x: new Date(jsonObj[j]["time"]),
-                        y: parseInt(jsonObj[j][channelCode[i].ChannelCode + "-count"])
-                    });
+                    if(jsonObj[j][channelCode[i].ChannelCode + "-count"] != null && jsonObj[j][channelCode[i].ChannelCode + "-count"] != "") {
+                        dataPoints.push({
+                            x: new Date(jsonObj[j]["time"]),
+                            y: parseInt(jsonObj[j][channelCode[i].ChannelCode + "-count"])
+                        });
+                    }
                 }
                 if (visible == true) {
                     data[k].dataPoints = dataPoints;
@@ -135,6 +138,7 @@ function buidData(data)
                         channelCode[i].Display = "1";
                 }else{
                     data[k].showInLegend = false;
+                    data[k].dataPoints = [];
                     channelCode[i].Display = "0";
                 }
             }
@@ -151,10 +155,21 @@ function TotalCountAmount()
     totalCount = 0;
     for(var i=0;i<channelCode.length;i++){
         if(channelCode[i].Display == "1") {
-            totalCount = parseInt(totalCount) + parseInt(jsonObj[jsonObj.length - 1][channelCode[i].ChannelCode + "-count"]);
-            totalSum = parseInt(totalSum) + parseInt(jsonObj[jsonObj.length - 1][channelCode[i].ChannelCode + "-sum"]);
+            if(jsonObj[jsonObj.length - 1][channelCode[i].ChannelCode + "-count"] != null
+                && jsonObj[jsonObj.length - 1][channelCode[i].ChannelCode + "-count"] != undefined) {
+                totalCount = parseInt(totalCount) + parseInt(jsonObj[jsonObj.length - 1][channelCode[i].ChannelCode + "-count"]);
+            }
+            if(jsonObj[jsonObj.length - 1][channelCode[i].ChannelCode + "-sum"] != null
+                && jsonObj[jsonObj.length - 1][channelCode[i].ChannelCode + "-sum"] != undefined) {
+                totalSum = parseInt(totalSum) + parseInt(jsonObj[jsonObj.length - 1][channelCode[i].ChannelCode + "-sum"]);
+            }
         }
     }
+
+    if(totalCount == null || totalCount == undefined)
+        totalCount = 0;
+    if(totalSum == null || totalSum == undefined)
+        totalSum = 0;
 
     var TotalNoTran = document.getElementById("TotalNoTran");
     TotalNoTran.innerHTML = totalCount.toString();

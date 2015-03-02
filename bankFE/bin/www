@@ -179,7 +179,7 @@ function redis_hmget_top(key, socket){
             log('error', "error");
         } else {
             socket.emit('Top-' + key, items);
-            //log('info', "Top-" + key + " : " + items);
+            //log('info', "get top bot");
         }
     });
 }
@@ -190,6 +190,7 @@ function redis_lrange(key, socket){
             log('error', "error");
         } else {
            socket.emit('listChart-' + key,items);
+           //log('info', items);
         }
     });
 }
@@ -205,39 +206,42 @@ io.sockets.on('connection',function(socket){
     socket.emit('listChannelCode',channelCode);
     socket.emit('listTransactionCode',transactionCode);
     socket.on('open 1 Minute', function (data1) {
-        log('warn', "open 1 Minute");
+        log('info', "open 1 Minute");
         clearInterval(t2);
         clearInterval(t3);
-        redis_lrange('real-time-count-chart-' + commonConfig.SlidingTime1, socket);
+        redis_lrange('real-time-count-chart-' + commonConfig.SlidingTimeMinute, socket);
         t1 = setInterval(function() {
-            GetBotTop(commonConfig.SlidingTime1, socket);
-            redis_lrange('real-time-count-chart-' + commonConfig.SlidingTime1, socket);
-        }, commonConfig.SlidingTimeDelay1);
+            GetBotTop(commonConfig.SlidingTimeMinute, socket);
+            redis_lrange('real-time-count-chart-' + commonConfig.SlidingTimeMinute, socket);
+        }, commonConfig.SlidingTimeDelayMinute);
     }),
     socket.on('open 1 hour', function (data1) {
-        log('warn', "open 1 hour");
+        log('info', "open 1 hour");
         clearInterval(t1);
         clearInterval(t3);
-        redis_lrange('real-time-count-chart-' + commonConfig.SlidingTime2, socket);
+        redis_lrange('real-time-count-chart-' + commonConfig.SlidingTimeHour, socket);
+        GetBotTop(commonConfig.SlidingTimeHour, socket);
         t2 = setInterval(function() {
-            GetBotTop(commonConfig.SlidingTime2, socket);
-            redis_lrange('real-time-count-chart-' + commonConfig.SlidingTime2, socket);
-        }, commonConfig.SlidingTimeDelay2);
+            GetBotTop(commonConfig.SlidingTimeHour, socket);
+            redis_lrange('real-time-count-chart-' + commonConfig.SlidingTimeHour, socket);
+        }, commonConfig.SlidingTimeDelayHour);
     }),
     socket.on('open 1 day', function (data1) {
-        log('warn', "open 1 day");
+        log('info', "open 1 day");
         clearInterval(t2);
         clearInterval(t1);
-        redis_lrange('real-time-count-chart-' + commonConfig.SlidingTime3, socket);
+        redis_lrange('real-time-count-chart-' + commonConfig.SlidingTimeDay, socket);
+        GetBotTop(commonConfig.SlidingTimeDay, socket);
         t3 = setInterval(function() {
-            GetBotTop(commonConfig.SlidingTime3, socket);
-            redis_lrange('real-time-count-chart-' + commonConfig.SlidingTime3, socket);
-        }, commonConfig.SlidingTimeDelay3);
+            GetBotTop(commonConfig.SlidingTimeDay, socket);
+            redis_lrange('real-time-count-chart-' + commonConfig.SlidingTimeDay, socket);
+        }, commonConfig.SlidingTimeDelayDay);
     })
 });
 
 // get ranking acc trong redis
 function GetBotTop(slidingTime, socket){
+    //log('info', transactionCode.length);
     var channelCodeI = JSON.parse('[' + channelCode + ']');
     for(z=1; z <= 5; z++) {
 		for(i=0; i<transactionCode.length; i++)

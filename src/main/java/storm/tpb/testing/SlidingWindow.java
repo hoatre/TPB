@@ -323,23 +323,25 @@ public class SlidingWindow implements Serializable {
 
                 int i = 0;
                 for (int j = 0; j < 5 && j < asList.size(); j++) {
-                    //BotFive.add(asList.get(i).getacc_no() + "," + asList.get(i).getamount().toString());
 
                     Map<String, String> mapBot = new HashMap<String, String>();
                     mapBot.put("Acc", asList.get(j).getacc_no());
                     mapBot.put("Amount", asList.get(j).getamount().toString());
-                    jedis.hmset("TopTen" + tranType + "-Bot" + Integer.toString(i + 1) + "-" + Long.toString(this.window), mapBot);
-                    i++;
+                    if(mapBot != null) {
+                        jedis.hmset("TopTen" + tranType + "-Bot" + Integer.toString(i + 1) + "-" + Long.toString(this.window), mapBot);
+                        i++;
+                    }
                 }
                 int k = 0;
                 for (int j = asList.size() - 1; j >= asList.size() - 5 && j >= 0; j--) {
-                    //TopFive.add(asList.get(i).getacc_no() + "," + asList.get(i).getamount().toString());
 
                     Map<String, String> mapTop = new HashMap<String, String>();
                     mapTop.put("Acc", asList.get(j).getacc_no());
                     mapTop.put("Amount", asList.get(j).getamount().toString());
-                    jedis.hmset("TopTen" + tranType + "-Top" + Integer.toString(k + 1) + "-" + Long.toString(this.window), mapTop);
-                    k++;
+                    if(mapTop != null) {
+                        jedis.hmset("TopTen" + tranType + "-Top" + Integer.toString(k + 1) + "-" + Long.toString(this.window), mapTop);
+                        k++;
+                    }
                 }
 
             }

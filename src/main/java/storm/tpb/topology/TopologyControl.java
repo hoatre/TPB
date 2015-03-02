@@ -79,12 +79,6 @@ public class TopologyControl {
         return topology.build();
     }
 
-    //Ranking TransactionType
-    private  static void TotalRankingByTranType(Stream st, SlidingWindow Sliding){
-        st
-            .each(new Fields("amount", "acc_no", "timestamp", "trx_code"), new RankingsBolt(Sliding, SlidingWindow.Time.SECONDS), new Fields("DoneRanking"));
-    }
-
     private static void TopologySliding(Stream parsedStream, double SlidingTime, List<String> ChannelCode)
     {
         SlidingWindow Sliding = new SlidingWindow().sliding(SlidingTime, SlidingWindow.Time.SECONDS);
@@ -94,7 +88,8 @@ public class TopologyControl {
                 , valueChartNew)
                 .each(valueChartNew, new SaveRedisForChart(Sliding, SlidingWindow.Time.SECONDS, ChannelCode), new Fields("doneValueChart"));
 
-        TotalRankingByTranType(parsedStream, Sliding);
+        //Ranking TransactionType
+        parsedStream.each(new Fields("amount", "acc_no", "timestamp", "trx_code"), new RankingsBolt(Sliding, SlidingWindow.Time.SECONDS), new Fields("DoneRanking"));
     }
 
     //add du lieu dau vao thanh JSON
