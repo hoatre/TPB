@@ -33,11 +33,7 @@ import java.util.Map;
  */
 public class TopologyControl {
 
-    private static Fields totalCountAmount = new Fields("count", "sumAmount", "window");
-    private static Fields valueChart = new Fields("countBranch1", "countBranch2", "countBranch3", "countCenter", "window"
-                                                    ,"sumBranch1", "sumBranch2", "sumBranch3", "sumCenter");
     private static Fields valueChartNew = new Fields("window", "listTotal");
-    private static Fields RankingField = new Fields("TopFiveDep", "BotFiveDep", "TopFiveWit", "BotFiveWit", "TopFiveTran", "BotFiveTran", "window");
 
     private static final String KAFKA_TOPIC =
             Properties.getString("storm.kafka_topic");
@@ -49,8 +45,8 @@ public class TopologyControl {
             cluster.submitTopology("log-analysis", conf,
                     createTopology());
         } else {
-//            int workers = Properties.getInt("storm.workers");
-//            conf.setNumWorkers(workers);
+            int workers = Properties.getInt("storm.workers");
+            conf.setNumWorkers(workers);
             StormSubmitter.submitTopology(args[0], conf,
                     createTopology());
         }
@@ -71,36 +67,37 @@ public class TopologyControl {
         Stream parsedStream = spoutStream.each(new Fields("str"), new
                 JsonProjectFunction(jsonFields), jsonFields);
 
-        List<String> TransactionCode = function.GetListMongo(Properties.getString("MongoDB.TransactionTypes"), "TransactionCode");
         List<String> ChannelCode = function.GetListMongo(Properties.getString("MongoDB.Channel"), "ChannelCode");
 
-        TopologySliding(parsedStream, 60.0, TransactionCode, ChannelCode);
-        TopologySliding(parsedStream, 3600.0, TransactionCode, ChannelCode);
-        TopologySliding(parsedStream, 86400.0, TransactionCode, ChannelCode);
+        TopologySliding(parsedStream, 60.0, ChannelCode);
+        TopologySliding(parsedStream, 3600.0, ChannelCode);
+        TopologySliding(parsedStream, 86400.0, ChannelCode);
 
+        //luu transaction vao DB
         spoutStream.each(new Fields("str"), new StoreTransactionToMongoDB(), new Fields("StoreTransactionToMongoDB"));
 
         return topology.build();
     }
 
-    private  static void TotalRankingByTranType(Stream st, SlidingWindow Sliding, String tranType){
+    //Ranking TransactionType
+    private  static void TotalRankingByTranType(Stream st, SlidingWindow Sliding){
         st
-            .each(new Fields("amount", "acc_no", "timestamp", "trx_code"), new RankingsBolt(Sliding, SlidingWindow.Time.SECONDS), RankingField);
+            .each(new Fields("amount", "acc_no", "timestamp", "trx_code"), new RankingsBolt(Sliding, SlidingWindow.Time.SECONDS), new Fields("DoneRanking"));
     }
 
-    private static void TopologySliding(Stream parsedStream, double SlidingTime, List<String> TransactionCode, List<String> ChannelCode)
+    private static void TopologySliding(Stream parsedStream, double SlidingTime, List<String> ChannelCode)
     {
         SlidingWindow Sliding = new SlidingWindow().sliding(SlidingTime, SlidingWindow.Time.SECONDS);
 
-        //Count channel for chart
+        //dem count sum theo channel
         parsedStream.each(new Fields("ch_id", "timestamp", "amount"), new ValueChartBolt(Sliding, SlidingWindow.Time.SECONDS)
                 , valueChartNew)
                 .each(valueChartNew, new SaveRedisForChart(Sliding, SlidingWindow.Time.SECONDS, ChannelCode), new Fields("doneValueChart"));
 
-        for(String code : TransactionCode)
-            TotalRankingByTranType(parsedStream, Sliding, code);
+        TotalRankingByTranType(parsedStream, Sliding);
     }
 
+    //add du lieu dau vao thanh JSON
     public static class JsonProjectFunction extends BaseFunction {
         private Fields fields;
         public JsonProjectFunction(Fields fields) {

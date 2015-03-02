@@ -10,7 +10,7 @@ import storm.trident.tuple.TridentTuple;
 import java.util.Collections;
 
 /**
- * Created by quangnb on 1/20/15.
+ * tinh ranking acc theo transaction type
  */
 public class RankingsBolt extends BaseFunction{
     private SlidingWindow sliding;

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by quangnb on 1/22/15.
+ * luu vao redis du lieu chart + total count sum
  */
 public class SaveRedisForChart extends BaseFunction {
     private Jedis jedis;
@@ -33,7 +33,7 @@ public class SaveRedisForChart extends BaseFunction {
             this.sliding.chartFlot(listTotal);
         }catch (Exception e)
         {
-
+            e.printStackTrace();
         }
     }
 }

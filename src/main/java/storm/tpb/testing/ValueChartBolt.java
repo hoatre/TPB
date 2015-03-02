@@ -7,7 +7,7 @@ import storm.trident.operation.TridentCollector;
 import storm.trident.tuple.TridentTuple;
 
 /**
- * Created by quangnb on 1/20/15.
+ * get list sliding
  */
 public class ValueChartBolt extends BaseFunction{
     private SlidingWindow sliding;
@@ -17,7 +17,7 @@ public class ValueChartBolt extends BaseFunction{
         this.emitRatePer = emitRatePer;
     }
     public void execute(TridentTuple tuple, TridentCollector collector) {
-        this.sliding.TotalCountAmount(tuple.getStringByField("ch_id"), tuple.getLongByField("timestamp"), tuple.getLongByField("amount"));
+        this.sliding.GetlistTotal(tuple.getStringByField("ch_id"), tuple.getLongByField("timestamp"), tuple.getLongByField("amount"));
         collector.emit(new Values(this.sliding.getWindow(),this.sliding.getListTotal()));
     }
 }

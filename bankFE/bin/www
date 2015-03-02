@@ -24,7 +24,6 @@ var server = http.createServer(app);
 
 //Begin -Phong
 const redis = require('redis');
-//const client1 = redis.createClient(6379, commonConfig.serverRedis, {});
 const client1 = redis.createClient();
 log('info', 'connected to redis server');
 
@@ -38,12 +37,9 @@ console.log('Server running the port: ' + port);
  * Listen on provided port, on all network interfaces.
  */
 
-//server.listen(port);
 server.listen(app.get('port'), function () {
 console.log("Express server listening on port " + app.get('port'));
 }); 
-
-//const socket  = io.listen(server);
 
 server.on('error', onError);
 server.on('listening', onListening);
@@ -124,6 +120,7 @@ var time2 = 3600000;
 var time3 = 86400000;
 var lengthRange = 1000000000;
 
+//Get list Channels from DB
 function GetChannelList()
 {
     var Channels = db.collection('Channels'); // ten bang
@@ -138,6 +135,7 @@ function GetChannelList()
 }
 GetChannelList();
 
+//Get list TranSactionType from DB
 function GetTransactionList()
 {
     var TransactionTypes = db.collection('TransactionTypes'); // ten bang
@@ -152,6 +150,7 @@ function GetTransactionList()
 }
 GetTransactionList();
 
+//show log
 function log(type, msg) {
 
     var color   = '\u001b[0m',
@@ -177,23 +176,13 @@ function log(type, msg) {
     console.log(color + '   ' + type + '  - ' + reset + msg);
 }
 
-function redis_get_total(key, socket){
-    client1.get(key, function(err, items) {
-        if (err) {
-            log('error', "error");
-        } else {
-            socket.emit('Total-' + key,items);
-            log('info', "Total-" + key + " : " + items);
-        }
-    });
-}
 function redis_hmget_top(key, socket){
     client1.hmget(key, "Acc", "Amount", function (err, items) {
         if (err) {
             log('error', "error");
         } else {
             socket.emit('Top-' + key, items);
-            log('info', "Top-" + key + " : " + items);
+            //log('info', "Top-" + key + " : " + items);
         }
     });
 }
@@ -204,15 +193,16 @@ function redis_lrange(key, socket){
             log('error', "error");
         } else {
            socket.emit('listChart-' + key,items);
-            //log('info', items);
         }
     });
 }
 
+//clear interval combobox time
 clearInterval(t2);
 clearInterval(t3);
 clearInterval(t1);
 
+// open socket theo time
 io.sockets.on('connection',function(socket){
     console.log('Connection socket!!!')
     socket.emit('listChannelCode',channelCode);
@@ -223,7 +213,7 @@ io.sockets.on('connection',function(socket){
         clearInterval(t3);
         redis_lrange('real-time-count-chart-' + time1, socket);
         t1 = setInterval(function() {
-            setTime(time1, socket);
+            GetBotTop(time1, socket);
             redis_lrange('real-time-count-chart-' + time1, socket);
         }, 1000);
     }),
@@ -233,7 +223,7 @@ io.sockets.on('connection',function(socket){
         clearInterval(t3);
         redis_lrange('real-time-count-chart-' + time2, socket);
         t2 = setInterval(function() {
-            setTime(time2, socket);
+            GetBotTop(time2, socket);
             redis_lrange('real-time-count-chart-' + time2, socket);
         }, 10000);
     }),
@@ -243,13 +233,14 @@ io.sockets.on('connection',function(socket){
         clearInterval(t1);
         redis_lrange('real-time-count-chart-' + time3, socket);
         t3 = setInterval(function() {
-            setTime(time3, socket);
+            GetBotTop(time3, socket);
             redis_lrange('real-time-count-chart-' + time3, socket);
         }, 10000);
     })
 });
 
-function setTime(slidingTime, socket){
+// get ranking acc trong redis
+function GetBotTop(slidingTime, socket){
     var channelCodeI = JSON.parse('[' + channelCode + ']');
     for(z=1; z <= 5; z++) {
 		for(i=0; i<transactionCode.length; i++)
@@ -320,13 +311,13 @@ function recursive()
 {
 
     cnt++;
-    console.log('conf1 status:'+obj.status);
+    //console.log('conf1 status:'+obj.status);
     if (obj.countmessage!=''&&cnt >= obj.countmessage||obj.status=='stop') {
-        console.log('stop conf1');
+        //console.log('stop conf1');
         clearTimeout(t);
     }
     else {
-        console.log('conf1'+obj.channel+':'+obj.countmessage+'-'+obj.amountto+':'+obj.amountfrom);
+        //console.log('conf1'+obj.channel+':'+obj.countmessage+'-'+obj.amountto+':'+obj.amountfrom);
         t = setTimeout(recursive, obj.time);
         send(msg);
     }

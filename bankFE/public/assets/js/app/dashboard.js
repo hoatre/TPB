@@ -4,7 +4,7 @@ var socket = io.connect();
 $(document).ready(function() {
     
     // Populate the user table on initial page load
-    createTimeline();
+    OnLoad();
 });
 
 // Data
@@ -35,8 +35,10 @@ function OpenSocket(){
     });
 }
 
-function createTimeline() {
+
+function OnLoad() {
     OpenSocket();
+    //set event selected cho combobox time
     $('#SlidingTimeCbo').change(function() {
         var str = "";
         $( "select option:selected" ).each(function() {
@@ -63,6 +65,7 @@ function createTimeline() {
     }).change();
 }
 
+//set ranking
 function TopTen(Top, slidingTime) {
     socket.on('Top-' + Top + '-' + slidingTime, function (data1) {
         var array = $.map(data1, function (value, index) {
@@ -92,6 +95,7 @@ setInterval(function() {
     TotalCountAmount();
 }, 1000);
 
+// set ranking
 function TopBot(slidingTime){
     for(var z = 1;z<=5;z++) {
         if(transactionCode == null || transactionCode == undefined)
@@ -107,6 +111,7 @@ function TopBot(slidingTime){
     }
 }
 
+// build data for chart
 function buidData(data)
 {
     for(var k=0;k<data.length;k++) {
@@ -139,6 +144,7 @@ function buidData(data)
     return data;
 }
 
+//set total count & amount
 function TotalCountAmount()
 {
     totalSum = 0;
@@ -157,6 +163,7 @@ function TotalCountAmount()
     TotalAmount.innerHTML = totalSum.toString();
 }
 
+// khoi tao chart
 function createLineChart(time) {
 
     var chartCD1 = new CanvasJS.Chart("chartCD",

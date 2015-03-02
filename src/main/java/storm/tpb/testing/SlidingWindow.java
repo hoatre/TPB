@@ -55,8 +55,6 @@ public class SlidingWindow implements Serializable {
 
     private long count=0;
     private long sumAmount=0;
-    private List<String> TopFive = new ArrayList<String>();
-    private List<String> BotFive = new ArrayList<String>();;
 
     public SlidingWindow() {
         this.ChannelCode = function.GetListMongo(Properties.getString("MongoDB.Channel"), "ChannelCode");
@@ -136,10 +134,11 @@ public class SlidingWindow implements Serializable {
 
     }
 
-    public void TotalCountAmount(String channel, long timetamp, long amount) {
-        TotalCountAmount(System.currentTimeMillis(), channel, timetamp, (int) amount);
+    // Get list sliding
+    public void GetlistTotal(String channel, long timetamp, long amount) {
+        GetlistTotal(System.currentTimeMillis(), channel, timetamp, (int) amount);
     }
-    public synchronized void TotalCountAmount(long time, String channel, long timetamp, int amount) {
+    public synchronized void GetlistTotal(long time, String channel, long timetamp, int amount) {
         try {
             if (!channel.equals(PARAM.Channel.CHANNELFAKE.getValue())) {
                 cacheTimeChart.add(time);
@@ -206,6 +205,7 @@ public class SlidingWindow implements Serializable {
         }
     }
 
+    // Save redis for chart & total count amount
     public void chartFlot(List<TransactionTotal> listTotal) {
         chartFlot(System.currentTimeMillis(), listTotal);
     }
@@ -247,6 +247,7 @@ public class SlidingWindow implements Serializable {
         }
     }
 
+    //Ranking acc theo Transaction Type
     public void listAmountAcc(String TranType, long amount, String account, long timetamp) {
         listAmountAcc(TranType, System.currentTimeMillis(), (int) amount, account, timetamp);
     }
@@ -369,22 +370,12 @@ public class SlidingWindow implements Serializable {
         return this.listTotal;
     }
 
-    public List<String> getTopFive(){return this.TopFive; }
-
-    public List<String> getBotFive(){return this.BotFive; }
-
-    public List<String> getTransactionCode(){return this.TransactionCode; }
-
-    public List<String> getChannelCode(){return this.ChannelCode; }
-
     public class TransactionAcc implements Comparable<TransactionAcc>{
         private Integer amount;
         private String acc_no;
-//        private String transaction;
         public TransactionAcc(Integer amount,String acc_no){
             this.amount = amount;
             this.acc_no = acc_no;
-//            this.transaction = transaction;
         }
         public Integer getamount()
         {
