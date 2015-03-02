@@ -115,9 +115,6 @@ var channelCode = [];
 var transactionCode = [];
 var totalNoTran = 0;
 var totalAmount = 0;
-var time1 = 60000;
-var time2 = 3600000;
-var time3 = 86400000;
 var lengthRange = 1000000000;
 
 //Get list Channels from DB
@@ -211,31 +208,31 @@ io.sockets.on('connection',function(socket){
         log('warn', "open 1 Minute");
         clearInterval(t2);
         clearInterval(t3);
-        redis_lrange('real-time-count-chart-' + time1, socket);
+        redis_lrange('real-time-count-chart-' + commonConfig.SlidingTime1, socket);
         t1 = setInterval(function() {
-            GetBotTop(time1, socket);
-            redis_lrange('real-time-count-chart-' + time1, socket);
-        }, 1000);
+            GetBotTop(commonConfig.SlidingTime1, socket);
+            redis_lrange('real-time-count-chart-' + commonConfig.SlidingTime1, socket);
+        }, commonConfig.SlidingTimeDelay1);
     }),
     socket.on('open 1 hour', function (data1) {
         log('warn', "open 1 hour");
         clearInterval(t1);
         clearInterval(t3);
-        redis_lrange('real-time-count-chart-' + time2, socket);
+        redis_lrange('real-time-count-chart-' + commonConfig.SlidingTime2, socket);
         t2 = setInterval(function() {
-            GetBotTop(time2, socket);
-            redis_lrange('real-time-count-chart-' + time2, socket);
-        }, 10000);
+            GetBotTop(commonConfig.SlidingTime2, socket);
+            redis_lrange('real-time-count-chart-' + commonConfig.SlidingTime2, socket);
+        }, commonConfig.SlidingTimeDelay2);
     }),
     socket.on('open 1 day', function (data1) {
         log('warn', "open 1 day");
         clearInterval(t2);
         clearInterval(t1);
-        redis_lrange('real-time-count-chart-' + time3, socket);
+        redis_lrange('real-time-count-chart-' + commonConfig.SlidingTime3, socket);
         t3 = setInterval(function() {
-            GetBotTop(time3, socket);
-            redis_lrange('real-time-count-chart-' + time3, socket);
-        }, 10000);
+            GetBotTop(commonConfig.SlidingTime3, socket);
+            redis_lrange('real-time-count-chart-' + commonConfig.SlidingTime3, socket);
+        }, commonConfig.SlidingTimeDelay3);
     })
 });
 

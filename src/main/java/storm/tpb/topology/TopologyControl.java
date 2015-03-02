@@ -69,9 +69,9 @@ public class TopologyControl {
 
         List<String> ChannelCode = function.GetListMongo(Properties.getString("MongoDB.Channel"), "ChannelCode");
 
-        TopologySliding(parsedStream, 60.0, ChannelCode);
-        TopologySliding(parsedStream, 3600.0, ChannelCode);
-        TopologySliding(parsedStream, 86400.0, ChannelCode);
+        TopologySliding(parsedStream, PARAM.SlidingTime.Time1.getTime(), ChannelCode);
+        TopologySliding(parsedStream, PARAM.SlidingTime.Time2.getTime(), ChannelCode);
+        TopologySliding(parsedStream, PARAM.SlidingTime.Time3.getTime(), ChannelCode);
 
         //luu transaction vao DB
         spoutStream.each(new Fields("str"), new StoreTransactionToMongoDB(), new Fields("StoreTransactionToMongoDB"));
