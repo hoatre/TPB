@@ -24,8 +24,8 @@ var server = http.createServer(app);
 
 //Begin -Phong
 const redis = require('redis');
-const client1 = redis.createClient(6379, commonConfig.serverRedis, {});
-//const client1 = redis.createClient();
+//const client1 = redis.createClient(6379, commonConfig.serverRedis, {});
+const client1 = redis.createClient();
 log('info', 'connected to redis server');
 
 var io = require('socket.io').listen(server);
@@ -112,20 +112,45 @@ function onListening() {
 
 //Begin - Phong
 
+var mongoskin = require('mongoskin');
+var db = mongoskin.db(commonConfig.serverMongo, {safe:true});
 var t1, t2, t3;
-var Deposit = "DE";
-var Withdrawal = "WI";
-var Transfer_From = "TF";
-var Branch1 = "B1";
-var Branch2 = "B2";
-var Branch3 = "B3";
-var Contact_Center = "Contact";
+var channelCode = [];
+var transactionCode = [];
 var totalNoTran = 0;
 var totalAmount = 0;
 var time1 = 60000;
 var time2 = 3600000;
 var time3 = 86400000;
 var lengthRange = 1000000000;
+
+function GetChannelList()
+{
+    var Channels = db.collection('Channels'); // ten bang
+    Channels.find().toArray(function(error, channels) {
+        if (error) return next(error);
+        if (!channels) return next(new Error('Get all channel fail.'));
+        channelCode = channels.map(function(item){
+            var text = '{"ChannelCode":"' + item.ChannelCode + '", "ChannelName":"' + item.ChannelName + '", "Display":"' + "0" +'", "Count":"' + "0" +'", "Sum":"' + "0" + '"}';
+            return text;
+        })
+    });
+}
+GetChannelList();
+
+function GetTransactionList()
+{
+    var TransactionTypes = db.collection('TransactionTypes'); // ten bang
+    TransactionTypes.find().toArray(function(error, transactionTypes) {
+        if (error) return next(error);
+        if (!transactionTypes) return next(new Error('Get all channel fail.'));
+        
+        transactionCode = transactionTypes.map(function(item){
+            return item.TransactionCode;
+        })
+    });
+}
+GetTransactionList();
 
 function log(type, msg) {
 
@@ -152,16 +177,6 @@ function log(type, msg) {
     console.log(color + '   ' + type + '  - ' + reset + msg);
 }
 
-function redis_get(key, socket){
-    client1.get(key, function(err, items) {
-        if (err) {
-            log('error', "error");
-        } else {
-            socket.emit('CountChart-' + key,items);
-            log('info', "CountChart-" + key + " : " + items);
-        }
-    });
-}
 function redis_get_total(key, socket){
     client1.get(key, function(err, items) {
         if (err) {
@@ -194,27 +209,19 @@ function redis_lrange(key, socket){
     });
 }
 
-/*
-t1 = setInterval(function() {
-    setTime(time1);
-}, 1000);
-t2 = setInterval(function() {
-    setTime(time2);
-}, 1000);
-t3 = setInterval(function() {
-    setTime(time3);
-}, 1000);
-
 clearInterval(t2);
 clearInterval(t3);
 clearInterval(t1);
-*/
+
 io.sockets.on('connection',function(socket){
     console.log('Connection socket!!!')
+    socket.emit('listChannelCode',channelCode);
+    socket.emit('listTransactionCode',transactionCode);
     socket.on('open 1 Minute', function (data1) {
         log('warn', "open 1 Minute");
         clearInterval(t2);
         clearInterval(t3);
+        redis_lrange('real-time-count-chart-' + time1, socket);
         t1 = setInterval(function() {
             setTime(time1, socket);
             redis_lrange('real-time-count-chart-' + time1, socket);
@@ -224,38 +231,32 @@ io.sockets.on('connection',function(socket){
         log('warn', "open 1 hour");
         clearInterval(t1);
         clearInterval(t3);
+        redis_lrange('real-time-count-chart-' + time2, socket);
         t2 = setInterval(function() {
             setTime(time2, socket);
             redis_lrange('real-time-count-chart-' + time2, socket);
-        }, 1000);
+        }, 10000);
     }),
     socket.on('open 1 day', function (data1) {
         log('warn', "open 1 day");
         clearInterval(t2);
         clearInterval(t1);
+        redis_lrange('real-time-count-chart-' + time3, socket);
         t3 = setInterval(function() {
             setTime(time3, socket);
             redis_lrange('real-time-count-chart-' + time3, socket);
-        }, 1000);
+        }, 10000);
     })
 });
 
 function setTime(slidingTime, socket){
-    redis_get('real-time-count-' + Branch1 + '-' + slidingTime, socket);
-    redis_get('real-time-count-' + Branch2 + '-' + slidingTime, socket);
-    redis_get('real-time-count-' + Branch3 + '-' + slidingTime, socket);
-    redis_get('real-time-count-' + Contact_Center + '-' + slidingTime, socket);
-    redis_get('real-time-sum-' + Branch1 + '-' + slidingTime, socket);
-    redis_get('real-time-sum-' + Branch2 + '-' + slidingTime, socket);
-    redis_get('real-time-sum-' + Branch3 + '-' + slidingTime, socket);
-    redis_get('real-time-sum-' + Contact_Center + '-' + slidingTime, socket);
+    var channelCodeI = JSON.parse('[' + channelCode + ']');
     for(z=1; z <= 5; z++) {
-        redis_hmget_top('TopTen' + Deposit + '-Top' + z.toString() + "-" + slidingTime, socket);
-        redis_hmget_top('TopTen' + Withdrawal + '-Top' + z.toString() + "-" + slidingTime, socket);
-        redis_hmget_top('TopTen' + Deposit + '-Bot' + z.toString() + "-" + slidingTime, socket);
-        redis_hmget_top('TopTen' + Withdrawal + '-Bot' + z.toString() + "-" + slidingTime, socket);
-        redis_hmget_top('TopTen' + Transfer_From + '-Bot' + z.toString() + "-" + slidingTime, socket);
-        redis_hmget_top('TopTen' + Transfer_From + '-Top' + z.toString() + "-" + slidingTime, socket);
+		for(i=0; i<transactionCode.length; i++)
+		{
+			redis_hmget_top('TopTen' + transactionCode[i] + '-Top' + z.toString() + "-" + slidingTime, socket);
+			redis_hmget_top('TopTen' + transactionCode[i] + '-Bot' + z.toString() + "-" + slidingTime, socket);
+		}
     }
 }
 
