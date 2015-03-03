@@ -1,0 +1,137 @@
+doctype html
+html(lang='en')
+ include ../layouts/header.jade
+ body
+  #wrapper
+   #main-container
+    //top navigation
+    include ../layouts/topnav.jade
+    //left menu
+    include ../layouts/leftmenu.jade
+    //main content
+    // BEGIN MAIN PAGE CONTENT
+    #page-wrapper
+      // BEGIN PAGE HEADING ROW
+      .row
+        .col-lg-12
+          // BEGIN BREADCRUMB
+          .breadcrumbs
+            ul.breadcrumb
+              li
+                a(href='#') Home
+              li.active Administrator
+            .b-right.hidden-xs
+              ul
+                li
+                  a(href='#', title='')
+                    i.fa.fa-signal
+                li
+                  a(href='#', title='')
+                    i.fa.fa-comments
+                li.dropdown
+                  a(href='#', title='', data-toggle='dropdown')
+                    i.fa.fa-plus
+                    span  Tasks
+                  ul.dropdown-menu.dropdown-primary.dropdown-menu-right
+                    li
+                      a(href='#') Add new task
+                    li
+                      a(href='#') Statement
+                    li
+                      a(href='#') Settings
+          // END BREADCRUMB
+          .page-header.title
+            // PAGE TITLE ROW
+            h1
+              | Control panels 
+              span.sub-title Simulator controls
+          // /#ek-layout-button
+          .qs-layout-menu
+            #qs-setting-btn.btn.btn-gray.qs-setting-btn
+              i.fa.fa-cog.bigger-150.icon-only
+            #qs-setting-box.qs-setting-box
+              .hidden-xs.hidden-sm
+                span.bigger-120 Layout Options
+                .hr.hr-dotted.hr-8
+                label
+                  input#fixed-navbar.tc(type='checkbox')
+                  span.labels(id='#fixed-navbar')  Fixed NavBar
+                label
+                  input#fixed-sidebar.tc(type='checkbox')
+                  span.labels(id='#fixed-sidebar')  Fixed NavBar+SideBar
+                label
+                  input#sidebar-toggle.tc(type='checkbox')
+                  span.labels(id='#sidebar-toggle')  Sidebar Toggle
+                label
+                  input#in-container.tc(type='checkbox')
+                  span.labels(id='#in-container')
+                    | Inside
+                    strong .container
+                .space-4
+              span.bigger-120 Color Options
+              .hr.hr-dotted.hr-8
+              label
+                input#side-bar-color.tc(type='checkbox')
+                span.labels(id='#side-bar-color')  SideBar (Light)
+              ul
+                li
+                  button.btn(style='background-color:#d15050;', onclick="swapStyle('assets/css/themes/style.css')")
+                li
+                  button.btn(style='background-color:#86618f;', onclick="swapStyle('assets/css/themes/style-1.css')")
+                li
+                  button.btn(style='background-color:#ba5d32;', onclick="swapStyle('assets/css/themes/style-2.css')")
+                li
+                  button.btn(style='background-color:#488075;', onclick="swapStyle('assets/css/themes/style-3.css')")
+                li
+                  button.btn(style='background-color:#4e72c2;', onclick="swapStyle('assets/css/themes/style-4.css')")
+          // /#ek-layout-button
+        // /.col-lg-12
+      // /.row
+      // END PAGE HEADING ROW
+      .row
+        .col-lg-12
+          block content 
+      // BEGIN FOOTER CONTENT
+      .footer
+        .footer-inner
+          // basics/footer
+          .footer-content
+            | © 2015
+          // /basics/footer
+      button#back-to-top.btn.btn-primary.btn-sm.back-to-top(type='button')
+        i.fa.fa-angle-double-up.icon-only.bigger-110
+      // END FOOTER CONTENT
+    // /#page-wrapper
+    // END MAIN PAGE CONTENT
+  block footer    
+    //footer
+    // core JavaScript
+    script(src='/assets/js/jquery.min.js')
+    script(src='/assets/js/bootstrap.min.js')
+    script(src='/assets/js/plugins/slimscroll/jquery.slimscroll.min.js')
+    script(src='/assets/js/plugins/pace/pace.min.js')
+    // PAGE LEVEL PLUGINS JS
+    script(src='/assets/js/plugins/jqueryui/jquery-ui-1.10.4.custom.min.js')
+    script(src='/assets/js/plugins/jqueryui/jquery.ui.touch-punch.min.js')
+    script(src='/assets/js/plugins/daterangepicker/moment.js')
+    script(src='/assets/js/plugins/daterangepicker/daterangepicker.js')
+    //script(src='/assets/js/plugins/morris/raphael-min.js')
+    //script(src='/assets/js/plugins/morris/morris.min.js')
+    script(src='/assets/js/plugins/bootstrap-datepicker/bootstrap-datepicker.js')
+    script(src='/assets/js/plugins/jquery-sparkline/jquery.sparkline.min.js')
+    script(src='/assets/js/plugins/easypiechart/jquery.easypiechart.min.js')
+    script(src='/assets/js/plugins/easypiechart/excanvas.compiled.js')
+    script(src='/assets/js/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js')
+    script(src='/assets/js/plugins/jvectormap/jquery-jvectormap-world-mill-en.js')
+    // Themes Core Scripts
+    script(src='/assets/js/main.js')
+    // REQUIRE FOR SPEECH COMMANDS
+    //script(src='/assets/js/speech-commands.js')
+    script(src='/assets/js/plugins/gritter/jquery.gritter.min.js')
+    // initial page level scripts for examples
+    script(src='/assets/js/plugins/slimscroll/jquery.slimscroll.init.js')
+    //script(src='/assets/js/home-page.init.js')
+    script(src='/assets/js/plugins/jquery-sparkline/jquery.sparkline.init.js')
+    //script(src='/assets/js/plugins/easypiechart/jquery.easypiechart.init.js')
+
+  block script
