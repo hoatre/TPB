@@ -1,0 +1,37 @@
+// BEGIN SIDE NAVIGATION
+nav.navbar-side(role='navigation')
+  .navbar-collapse.sidebar-collapse.collapse
+    // BEGIN SHORTCUT BUTTONS
+    .media
+      ul.sidebar-shortcuts
+        li
+          a.btn
+            i.fa.fa-user.icon-only
+        li
+          a.btn
+            i.fa.fa-envelope.icon-only
+        li
+          a.btn
+            i.fa.fa-th.icon-only
+        li
+          a.btn
+            i.fa.fa-gear.icon-only
+    // END SHORTCUT BUTTONS
+    // BEGIN FIND MENU ITEM INPUT
+    .media-search
+      input#input-items.input-menu(type='text', placeholder='Find...')
+    // END FIND MENU ITEM INPUT
+    ul#side.nav.navbar-nav.side-nav
+      // BEGIN SIDE NAV MENU
+      // Navigation category
+      li
+        h4 Navigation
+      // END Navigation category
+      li
+        a.active(href='/')
+          i.fa.fa-dashboard
+          |  Simulator
+    // /.side-nav
+  // /.navbar-collapse
+// /.navbar-side
+// END SIDE NAVIGATION

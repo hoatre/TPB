@@ -1,0 +1,167 @@
+// BEGIN TOP NAVIGATION
+nav.navbar-top(role='navigation')
+  // BEGIN BRAND HEADING
+  .navbar-header
+    button.navbar-toggle.pull-right(type='button', data-toggle='collapse', data-target='.top-collapse')
+      i.fa.fa-bars
+    .navbar-brand
+      a(href='/')
+        // <img src="assets/images/logo.png" alt="logo" class="img-responsive">
+  // END BRAND HEADING
+  .nav-top
+    // BEGIN RIGHT SIDE DROPDOWN BUTTONS
+    ul.nav.navbar-right
+      li.dropdown
+        button.navbar-toggle(type='button', data-toggle='collapse', data-target='.sidebar-collapse')
+          i.fa.fa-bars
+      li.dropdown
+        a.dropdown-toggle(href='#', data-toggle='dropdown')
+          i.fa.fa-envelope
+          span.badge.up.badge-primary 2
+        ul.dropdown-menu.dropdown-scroll.dropdown-messages
+          li.dropdown-header
+            i.fa.fa-envelope
+            |  2 New Messages
+          li#messageScroll
+            ul.list-unstyled
+              li
+                a(href='#')
+                  .row
+                    .col-xs-2
+                      img.img-circle(src='assets/images/user-profile-1.jpg', alt='')
+                    .col-xs-10
+                      p
+                        strong John Smith
+                        | : Hi again! I wanted to let you know that the order...
+                      p.small
+                        i.fa.fa-clock-o
+                        |  5 minutes ago
+              li
+                a(href='#')
+                  .row
+                    .col-xs-2
+                      img.img-circle(src='assets/images/user-profile-2.jpg', alt='')
+                    .col-xs-10
+                      p
+                        strong Roddy Austin
+                        | : Thanks for the info, if you need anything...
+                      p.small
+                        i.fa.fa-clock-o
+                        |  3:39 PM
+          li.dropdown-footer
+            a(href='#')
+              | Read All Messages
+      li.dropdown
+        a.dropdown-toggle(href='#', data-toggle='dropdown')
+          i.fa.fa-bell
+          span.badge.up.badge-success 3
+        ul.dropdown-menu.dropdown-scroll.dropdown-alerts
+          li.dropdown-header
+            i.fa.fa-bell
+            |  3 New Alerts
+          li#alertScroll
+            ul.list-unstyled
+              li
+                a(href='#')
+                  .alert-icon.bg-info.pull-left
+                    i.fa.fa-download
+                  | 																Downloads 
+                  span.badge.badge-info.pull-right 16
+              li
+                a(href='#')
+                  .alert-icon.bg-success.pull-left
+                    i.fa.fa-cloud-upload
+                  | 																Server #8 Rebooted 
+                  span.small.pull-right
+                    strong
+                      em 12 hours ago
+              li
+                a(href='#')
+                  .alert-icon.bg-danger.pull-left
+                    i.fa.fa-bolt
+                  | 																Server #8 Crashed 
+                  span.small.pull-right
+                    strong
+                      em 12 hours ago
+          li.dropdown-footer
+            a(href='#')
+              | View All Alerts
+      li.dropdown
+        a.dropdown-toggle(href='#', data-toggle='dropdown')
+          i.fa.fa-tasks
+          span.badge.up.badge-info 7
+        ul.dropdown-menu.dropdown-scroll.dropdown-tasks
+          li.dropdown-header
+            i.fa.fa-tasks
+            |  10 Pending Tasks
+          li#taskScroll
+            ul.list-unstyled
+              li
+                a(href='#')
+                  p
+                    | Purchase Order #439 
+                    span.pull-right
+                      strong 52%
+                  .progress.progress-striped
+                    .progress-bar.progress-bar-info(role='progressbar', aria-valuenow='52', aria-valuemin='0', aria-valuemax='100', style='width: 52%;')
+              li
+                a(href='#')
+                  p
+                    | March Content Update 
+                    span.pull-right
+                      strong 14%
+                  .progress
+                    .progress-bar.progress-bar-success(role='progressbar', aria-valuenow='14', aria-valuemin='0', aria-valuemax='100', style='width: 14%;')
+              li
+                a(href='#')
+                  p
+                    | Client #42 Data Scrubbing 
+                    span.pull-right
+                      strong 68%
+                  .progress.progress-striped
+                    .progress-bar(role='progressbar', aria-valuenow='68', aria-valuemin='0', aria-valuemax='100', style='width: 68%;')
+              li
+                a(href='#')
+                  p
+                    | PHP Upgrade Server #6 
+                    span.pull-right
+                      strong 85%
+                  .progress
+                    .progress-bar.progress-bar-warning(role='progressbar', aria-valuenow='85', aria-valuemin='0', aria-valuemax='100', style='width: 85%;')
+              li
+                a(href='#')
+                  p
+                    | Malware Scan 
+                    span.pull-right
+                      strong 66%
+                  .progress.progress-striped.active
+                    .progress-bar.progress-bar-danger(role='progressbar', aria-valuenow='66', aria-valuemin='0', aria-valuemax='100', style='width: 66%;')
+          li.dropdown-footer
+            a(href='#')
+              | View All Tasks
+      // Speech Icon
+      li.dropdown
+        a.speech-button(href='#')
+          i.fa.fa-microphone      
+      // Search Box
+      li.dropdown.nav-search-icon
+        a.dropdown-toggle(href='#', data-toggle='dropdown')
+          span.glyphicon.glyphicon-search
+        ul.dropdown-menu.dropdown-search
+          li
+            .search-box
+              form(role='search')
+                input.form-control(type='text', placeholder='Search')
+      // Search Box
+    // END RIGHT SIDE DROPDOWN BUTTONS
+    // BEGIN TOP MENU
+    .collapse.navbar-collapse.top-collapse
+      // .nav
+      ul.nav.navbar-left.navbar-nav
+        li
+          a(href='/') Simulator        
+      // /.nav
+    // END TOP MENU
+  // /.nav-top
+// /.navbar-top
+// END TOP NAVIGATION

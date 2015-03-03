@@ -1,0 +1,392 @@
+#!/usr/bin/env node
+
+/**
+ * Module dependencies.
+ */
+
+var app = require('../app');
+var debug = require('debug')('bankBE:server');
+var http = require('http');
+var commonConfig = require('../config/common');
+
+var mongoskin = require('mongoskin');
+var db = mongoskin.db(commonConfig.serverMongo, {safe:true});
+
+/**
+ * Get port from environment and store in Express.
+ */
+
+var port = normalizePort(process.env.PORT || '3030');
+app.set('port', port);
+
+/**
+ * Create HTTP server.
+ */
+
+var server = http.createServer(app);
+var io = require('socket.io').listen(server);
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+server.listen(app.get('port'), function () {
+console.log("Express server listening on port " + app.get('port'));
+});
+
+server.on('error', onError);
+server.on('listening', onListening);
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+
+function normalizePort(val) {
+  var port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+
+  return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  var bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening() {
+  var addr = server.address();
+  var bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+  debug('Listening on ' + bind);
+}
+
+
+
+//Begin - Phong
+
+function log(type, msg) {
+
+    var color   = '\u001b[0m',
+        reset = '\u001b[0m';
+
+    switch(type) {
+        case "info":
+            color = '\u001b[36m';
+            break;
+        case "warn":
+            color = '\u001b[33m';
+            break;
+        case "error":
+            color = '\u001b[31m';
+            break;
+        case "msg":
+            color = '\u001b[34m';
+            break;
+        default:
+            color = '\u001b[0m'
+    }
+
+    console.log(color + '   ' + type + '  - ' + reset + msg);
+}
+// End Phong
+// Begin QuangH
+
+var ADD_KAFKA=commonConfig.serverKafka+':2181';
+var kafka = require('kafka-node'),
+    Producer = kafka.Producer,
+    Client = kafka.Client,
+    client = new Client(ADD_KAFKA);
+
+//Topic
+var topic = 'TransactionTopic';
+
+//partition
+var p = 0;
+
+//Count message
+var  count = 0;
+
+
+var producer = new Producer(client);
+
+
+//On Ready
+producer.on('ready', function () {
+    console.log('Producer ready');
+});
+
+
+//On Error
+producer.on('error', function (err) {
+    console.log('Producer error: ', err)
+})
+
+
+//SIMULATOR_LIST_SEND_MESSAGE
+function send(message) {
+    producer.send([
+        {topic: topic, messages: [message] , partition: p}
+    ], function (err, data) {
+        if (err) console.log(arguments);
+    });
+}
+
+
+type='';
+
+var timeIDs = [];
+
+function recursive(type, obj, index)
+{        
+    if (obj.CountMessage === 0|| obj.Status == 'Stop') {
+        if(timeIDs[index] != null){
+            clearTimeout(timeIDs[index]);
+            timeIDs[index] = null;
+            io.sockets.emit('btnConfig' + index, 'Start');
+            console.log('Stop... index = ' + index);
+        }
+    }
+    else {
+        --obj.CountMessage;
+        log(type,'Channel: ' + obj.Channel + ' to: ' + obj.AmountTo + ' from: ' + obj.AmountFrom + '; time: ' + obj.Time + '; count: ' + obj.CountMessage);
+        send(GeneratorTransaction(obj.account, obj.AmountFrom, obj.AmountTo,obj.Channel, obj.product, obj.transactiontype, obj.CountMessage));
+        //GeneratorTransaction(obj.account, obj.AmountFrom, obj.AmountTo,obj.Channel, obj.Product, obj.TransactionType, obj.CountMessage);
+        timeIDs[index] = setTimeout(function(){recursive(type, obj, index)}, obj.Time);
+    }
+
+}
+
+
+//Ramdom Int
+function randomInt (low, high) {
+    return Math.floor(Math.random() * (parseInt(high) - parseInt(low)) + parseInt(low));
+}
+
+
+//Generator transaction
+var GeneratorTransaction = function(account, amountFrom, amountTo, channal, product, transactionType, countMessage)
+{
+    //ID
+    var trx_id = randomInt(1,9999999);
+
+    //Generate Transaction Code
+    var transactionTypes =  ["Deposit", "Withdrawal", "Transfer From", "Transfer To", "Balance Inquiry"];
+    transactionType = transactionType || transactionTypes[randomInt(0,transactionTypes.length)];
+
+    //Generate Channel ID
+    var channals = ["Branch 1", "Branch 2", "Branch 3", "Contact Center"];
+    channal = channal || channals[randomInt(0,channals.length)];
+
+    //Product
+    var products = ["Savings"];
+    product = product || products[randomInt(0,products.length)];
+
+    //Generate Account
+
+    var acc_no = account==''?acc_nos[randomInt(0,acc_nos.length)]:account;
+
+    //Generate Amount
+    var amount = randomInt(amountFrom, amountTo);
+
+    var timestamp = new Date().getTime();
+    var trans = {
+        trx_id: trx_id,
+        trx_code: transactionType,
+        ch_id: channal,
+        amount: amount,
+        acc_no: acc_no,
+        prd_id: product,
+        timestamp: timestamp,
+        count: countMessage
+    };
+    
+    //-------------------------------------------------
+    console.info(trans);
+    data_msg.push(trans); //Add new: Check data
+    var msg = JSON.stringify(trans);
+    return msg;
+}
+
+var acc_nos = [];
+//HieuLD add method GetAccountNumberList
+function GetAccountNumberList()
+{
+    var AccNumbers = db.collection('AccNumbers');
+    AccNumbers.find().toArray(function(error, accNumbers) {
+        if (error) return next(error);
+        if (!accNumbers) return next(new Error('Get all accountnumber fail.'));
+        
+        acc_nos = accNumbers.map(function(item){
+            return item.ACCOUNTNUMBER;
+        })
+    });
+}
+GetAccountNumberList();
+
+io.sockets.on('connection',function(socket){
+    //Xu ly button 4 click
+    socket.on('btnConfigAll',function(data){
+        Simulator(0, data);
+        Simulator(1, data);
+        Simulator(2, data);
+        Simulator(3, data);
+
+        //Add new: Check data
+        data.forEach(function(obj){
+            CheckChannel(data.channel);
+        })
+    }),
+    //Xu ly button 1 click
+    socket.on('btnConfig1',function(data){        
+        CheckChannel(data[0].Channel);
+        Simulator(0, data);        
+    }),
+    //Xu ly button 2 click
+    socket.on('btnConfig2',function(data){
+        CheckChannel(data[1].Channel);
+        Simulator(1, data);        
+    }),
+    //Xu ly button 3 click
+    socket.on('btnConfig3',function(data){
+        CheckChannel(data[2].Channel);
+        Simulator(2, data);        
+    }),
+    //Xu ly button 4 click
+    socket.on('btnConfig4',function(data){
+        CheckChannel(data[3].Channel);
+        Simulator(3, data);        
+    });
+});
+
+
+function Simulator(index, data){
+    console.info(data); //in ra cua hinh de kiem tra
+    console.log('btnConfig' + (index + 1) + ': '+data[index].Status);
+
+    //Doi mau message cho dep mat :D
+    var type = 'default';
+    switch(index) {
+        case 0:
+            type = 'info';
+            break;
+        case 1:
+            type = 'msg';
+            break;
+        case 2:
+            type = 'warn';
+            break;
+        case 3:
+            type = 'error';
+            break;
+        default:
+            type = 'default';
+    }
+
+    //Thuc hien vong lap de quy hoac ket thuc vong lap
+    if(data[index].Status=='Start') {
+        recursive(type, data[index], index + 1);
+    }
+    else {
+        clearTimeout(timeIDs[index]);
+        console.log('Stop... index = '+ index + 1);
+    }
+}
+
+
+/*----------------TESTCHANNEL-------------------------*/
+var data_msg=[];
+var data_channel=[];
+function CheckChannel(channel)
+{
+    log('info', 'Channel: ' + channel);
+    var checkchannel=true;
+    if(data_channel!=null&&data_channel.length>0) {        
+        for(var i=0;i<data_channel.length;i++) {
+            if(data_channel[i].channel==channel) {
+                //checkchannel=false;
+                return;
+            }
+        }
+    }
+    if(checkchannel)
+    {
+        var objchannel ={
+            channel:'',
+            transaction:0,
+            amount:0,
+        }
+        objchannel.channel=channel;
+        data_channel.push(objchannel);
+    }
+}
+
+ReportTransaction();
+
+function ReportTransaction()
+{
+    setTimeout(ReportTransaction, 1000);
+    var timestamp = new Date().getTime();
+    var timestamp1mn=timestamp-60000;
+    for(var i=0;i<data_channel.length;i++)
+    {
+        data_channel[i].transaction=0;
+        data_channel[i].amount = 0;
+    }
+    for(var i=0;i<data_msg.length;i++)
+    {
+        if(timestamp1mn<=data_msg[i].timestamp && timestamp>=data_msg[i].timestamp)
+        {
+            for(var j=0;j<data_channel.length;j++)
+            {
+                if(data_msg[i].ch_id==data_channel[j].channel)
+                {
+                    data_channel[j].transaction=data_channel[j].transaction+1;
+                    data_channel[j].amount = data_channel[j].amount+data_msg[i].amount;
+                }
+            }
+        }
+        else //Zoa nhung msg khong thoa ma
+        {
+            data_msg.splice(i, 1);
+        }
+    }
+    //console.log('----------------------------->data_msg: '+data_msg.length);
+    io.sockets.emit('SIMULATOR-DATA-SEND-ALL-CHANNELS', data_channel);
+}
+/*----------------TESTCHANNEL-------------------------*/
