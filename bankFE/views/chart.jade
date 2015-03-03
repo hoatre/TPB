@@ -6,7 +6,7 @@ block content
       .portlet
         .portlet-heading.inverse
           .portlet-title
-            h4 Line Chart
+            h4 Column Chart
           .portlet-widgets
             a(data-toggle='collapse', data-parent='#accordion', href='#chart-1')
               i.fa.fa-chevron-down
@@ -14,11 +14,12 @@ block content
         #chart-1.panel-collapse.collapse.in
           .portlet-body
             // Chart content
+            #ColumnChart(style='height: 250px; width: 100%;')
     .col-lg-6
       .portlet
         .portlet-heading.inverse
           .portlet-title
-            h4 Area Chart
+            h4 Pie Chart
           .portlet-widgets
             a(data-toggle='collapse', data-parent='#accordion', href='#chart-3')
               i.fa.fa-chevron-down
@@ -26,6 +27,10 @@ block content
         #chart-3.panel-collapse.collapse.in
           .portlet-body
             // Chart content
+            #PieChart(style='height: 250px; width: 100%;')
   // END YOUR CONTENT HERE
 block append script
-  //App script 
+  //App script
+  script(src='socket.io/socket.io.js')
+  script(src='/assets/js/app/ColumnAreaChart.js') //Chart
+  script(src='/assets/js/app/canvasjs.min.js') //Chart
