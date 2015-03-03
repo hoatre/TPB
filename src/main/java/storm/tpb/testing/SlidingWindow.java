@@ -252,108 +252,120 @@ public class SlidingWindow implements Serializable {
         listAmountAcc(TranType, System.currentTimeMillis(), (int) amount, account, timetamp);
     }
     public synchronized void listAmountAcc(String TranType, long time, int amount, String account, long timetamp) {
-
-        if (!TranType.equals(PARAM.TransCode.TRANTYPEFAKE.getValue())) {
-            cacheTimeAcc.add(time);
-            Transaction tran = new Transaction();
-            tran.settimetamp(timetamp);
-            tran.setacc_no(account);
-            tran.setamount(amount);
-            tran.settrx_code(TranType);
-            listTransAcc.add(tran);
-        }
-        if (this.sliding) {
-            if ((time - this.lastAcc) > this.window) {
-                this.lastAcc = time - this.window;
+        try {
+            if (!TranType.equals(PARAM.TransCode.TRANTYPEFAKE.getValue())) {
+                cacheTimeAcc.add(time);
+                Transaction tran = new Transaction();
+                tran.settimetamp(timetamp);
+                tran.setacc_no(account);
+                tran.setamount(amount);
+                tran.settrx_code(TranType);
+                listTransAcc.add(tran);
             }
-        }
-        Integer a = 0;
-
-        if (!listTransAcc.isEmpty())
-            while (listTransAcc.get(0).gettimetamp() < this.lastAcc) {
-                a++;
-                listTransAcc.remove(0);
-                //System.out.println("XOA" + a.toString());
-                if (listTransAcc.isEmpty())
-                    break;
+            if (this.sliding) {
+                if ((time - this.lastAcc) > this.window) {
+                    this.lastAcc = time - this.window;
+                }
             }
+            Integer a = 0;
 
-        Map<String, List<Transaction>> map = new HashMap<String, List<Transaction>>();
-        for (Transaction tran : listTransAcc) {
-            String key = tran.gettrx_code();
-            if (map.get(key) == null) {
-                map.put(key, new ArrayList<Transaction>());
-            }
-            map.get(key).add(tran);
-        }
-        for(String tranType : this.TransactionCode) {
-            List<Transaction> listTranGroup = map.get(tranType);
-            List<TransactionAcc> listTransAccTotalAmount = new ArrayList<TransactionAcc>();
-            List<TransactionAcc> asList = new ArrayList<TransactionAcc>();
-
-            if (listTranGroup!= null) {
-                for (int i = 0; i < listTranGroup.size(); i++) {
-                    listTransAccTotalAmount.add(new TransactionAcc(listTranGroup.get(i).getamount(), listTranGroup.get(i).getacc_no()));
+            if (!listTransAcc.isEmpty())
+                while (listTransAcc.get(0).gettimetamp() < this.lastAcc) {
+                    a++;
+                    listTransAcc.remove(0);
+                    //System.out.println("XOA" + a.toString());
+                    if (listTransAcc.isEmpty())
+                        break;
                 }
 
-                HashMap<String, TransactionAcc> aggregate = new HashMap<String, TransactionAcc>();
-                for (TransactionAcc as : listTransAccTotalAmount) {
-                    String key = as.getacc_no();
-                    TransactionAcc existing = aggregate.get(key);
-                    if (existing == null) {
-                        aggregate.put(key, as);
-                        continue;
+            Map<String, List<Transaction>> map = new HashMap<String, List<Transaction>>();
+            for (Transaction tran : listTransAcc) {
+                String key = tran.gettrx_code();
+                if (map.get(key) == null) {
+                    map.put(key, new ArrayList<Transaction>());
+                }
+                map.get(key).add(tran);
+            }
+            for (String tranType : this.TransactionCode) {
+                List<Transaction> listTranGroup = map.get(tranType);
+                List<TransactionAcc> listTransAccTotalAmount = new ArrayList<TransactionAcc>();
+                List<TransactionAcc> asList = new ArrayList<TransactionAcc>();
+
+                if (listTranGroup != null) {
+                    for (int i = 0; i < listTranGroup.size(); i++) {
+                        listTransAccTotalAmount.add(new TransactionAcc(listTranGroup.get(i).getamount(), listTranGroup.get(i).getacc_no()));
                     }
-                    TransactionAcc combined = new TransactionAcc(as.getamount() + existing.getamount(), as.getacc_no());
-                    aggregate.put(key, combined);
+
+                    HashMap<String, TransactionAcc> aggregate = new HashMap<String, TransactionAcc>();
+                    for (TransactionAcc as : listTransAccTotalAmount) {
+                        String key = as.getacc_no();
+                        TransactionAcc existing = aggregate.get(key);
+                        if (existing == null) {
+                            aggregate.put(key, as);
+                            continue;
+                        }
+                        TransactionAcc combined = new TransactionAcc(as.getamount() + existing.getamount(), as.getacc_no());
+                        aggregate.put(key, combined);
+                    }
+
+                    asList = new ArrayList<TransactionAcc>(aggregate.values());
                 }
 
-                asList = new ArrayList<TransactionAcc>(aggregate.values());
-            }
+                Collections.sort(asList);
+                Jedis jedis = new Jedis(Properties.getString("redis.host"), Properties.getInt("redis.port"));
+                jedis.connect();
+//                for (int z = 1; z <= 5; z++) {
+//
+//                    jedis.hdel("TopTen-Top" + Integer.toString(z) + "-" + Long.toString(this.window), "Acc", "Amount");
+//                    jedis.hdel("TopTen-Bot" + Integer.toString(z) + "-" + Long.toString(this.window), "Acc", "Amount");
+//                }
+                if (!asList.isEmpty()) {
+                    JSONObject obj = new JSONObject();
+                    obj.put("TransactionType", tranType);
+                    int i = 1;
+                    for (int j = 0; j < 5 && j < asList.size(); j++) {
 
-            Collections.sort(asList);
-            Jedis jedis = new Jedis(Properties.getString("redis.host"), Properties.getInt("redis.port"));
-            jedis.connect();
-            for (int z = 1; z <= 5; z++) {
+                        //Map<String, String> mapBot = new HashMap<String, String>();
 
-                jedis.hdel("TopTen" + tranType + "-Top" + Integer.toString(z) + "-" + Long.toString(this.window), "Acc", "Amount");
-                jedis.hdel("TopTen" + tranType + "-Bot" + Integer.toString(z) + "-" + Long.toString(this.window), "Acc", "Amount");
-            }
-            if (!asList.isEmpty()) {
-
-                int i = 0;
-                for (int j = 0; j < 5 && j < asList.size(); j++) {
-
-                    Map<String, String> mapBot = new HashMap<String, String>();
-                    mapBot.put("Acc", asList.get(j).getacc_no());
-                    mapBot.put("Amount", asList.get(j).getamount().toString());
-                    if(mapBot != null) {
-                        jedis.hmset("TopTen" + tranType + "-Bot" + Integer.toString(i + 1) + "-" + Long.toString(this.window), mapBot);
+                        obj.put("TopTen-Bot" + Integer.toString(i) + "-" + Long.toString(this.window) + "-Acc", asList.get(j).getacc_no());
+                        obj.put("TopTen-Bot" + Integer.toString(i) + "-" + Long.toString(this.window) + "-Amount", asList.get(j).getamount().toString());
                         i++;
+//                        if (mapBot != null) {
+//                            jedis.hmset("TopTen" + tranType + "-Bot" + Integer.toString(i) + "-" + Long.toString(this.window), mapBot);
+//
+//                        }
                     }
-                }
-                int k = 0;
-                for (int j = asList.size() - 1; j >= asList.size() - 5 && j >= 0; j--) {
 
-                    Map<String, String> mapTop = new HashMap<String, String>();
-                    mapTop.put("Acc", asList.get(j).getacc_no());
-                    mapTop.put("Amount", asList.get(j).getamount().toString());
-                    if(mapTop != null) {
-                        jedis.hmset("TopTen" + tranType + "-Top" + Integer.toString(k + 1) + "-" + Long.toString(this.window), mapTop);
+                    int k = 1;
+                    for (int j = asList.size() - 1; j >= asList.size() - 5 && j >= 0; j--) {
+
+                        obj.put("TopTen-Top" + Integer.toString(k) + "-" + Long.toString(this.window) + "-Acc", asList.get(j).getacc_no());
+                        obj.put("TopTen-Top" + Integer.toString(k) + "-" + Long.toString(this.window) + "-Amount", asList.get(j).getamount().toString());
                         k++;
+//                        if (mapTop != null) {
+//                            jedis.hmset("TopTen" + tranType + "-Top" + Integer.toString(k) + "-" + Long.toString(this.window), mapTop);
+//
+//                        }
                     }
+                    if(obj != null && !tranType.equals(PARAM.TransCode.TRANTYPEFAKE.getValue()))
+                        jedis.set("Ranking-" + tranType + "-" + Long.toString(this.window), obj.toString());
+                }else
+                {
+                    JSONObject obj = new JSONObject();
+                    obj.put("TransactionType", tranType);
+                    jedis.set("Ranking-" + tranType + "-" + Long.toString(this.window), obj.toString());
                 }
+                jedis.disconnect();
 
             }
-            jedis.disconnect();
 
+            if (!listTransAcc.isEmpty())
+                this.lastAcc = listTransAcc.get(0).gettimetamp();
+            else
+                this.lastAcc = time - this.window;
+        }catch (Exception e){
+            e.printStackTrace();
         }
-
-        if (!listTransAcc.isEmpty())
-            this.lastAcc = listTransAcc.get(0).gettimetamp();
-        else
-            this.lastAcc = time - this.window;
-
     }
 
     public long getWindow() {
@@ -375,9 +387,11 @@ public class SlidingWindow implements Serializable {
     public class TransactionAcc implements Comparable<TransactionAcc>{
         private Integer amount;
         private String acc_no;
+        //private String Transaction;
         public TransactionAcc(Integer amount,String acc_no){
             this.amount = amount;
             this.acc_no = acc_no;
+            //this.Transaction = Transaction;
         }
         public Integer getamount()
         {
@@ -396,6 +410,14 @@ public class SlidingWindow implements Serializable {
         {
             this.acc_no = acc_no;
         }
+//        public String getTransaction()
+//        {
+//            return Transaction;
+//        }
+//        public void setTransaction(String Transaction)
+//        {
+//            this.Transaction = Transaction;
+//        }
         public int compareTo(TransactionAcc other) {
 
             long delta = this.getamount() - other.getamount();

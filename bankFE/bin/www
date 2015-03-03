@@ -174,13 +174,14 @@ function log(type, msg) {
 }
 
 function redis_hmget_top(key, socket){
-    client1.hmget(key, "Acc", "Amount", function (err, items) {
+    client1.get(key, function (err, items) {
         if (err) {
             log('error', "error");
         } else {
-            socket.emit('Top-' + key, items);
-            //log('info', "get top bot");
+            socket.emit('emitRanking-' + key, items);
+            //log('info', items);
         }
+
     });
 }
 
@@ -243,12 +244,9 @@ io.sockets.on('connection',function(socket){
 function GetBotTop(slidingTime, socket){
     //log('info', transactionCode.length);
     var channelCodeI = JSON.parse('[' + channelCode + ']');
-    for(z=1; z <= 5; z++) {
-		for(i=0; i<transactionCode.length; i++)
-		{
-			redis_hmget_top('TopTen' + transactionCode[i] + '-Top' + z.toString() + "-" + slidingTime, socket);
-			redis_hmget_top('TopTen' + transactionCode[i] + '-Bot' + z.toString() + "-" + slidingTime, socket);
-		}
+    for(i=0; i<transactionCode.length; i++)
+    {
+        redis_hmget_top('Ranking-' + transactionCode[i] + '-' + slidingTime, socket);
     }
 }
 
