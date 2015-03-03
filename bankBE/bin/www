@@ -173,19 +173,23 @@ type='';
 var timeIDs = [];
 
 function recursive(type, obj, index)
-{        
+{      
+    //Chay vo tat neu khong truyen gia tri hoac so am
+    if(obj.CountMessage === '') 
+        obj.CountMessage = -1;
+
     if (obj.CountMessage === 0|| obj.Status == 'Stop') {
         if(timeIDs[index] != null){
             clearTimeout(timeIDs[index]);
             timeIDs[index] = null;
-            io.sockets.emit('btnConfig' + index, 'Start');
+            io.sockets.emit('btnConfig' + (index+1), 'Start');
             console.log('Stop... index = ' + index);
         }
     }
     else {
         --obj.CountMessage;
         //log(type,'Channel: ' + obj.Channel + ' to: ' + obj.AmountTo + ' from: ' + obj.AmountFrom + '; time: ' + obj.Time + '; count: ' + obj.CountMessage);
-        send(GeneratorTransaction(type, obj.account, obj.AmountFrom, obj.AmountTo,obj.Channel, obj.product, obj.transactiontype, obj.CountMessage));
+        send(GeneratorTransaction(type, obj.account, obj.AmountFrom, obj.AmountTo, obj.Channel, obj.Product, obj.TransactionType, obj.CountMessage));
         //GeneratorTransaction(obj.account, obj.AmountFrom, obj.AmountTo,obj.Channel, obj.Product, obj.TransactionType, obj.CountMessage);
         timeIDs[index] = setTimeout(function(){recursive(type, obj, index)}, obj.Time);
     }
@@ -325,7 +329,7 @@ function Simulator(index, data){
     }
     else {
         clearTimeout(timeIDs[index]);
-        console.log('Stop... index = '+ parseInt(index) + 1);
+        console.log('Stop... index = '+ (index + 1));
     }
 }
 

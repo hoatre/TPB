@@ -113,10 +113,10 @@ function GetValue()
 
 		var obj = {
 			Account: $('#txtAccount'+i).val(),
-			Time: $('#txtTime'+i).val(),
+			Time: $('#txtTime'+i).val() || 1000,
 			CountMessage: $('#txtCountMessage'+i).val(),			
-			AmountFrom: $('#txtAmountFrom'+i).val(),
-			AmountTo: $('#txtAmountTo'+i).val(),
+			AmountFrom: $('#txtAmountFrom'+i).val() || 10,
+			AmountTo: $('#txtAmountTo'+i).val() || $('#txtAmountFrom'+i).val() + 100,
 			Channel:$('#cboChannel'+i).val(),
 			Product:$('#cboProduct'+i).val(),
 			TransactionType:$('#cboTransactionType'+i).val(),
