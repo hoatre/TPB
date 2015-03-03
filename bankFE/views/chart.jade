@@ -1,0 +1,31 @@
+extends layout
+block content
+  // START YOUR CONTENT HERE
+  .row
+    .col-lg-6
+      .portlet
+        .portlet-heading.inverse
+          .portlet-title
+            h4 Line Chart
+          .portlet-widgets
+            a(data-toggle='collapse', data-parent='#accordion', href='#chart-1')
+              i.fa.fa-chevron-down
+          .clearfix
+        #chart-1.panel-collapse.collapse.in
+          .portlet-body
+            // Chart content
+    .col-lg-6
+      .portlet
+        .portlet-heading.inverse
+          .portlet-title
+            h4 Area Chart
+          .portlet-widgets
+            a(data-toggle='collapse', data-parent='#accordion', href='#chart-3')
+              i.fa.fa-chevron-down
+          .clearfix
+        #chart-3.panel-collapse.collapse.in
+          .portlet-body
+            // Chart content
+  // END YOUR CONTENT HERE
+block append script
+  //App script 
