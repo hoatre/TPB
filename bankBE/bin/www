@@ -190,7 +190,7 @@ function recursive(type, obj, index)
         --obj.CountMessage;
         //log(type,'Channel: ' + obj.Channel + ' to: ' + obj.AmountTo + ' from: ' + obj.AmountFrom + '; time: ' + obj.Time + '; count: ' + obj.CountMessage);
         send(GeneratorTransaction(type, obj.account, obj.AmountFrom, obj.AmountTo, obj.Channel, obj.Product, obj.TransactionType, obj.CountMessage));
-        //GeneratorTransaction(obj.account, obj.AmountFrom, obj.AmountTo,obj.Channel, obj.Product, obj.TransactionType, obj.CountMessage);
+        //GeneratorTransaction(type, obj.Account, obj.AmountFrom, obj.AmountTo,obj.Channel, obj.Product, obj.TransactionType, obj.CountMessage);
         timeIDs[index] = setTimeout(function(){recursive(type, obj, index)}, obj.Time);
     }
 
@@ -204,27 +204,27 @@ function randomInt (low, high) {
 
 
 //Generator transaction
-var GeneratorTransaction = function(type, account, amountFrom, amountTo, channal, product, transactionType, countMessage)
+var GeneratorTransaction = function(type, account, amountFrom, amountTo, channel, product, transactionType, countMessage)
 {
     //ID
     var trx_id = randomInt(1,9999999);
 
     //Generate Transaction Code
     var transactionTypes =  ["Deposit", "Withdrawal", "Transfer From", "Transfer To", "Balance Inquiry"];
-    transactionType = transactionType || transactionTypes[randomInt(0,transactionTypes.length)];
+    transactionType = transactionType || transactionTypes[randomInt(0,transactionTypes.length-1)];
 
     //Generate Channel ID
-    var channals = ["Branch 1", "Branch 2", "Branch 3", "Contact Center"];
-    channal = channal || channals[randomInt(0,channals.length)];
+    var channels = ["Branch 1", "Branch 2", "Branch 3", "Contact Center"];
+    channel = channel || channels[randomInt(0,channels.length-1)];
 
     //Product
     var products = ["Savings"];
-    product = product || products[randomInt(0,products.length)];
+    product = product || products[randomInt(0,products.length-1)];
 
     //Generate Account
 
-    var acc_no = account==''?acc_nos[randomInt(0,acc_nos.length)]:account;
-
+    var acc_no = account==='' ? acc_nos[randomInt(0,acc_nos.length-1)]:account;
+    
     //Generate Amount
     var amount = randomInt(amountFrom, amountTo);
 
@@ -232,7 +232,7 @@ var GeneratorTransaction = function(type, account, amountFrom, amountTo, channal
     var trans = {
         trx_id: trx_id,
         trx_code: transactionType,
-        ch_id: channal,
+        ch_id: channel,
         amount: amount,
         acc_no: acc_no,
         prd_id: product,
