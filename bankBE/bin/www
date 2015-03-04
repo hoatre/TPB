@@ -189,7 +189,7 @@ function recursive(type, obj, index)
     else {
         --obj.CountMessage;
         //log(type,'Channel: ' + obj.Channel + ' to: ' + obj.AmountTo + ' from: ' + obj.AmountFrom + '; time: ' + obj.Time + '; count: ' + obj.CountMessage);
-        send(GeneratorTransaction(type, obj.account, obj.AmountFrom, obj.AmountTo, obj.Channel, obj.Product, obj.TransactionType, obj.CountMessage));
+        send(GeneratorTransaction(type, obj.Account, obj.AmountFrom, obj.AmountTo, obj.Channel, obj.Product, obj.TransactionType, obj.CountMessage));
         //GeneratorTransaction(type, obj.Account, obj.AmountFrom, obj.AmountTo,obj.Channel, obj.Product, obj.TransactionType, obj.CountMessage);
         timeIDs[index] = setTimeout(function(){recursive(type, obj, index)}, obj.Time);
     }
