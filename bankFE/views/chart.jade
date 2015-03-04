@@ -2,7 +2,7 @@ extends layout
 block content
   // START YOUR CONTENT HERE
   .row
-    .col-lg-6
+    .col-lg-12
       .portlet
         .portlet-heading.inverse
           .portlet-title
@@ -13,9 +13,22 @@ block content
           .clearfix
         #chart-1.panel-collapse.collapse.in
           .portlet-body
-            // Chart content
-            #ColumnChart(style='height: 250px; width: 100%;')
-    .col-lg-6
+            .row
+              .col-lg-9
+                // Chart content 1
+                #ColumnChart(style='height: 250px; width: 100%;')
+              .col-lg-3
+                form.form-horizontal(role='form', method='post')
+                  .form-group
+                    label.col-sm-4.control-label Channel
+                    .col-sm-8
+                      select#ChannelCbo.form-control.selectpicker
+                  .form-group
+                    label.col-sm-4.control-label Year
+                    .col-sm-8
+                      select#YearColumnCbo.form-control.selectpicker(data-style='btn-warning', data-live-search='true')
+  .row
+    .col-lg-12
       .portlet
         .portlet-heading.inverse
           .portlet-title
@@ -26,8 +39,16 @@ block content
           .clearfix
         #chart-3.panel-collapse.collapse.in
           .portlet-body
-            // Chart content
-            #PieChart(style='height: 250px; width: 100%;')
+            .row
+              .col-lg-9
+                // Chart content
+                #PieChart(style='height: 250px; width: 100%;')
+              .col-lg-3
+                form.form-horizontal(role='form', method='post')
+                  .form-group
+                    label.col-sm-4.control-label Year
+                    .col-sm-8
+                      select#YearPieCbo.form-control.selectpicker(data-style='btn-warning', data-live-search='true')
   // END YOUR CONTENT HERE
 block append script
   //App script

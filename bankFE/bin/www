@@ -114,6 +114,7 @@ var db = mongoskin.db(commonConfig.serverMongo, {safe:true});
 var t1, t2, t3;
 var channelCode = [];
 var transactionCode = [];
+var productType = [];
 var totalNoTran = 0;
 var totalAmount = 0;
 var lengthRange = 1000000000;
@@ -126,7 +127,7 @@ function GetChannelList()
         if (error) return next(error);
         if (!channels) return next(new Error('Get all channel fail.'));
         channelCode = channels.map(function(item){
-            var text = '{"ChannelCode":"' + item.ChannelCode + '", "ChannelName":"' + item.ChannelName + '", "Display":"' + "0" +'", "Count":"' + "0" +'", "Sum":"' + "0" + '"}';
+            var text = '{"ChannelCode":"' + item.ChannelCode + '", "ChannelName":"' + item.ChannelName + '", "ChannelAddress":"' + item.ChannelAddress + '", "Display":"' + "0" +'", "Count":"' + "0" +'", "Sum":"' + "0" + '"}';
             return text;
         })
     });
@@ -140,13 +141,94 @@ function GetTransactionList()
     TransactionTypes.find().toArray(function(error, transactionTypes) {
         if (error) return next(error);
         if (!transactionTypes) return next(new Error('Get all channel fail.'));
-        
+
         transactionCode = transactionTypes.map(function(item){
             return item.TransactionCode;
         })
+	
     });
+
 }
 GetTransactionList();
+
+//Get list ProductType from DB
+function GetProductList()
+{
+    var Products = db.collection('Products'); // ten bang
+    Products.find().toArray(function(error, Products) {
+        if (error) return next(error);
+        if (!Products) return next(new Error('Get all channel fail.'));
+        var list = [];
+        list = Products.map(function(item){
+            return item.ProductType;
+        })
+	productType = list.filter(function(item, pos) {
+	    return list.indexOf(item) == pos;
+	})	
+    });
+
+}
+GetProductList();
+
+//Get data for Pie Chart
+function GetDataPieChart(year, socket)
+{
+    var ReportProductYears = db.collection('ReportProductYears'); // ten bang
+    var dataColumnChart = [];
+    ReportProductYears.find({Year:year}).toArray(function(error, ReportProductYears) {
+        if (error) return next(error);
+        if (!ReportProductYears) return next(new Error('Get all ReportProductYears fail.'));
+        dataColumnChart = ReportProductYears.map(function(item){
+            return '{"ProductType":"' + item.ProductType + '", "Year":"' + item.Year + '", "Count":"' + item.Count + '"}';
+        })
+	socket.emit('GetDataPieChart', dataColumnChart);
+    });
+
+}
+
+//Get data for Column Chart
+function GetDataColumnChart(channel, year, socket)
+{
+    var ReportChannelYears = db.collection('ReportChannelYears'); // ten bang
+    var dataColumnChart = [];
+    ReportChannelYears.find({ChannelCode:channel, Year:year}).toArray(function(error, ReportChannelYears) {
+        if (error) return next(error);
+        if (!ReportChannelYears) return next(new Error('Get all ReportChannelYears fail.'));
+        dataColumnChart = ReportChannelYears.map(function(item){
+            return '{"ChannelCode":"' + item.ChannelCode + '", "ChannelName":"' + item.ChannelName + '", "ChannelAddress":"' + item.ChannelAddress + '", "Month":"' + item.Month + '", "Year":"' + item.Year + '", "Count":"' + item.Count +'", "Amount":"' + item.Amount + '"}';
+        })
+	socket.emit('GetDataColumnChart', dataColumnChart);
+	
+    });
+
+}
+
+//save data ColumnChart
+function SaveDataColumnChart(year, month, ChannelCode, ChannelName, ChannelAddress, amount, count){
+log('info', "SaveDataColumnChart begin");
+    var ReportChannelYears = db.collection('ReportChannelYears'); // ten bang
+    var document = {ChannelCode:ChannelCode, ChannelName:ChannelName, ChannelAddress:ChannelAddress, Year:year.toString(), Month:month.toString(), Amount:amount, Count:count};
+    ReportChannelYears.insert(document, {w: 1}, function(err, records){
+        
+    });
+log('info', "SaveDataColumnChart done");
+}
+
+//save data PieChart
+function SaveDataPieChart(productType, year, count){
+log('info', "SaveDataPieChart begin");
+    var ReportProductYears = db.collection('ReportProductYears'); // ten bang
+    var document = {ProductType:productType, Year:year.toString(), Count:count};
+    ReportProductYears.insert(document, {w: 1}, function(err, records){
+        
+    });
+log('info', "SaveDataPieChart done");
+}
+
+//Ramdom Int
+function randomInt (low, high) {
+    return Math.floor(Math.random() * (parseInt(high) - parseInt(low)) + parseInt(low));
+}
 
 //show log
 function log(type, msg) {
@@ -207,6 +289,13 @@ io.sockets.on('connection',function(socket){
     console.log('Connection socket!!!')
     socket.emit('listChannelCode',channelCode);
     socket.emit('listTransactionCode',transactionCode);
+    socket.emit('listProductType',productType);
+    socket.on('EventComboboxColumn', function (data1) {
+	    GetDataColumnChart(data1[0], data1[1], socket);	    
+        }),
+    socket.on('EventComboboxPie', function (data1) {
+	    GetDataPieChart(data1[0], socket);	    
+        }),
     socket.on('open 1 Minute', function (data1) {
         log('info', "open 1 Minute");
         clearInterval(t2);
