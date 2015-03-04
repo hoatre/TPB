@@ -244,7 +244,6 @@ var GeneratorTransaction = function(type, account, amountFrom, amountTo, channel
     //console.info(trans); //log full object
     log(type,'trx_id: ' + trans.trx_id + '; trx_code: ' + trans.trx_code + '; ch_id: ' + trans.ch_id + '; amount: ' + trans.amount + '; acc_no: ' + trans.acc_no+ '; prd_id: ' + trans.prd_id + '; timestamp: ' + trans.timestamp+ '; count: ' + trans.count);
     data_msg.push(trans); //Add new: Check data
-    //Shit
     var msg = JSON.stringify(trans);
     return msg;
 }
