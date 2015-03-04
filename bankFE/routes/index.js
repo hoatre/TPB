@@ -54,4 +54,10 @@ router.get('/profile/:id', function(req, res, next) {
   	});
 });
 
+//chart display
+router.get('/chart', function(req, res) {
+	console.log('chart request');	
+	res.render('chart', { title: 'chart' });
+});
+
 module.exports = router;

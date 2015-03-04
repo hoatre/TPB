@@ -13,7 +13,6 @@ import storm.kafka.StringScheme;
 import storm.kafka.ZkHosts;
 import storm.kafka.trident.OpaqueTridentKafkaSpout;
 import storm.kafka.trident.TridentKafkaConfig;
-import storm.kafka.trident.ZkBrokerReader;
 import storm.tpb.testing.*;
 import storm.tpb.tools.function;
 import storm.tpb.util.Properties;
@@ -21,10 +20,8 @@ import storm.trident.Stream;
 import storm.trident.TridentTopology;
 import storm.trident.operation.BaseFunction;
 import storm.trident.operation.TridentCollector;
-import storm.trident.operation.builtin.Sum;
 import storm.trident.tuple.TridentTuple;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
