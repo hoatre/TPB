@@ -108,7 +108,7 @@ block content
                     .clearfix
                   #basic.panel-collapse.collapse.in
                     .portlet-body.no-padding
-                      if(customerLogs == null || customerLogs.lenght == 0)
+                      if(customerLogs == null || customerLogs.length == 0)
                         | Khong co du lieu
                       else                                
                         table.table.table-bordered.table-hover.tc-table
@@ -120,11 +120,11 @@ block content
                             tbody
                               each customerLog, index in customerLogs
                                 - var transName = customerLog.trx_name == null ? '' : customerLog.trx_name;
-                                - var chanelName = customerLog.ch_name == null ? '' : customerLog.ch_name+", ";
-                                - var chanelAdd = customerLog.ch_add == null ? '' : customerLog.ch_add;
+                                - var channelName = customerLog.ch_name == null ? '' : customerLog.ch_name+", ";
+                                - var channelAdd = customerLog.ch_add == null ? '' : customerLog.ch_add;
                                 - var activity = '[' + customerLog.trx_id + '] ' + transName + ' (' + customerLog.amount + ' VND, ' + customerLog.acc_no + ')';
                                 //var test = jQuery.timeago(new Date(customerLog.timestamp));
-                                - var detail= chanelname + chaneladd;
+                                - var detail= channelName + channelAdd;
                                 tr
                                   td.hidden-xs 
                                     abbr.timeago(title='#{new Date(customerLog.timestamp).toISOString()}')
