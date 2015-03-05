@@ -139,13 +139,13 @@ function TopBot(slidingTime){
                         var valueAccount = (arrayTop[0] != null || arrayTop[0] != undefined) ? arrayTop[0] : '';
                         //Lay du lieu tung hang
                         dataTop = dataTop + "<li><span class='topstatistic' id='TopTen" + jsonRanking[0]["TransactionType"] + "-Top"+j.toString() + "-Amount'>" + valueAmount +
-                        "</span><span class='icons'><i class='fa fa-envelope'></i></span><a href='"+  valueAccount + "' id='TopTen" + jsonRanking[0]["TransactionType"] + "-Top"+j.toString() +"-Account'>"+ valueAccount + "</a></li>";
+                        "</span><span class='icons'><i class='fa fa-envelope'></i></span><a href='"+  profileHost + valueAccount + "' id='TopTen" + jsonRanking[0]["TransactionType"] + "-Top"+j.toString() +"-Account'>"+ valueAccount + "</a></li>";
 
-                        valueAmount = (arrayBot[1] != null || arrayBot[1] != undefined) ? arrayBot[1] : '';
+                        valueAmount =  (arrayBot[1] != null || arrayBot[1] != undefined) ? arrayBot[1] : '';
                         valueAccount = (arrayBot[0] != null || arrayBot[0] != undefined) ? arrayBot[0] : '';
 
                         dataBot = "<li><span class='topstatistic' id='TopTen" + jsonRanking[0]["TransactionType"] + "-Bot"+j.toString() + "-Amount'>" + valueAmount +
-                        "</span><span class='icons'><i class='fa fa-envelope'></i></span><a href='"+ valueAccount + "' id='TopTen" + jsonRanking[0]["TransactionType"] + "-Bot"+j.toString() +"-Account'>"+ valueAccount + "</a></li>" + dataBot;
+                        "</span><span class='icons'><i class='fa fa-envelope'></i></span><a href='" + profileHost+ valueAccount + "' id='TopTen" + jsonRanking[0]["TransactionType"] + "-Bot"+j.toString() +"-Account'>"+ valueAccount + "</a></li>" + dataBot;
                     }
                     //Show du lieu
                     if($('#topFive' + jsonRanking[0]["TransactionType"]).is(":visible"))
