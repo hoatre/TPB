@@ -129,9 +129,28 @@ function TopBot(slidingTime){
                             jsonRanking[0]["TopTen-Bot" + j.toString() + "-" + slidingTime.toString() + "-Amount"]];
                         var arrayTop = [jsonRanking[0]["TopTen-Top" + j.toString() + "-" + slidingTime.toString() + "-Acc"],
                             jsonRanking[0]["TopTen-Top" + j.toString() + "-" + slidingTime.toString() + "-Amount"]];
-                        SetRanking('TopTen' + jsonRanking[0]["TransactionType"] + '-Top' + j.toString(), arrayTop, jsonRanking[0]["TransactionType"]);
-                        SetRanking('TopTen' + jsonRanking[0]["TransactionType"] + '-Bot' + j.toString(), arrayBot, jsonRanking[0]["TransactionType"]);
+                        //SetRanking('TopTen' + jsonRanking[0]["TransactionType"] + '-Top' + j.toString(), arrayTop, jsonRanking[0]["TransactionType"]);
+                        //SetRanking('TopTen' + jsonRanking[0]["TransactionType"] + '-Bot' + j.toString(), arrayBot, jsonRanking[0]["TransactionType"]);
+
+                        var valueAmount = (arrayTop[1] != null || arrayTop[1] != undefined) ? arrayTop[1] : '';
+                        var valueAccount = (arrayTop[0] != null || arrayTop[0] != undefined) ? arrayTop[0] : '';
+                        //Lay du lieu tung hang
+                        dataTop = dataTop + "<li><span class='topstatistic' id='TopTen" + jsonRanking[0]["TransactionType"] + "-Top"+j.toString() + "-Amount'>" + valueAmount +
+                        "</span><span class='icons'><i class='fa fa-envelope'></i></span><a href='"+  valueAccount + "' id='TopTen" + jsonRanking[0]["TransactionType"] + "-Top"+j.toString() +"-Account'>"+ valueAccount + "</a></li>";
+
+                        valueAmount = (arrayBot[1] != null || arrayBot[1] != undefined) ? arrayBot[1] : '';
+                        valueAccount = (arrayBot[0] != null || arrayBot[0] != undefined) ? arrayBot[0] : '';
+
+                        dataBot = "<li><span class='topstatistic' id='TopTen" + jsonRanking[0]["TransactionType"] + "-Bot"+j.toString() + "-Amount'>" + valueAmount +
+                        "</span><span class='icons'><i class='fa fa-envelope'></i></span><a href='"+ valueAccount + "' id='TopTen" + jsonRanking[0]["TransactionType"] + "-Bot"+j.toString() +"-Account'>"+ valueAccount + "</a></li>" + dataBot;
                     }
+                    //Show du lieu
+                    if($('#topFive' + jsonRanking[0]["TransactionType"]).is(":visible"))
+                        $('#topFive' + jsonRanking[0]["TransactionType"] +'  ul').html(dataTop);
+
+                    if($('#topFiveDown' + jsonRanking[0]["TransactionType"]).is(":visible"))
+                        $('#topFiveDown'+ jsonRanking[0]["TransactionType"] +' ul').html(dataBot);
+                    //console.info(dataTop); //Debug
                 }
             }
 
