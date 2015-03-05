@@ -18,7 +18,7 @@ block content
       .alert.bg-primary
         button.close(type='button', data-dismiss='alert', aria-hidden='true') ×
         p
-          | Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin nunc lorem, rutrum non porta.
+          | Young, talent, IT Business, Monthly Spending: 9M VND
     .col-lg-9.col-md-9
       .tc-tabs
         // Nav tabs style 1
@@ -65,7 +65,7 @@ block content
                   .portlet.no-border
                     .portlet-heading.dark
                       .portlet-title
-                        h4 Interests
+                        h4 Interaction Channels
                       .portlet-widgets
                         i.fa.fa-sort-alpha-desc.bigger-110
                       .clearfix
@@ -73,22 +73,22 @@ block content
                       .progress(data-percent='75%')
                         .progress-bar.progress-bar-success(role='progressbar', style='width: 75%')
                           span.sr-only 75% Complete
-                        span.progress-type Lorem ipsum dolor
+                        span.progress-type ATM
                         span.progress-completed 75%
                       .progress(data-percent='40%')
                         .progress-bar.progress-bar-warning(role='progressbar', style='width: 40%')
                           span.sr-only 40% Complete
-                        span.progress-type Lorem ipsum dolor
+                        span.progress-type Branches
                         span.progress-completed 40%
                       .progress(data-percent='26%')
                         .progress-bar.progress-bar-danger(role='progressbar', style='width: 26%')
                           span.sr-only 26% Complete
-                        span.progress-type Lorem ipsum dolor
+                        span.progress-type e-Bank
                         span.progress-completed 26%
                       .progress(data-percent='80%')
                         .progress-bar(role='progressbar', style='width: 80%')
                           span.sr-only 80% Complete
-                        span.progress-type Lorem ipsum dolor
+                        span.progress-type Contact Center
                         span.progress-completed 80%
             .row
               .col-md-12
@@ -97,8 +97,7 @@ block content
                   .portlet-heading.dark
                     .portlet-title
                       h4
-                        | Responsive table 
-                        small.text-white (css only)
+                        | Recent Activities
                     .portlet-widgets
                       a(data-toggle='collapse', data-parent='#accordion', href='#basic')
                         i.fa.fa-chevron-down
@@ -108,7 +107,7 @@ block content
                     .clearfix
                   #basic.panel-collapse.collapse.in
                     .portlet-body.no-padding
-                      if(customerLogs == null || customerLogs.lenght == 0)
+                      if(customerLogs == null || customerLogs.length == 0)
                         | Khong co du lieu
                       else                                
                         table.table.table-bordered.table-hover.tc-table
@@ -120,11 +119,11 @@ block content
                             tbody
                               each customerLog, index in customerLogs
                                 - var transName = customerLog.trx_name == null ? '' : customerLog.trx_name;
-                                - var chanelName = customerLog.ch_name == null ? '' : customerLog.ch_name+", ";
-                                - var chanelAdd = customerLog.ch_add == null ? '' : customerLog.ch_add;
+                                - var channelName = customerLog.ch_name == null ? '' : customerLog.ch_name+", ";
+                                - var channelAdd = customerLog.ch_add == null ? '' : customerLog.ch_add;
                                 - var activity = '[' + customerLog.trx_id + '] ' + transName + ' (' + customerLog.amount + ' VND, ' + customerLog.acc_no + ')';
                                 //var test = jQuery.timeago(new Date(customerLog.timestamp));
-                                - var detail= chanelname + chaneladd;
+                                - var detail= channelName + channelAdd;
                                 tr
                                   td.hidden-xs 
                                     abbr.timeago(title='#{new Date(customerLog.timestamp).toISOString()}')

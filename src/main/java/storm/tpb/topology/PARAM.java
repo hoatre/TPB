@@ -79,4 +79,15 @@ public class PARAM implements Serializable  {
             return this.millis;
         }
     }
+
+    public static enum SlidingTime {
+        Time1(60.0), Time2(3600.0), Time3(86400.0);
+        private double millis;
+        private SlidingTime(double millis) {
+            this.millis = millis;
+        }
+        public double getTime() {
+            return this.millis;
+        }
+    }
 }

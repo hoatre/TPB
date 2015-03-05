@@ -3,7 +3,21 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Dashboard' });
+
+  	console.log('Dashboard request');
+	//res.render('index', { title: 'Dashboard' });
+	var db = req.db;
+	var TransactionTypes = db.collection('TransactionTypes');
+    TransactionTypes.find({}).toArray(function(error, transactionTypes) {
+	    if (error) return next(error);
+	    if (!transactionTypes) return next(new Error('Get list transactionTypes fail.'));
+
+	    res.render('index', {
+	      title: 'Dashboard',
+	      TransactionTypes: transactionTypes || []
+	    });
+  	});
+
 });
 
 router.get('/customers', function(req, res) {
@@ -52,6 +66,12 @@ router.get('/profile/:id', function(req, res, next) {
     	});
 	    
   	});
+});
+
+//chart display
+router.get('/chart', function(req, res) {
+	console.log('chart request');	
+	res.render('chart', { title: 'chart' });
 });
 
 module.exports = router;
