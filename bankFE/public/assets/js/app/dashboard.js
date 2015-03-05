@@ -248,12 +248,13 @@ function createLineChart(time) {
         {
             zoomEnabled: true,
             title: {
-                text: "Line Chart TPB"
+                text: ""
             },
             toolTip: {
                 shared: true
 
             },
+            animationEnabled: true,
             legend:{
                 cursor:"pointer",
                 itemclick : function(e) {
