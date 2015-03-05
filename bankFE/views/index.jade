@@ -71,18 +71,18 @@ block content
       // End Statics Charts
     // //col-lg-9
   //Check list
-  .row
-    #transactionList.col-lg-12.col-sm-12
-        if(TransactionTypes == null || TransactionTypes.length == 0)
-          | Khong co du lieu
-        else
-          each transactionType, index in TransactionTypes
-            label.tcb-inline.col-sm-3.col-lg-2
-              input.tc.tc-success(type='checkbox', checked='true', name='#Five{transactionType.TransactionName}', id='Five#{transactionType.TransactionCode}') 
-              span.labels  #{transactionType.TransactionName} (Top)
-            label.tcb-inline.col-sm-3.col-lg-2
-              input.tc.tc-success(type='checkbox', checked='true', name='FiveDown#{transactionType.TransactionName}', id='FiveDown#{transactionType.TransactionCode}') 
-              span.labels  #{transactionType.TransactionName} (Bot)
+  //.row
+  //  #transactionList.col-lg-12.col-sm-12
+  //      if(TransactionTypes == null || TransactionTypes.length == 0)
+  //        | Khong co du lieu
+  //      else
+  //        each transactionType, index in TransactionTypes
+  //          label.tcb-inline.col-sm-3.col-lg-2
+  //            input.tc.tc-success(type='checkbox', checked='true', name='#Five{transactionType.TransactionName}', id='Five#{transactionType.TransactionCode}') 
+  //            span.labels  #{transactionType.TransactionName} (Top)
+  //          label.tcb-inline.col-sm-3.col-lg-2
+  //            input.tc.tc-success(type='checkbox', checked='true', name='FiveDown#{transactionType.TransactionName}', id='FiveDown#{transactionType.TransactionCode}') 
+  //            span.labels  #{transactionType.TransactionName} (Bot)
   // Recent activities
   .row
     if(TransactionTypes == null || TransactionTypes.length == 0)
