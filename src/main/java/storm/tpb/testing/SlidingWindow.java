@@ -192,7 +192,7 @@ public class SlidingWindow implements Serializable {
 
                 asList = new ArrayList<TransactionTotal>(aggregate.values());
             }
-            
+            listTotal.clear();
             this.listTotal = asList;
             if(listTransChart.isEmpty())
                 this.lastChart = time - this.window;

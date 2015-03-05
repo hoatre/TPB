@@ -69,7 +69,7 @@ function OpenSocket(){
                 dataPointsPieChartCount.push({
                     y: parseInt(dataPieChart[i].Count),
                     legendText:dataPieChart[i].ProductType.toString(),
-                    indexLabel:dataPieChart[i].ProductType.toString()
+                    indexLabel:dataPieChart[i].ProductType.toString() + "(#percent%)"
                 });
             }
 
@@ -83,14 +83,8 @@ function CreateColumnChart(dataPointsColumnChartCount, dataPointsColumnChartAmou
         {
             theme: "theme3",
             animationEnabled: true,
-            title:{
-                text: "Total Count and Amount"
-            },
             toolTip: {
                 shared: true
-            },
-            axisX:{
-                title: "Channel"
             },
 
             axisY: {
@@ -98,11 +92,6 @@ function CreateColumnChart(dataPointsColumnChartCount, dataPointsColumnChartAmou
             },
             axisY2: {
                 title: "Amount"
-            },
-
-            legend:{
-                verticalAlign: "top",
-                horizontalAlign: "center"
             },
             data: [
                 {
@@ -123,6 +112,9 @@ function CreateColumnChart(dataPointsColumnChartCount, dataPointsColumnChartAmou
 
             ],
             legend:{
+                verticalAlign: "bottom",
+                horizontalAlign: "center",
+                fontSize:12,
                 cursor:"pointer",
                 itemclick: function(e){
                     if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
@@ -144,16 +136,17 @@ function CreatePieChart(dataPointsPieChartCount){
     var PieChart = new CanvasJS.Chart("PieChart",
         {
             title:{
-                text: "Product"
+                text: ""
             },
             animationEnabled: true,
             legend:{
                 verticalAlign: "bottom",
-                horizontalAlign: "center"
+                horizontalAlign: "center",
+                fontSize: 12
             },
             data: [
                 {
-                    indexLabelFontSize: 20,
+                    indexLabelFontSize: 12,
                     indexLabelFontFamily: "Monospace",
                     indexLabelFontColor: "darkgrey",
                     indexLabelLineColor: "darkgrey",
