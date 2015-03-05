@@ -25,7 +25,7 @@ router.get('/customers', function(req, res) {
 
 	var db = req.db;
 	var Customers = db.collection('Customers');
-    Customers.find({}).skip(1).limit(30).toArray(function(error, customers) {
+    Customers.find({}).skip(1).limit(300).toArray(function(error, customers) {
 	    if (error) return next(error);
 	    if (!customers) return next(new Error('Get listcustomers fail.'));
 

@@ -6,8 +6,8 @@ module.exports = {
 	//serverRedis : '10.20.252.201',
 	//serverMongo : 'mongodb://localhost:27017/CloudBank?auto_reconnect'
 
-	serverKafka : 'localhost',//10.20.252.201
-	serverRedis : 'localhost',
+	serverKafka : '10.20.252.201',//10.20.252.201
+	serverRedis : '10.20.252.201',
 	serverMongo : 'mongodb://10.20.252.202:27017/CloudBank?auto_reconnect',
 
 	SlidingTimeMinute : 60000,
