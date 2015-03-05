@@ -406,7 +406,7 @@ function recursive()
         clearTimeout(t);
     }
     else {
-        //console.log('conf1'+obj.channel+':'+obj.countmessage+'-'+obj.amountto+':'+obj.amountfrom);
+        console.log('fake kafka');
         t = setTimeout(recursive, obj.time);
         send(msg);
     }

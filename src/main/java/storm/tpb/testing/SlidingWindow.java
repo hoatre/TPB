@@ -43,15 +43,15 @@ public class SlidingWindow implements Serializable {
     private double average;
     private double alpha = -1D;
     private boolean sliding = false;
-    List<Transaction> listTrans = new ArrayList<Transaction>();
-    ArrayList<Long> cacheTime = new ArrayList<Long>();
-    List<Transaction> listTransChart = new ArrayList<Transaction>();
-    ArrayList<Long> cacheTimeChart = new ArrayList<Long>();
-    List<Transaction> listTransAcc = new ArrayList<Transaction>();
-    ArrayList<Long> cacheTimeAcc = new ArrayList<Long>();
-    List<TransactionCount> listTransCount = new ArrayList<TransactionCount>();
-    ArrayList<Long> cacheTimeCount = new ArrayList<Long>();
-    private List<TransactionTotal> listTotal = new ArrayList<TransactionTotal>();
+    private List<Transaction> listTrans = new ArrayList<Transaction>();
+    //private ArrayList<Long> cacheTime = new ArrayList<Long>();
+    private List<Transaction> listTransChart = new ArrayList<Transaction>();
+    //private ArrayList<Long> cacheTimeChart = new ArrayList<Long>();
+    private List<Transaction> listTransAcc = new ArrayList<Transaction>();
+    //private ArrayList<Long> cacheTimeAcc = new ArrayList<Long>();
+    private List<TransactionCount> listTransCount = new ArrayList<TransactionCount>();
+    //rivate ArrayList<Long> cacheTimeCount = new ArrayList<Long>();
+    List<TransactionTotal> listTotal = new ArrayList<TransactionTotal>();
 
     private long count=0;
     private long sumAmount=0;
@@ -105,7 +105,7 @@ public class SlidingWindow implements Serializable {
         mark(System.currentTimeMillis(),(int)amount, timetamp);
     }
     public synchronized void mark(long time, int amount, long timetamp) {
-        cacheTime.add(time);
+        //cacheTime.add(time);
         Transaction tran = new Transaction();
         tran.settimetamp(timetamp);
         tran.setamount(amount);
@@ -141,7 +141,7 @@ public class SlidingWindow implements Serializable {
     public synchronized void GetlistTotal(long time, String channel, long timetamp, int amount) {
         try {
             if (!channel.equals(PARAM.Channel.CHANNELFAKE.getValue())) {
-                cacheTimeChart.add(time);
+                //cacheTimeChart.add(time);
                 Transaction tran = new Transaction();
                 tran.settimetamp(timetamp);
                 tran.setch_id(channel);
@@ -192,8 +192,11 @@ public class SlidingWindow implements Serializable {
 
                 asList = new ArrayList<TransactionTotal>(aggregate.values());
             }
-            listTotal.clear();
-            this.listTotal = asList;
+//            listTotal.clear();
+//            this.listTotal = asList;
+
+            chartFlot(asList);
+
             if(listTransChart.isEmpty())
                 this.lastChart = time - this.window;
             else
@@ -211,7 +214,7 @@ public class SlidingWindow implements Serializable {
     }
     public synchronized void chartFlot(long time, List<TransactionTotal> listTotal) {
         try {
-            cacheTimeCount.add(time);
+            //cacheTimeCount.add(time);
             TransactionCount tran = new TransactionCount();
             tran.settimestamp(time);
             tran.setListTotal(listTotal);
@@ -238,8 +241,10 @@ public class SlidingWindow implements Serializable {
                     obj.put(a.getchannel() + "-count", a.getcount());
                     obj.put(a.getchannel() + "-sum", a.getamount());
                 }
+
                 obj.put("time", listTransCount.get(listTransCount.size() - 1).gettimestamp());
                 jedis.rpush("real-time-count-chart-" + Long.toString(this.window), obj.toString());
+
             }
             jedis.disconnect();
         }catch (Exception e){
@@ -254,7 +259,7 @@ public class SlidingWindow implements Serializable {
     public synchronized void listAmountAcc(String TranType, long time, int amount, String account, long timetamp) {
         try {
             if (!TranType.equals(PARAM.TransCode.TRANTYPEFAKE.getValue())) {
-                cacheTimeAcc.add(time);
+                //cacheTimeAcc.add(time);
                 Transaction tran = new Transaction();
                 tran.settimetamp(timetamp);
                 tran.setacc_no(account);
