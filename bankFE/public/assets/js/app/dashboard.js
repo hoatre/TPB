@@ -123,8 +123,11 @@ function TopBot(slidingTime){
         socket.on('emitRanking-Ranking-' + transactionCode[p] + '-' + slidingTime.toString(), function (data1) {
             if(data1 != null) {
                 var jsonRanking = $.parseJSON('[' + data1 + ']');
-                for (var j = 1; j <= 5; j++) {
-                    if (jsonRanking[0] != null) {
+                if (jsonRanking[0] != null) {
+                        var dataTop = '';
+                        var dataBot = '';
+                    for (var j = 1; j <= 5; j++) {
+                    
                         var arrayBot = [jsonRanking[0]["TopTen-Bot" + j.toString() + "-" + slidingTime.toString() + "-Acc"],
                             jsonRanking[0]["TopTen-Bot" + j.toString() + "-" + slidingTime.toString() + "-Amount"]];
                         var arrayTop = [jsonRanking[0]["TopTen-Top" + j.toString() + "-" + slidingTime.toString() + "-Acc"],
