@@ -5,6 +5,18 @@ $(document).ready(function() {
     
     // Populate the user table on initial page load
     OnLoad();
+
+    $("#transactionList input[type='checkbox']").each(function(){
+        $(this).click(function(){
+            var id = $(this).attr("id");
+
+            if ($(this).is(":checked"))
+                alert('#top' + id);
+            else
+                alert('... Dang cap nhat');
+                //$('#top' + id).removeClass('hide');
+        });        
+    })
 });
 
 // Data
