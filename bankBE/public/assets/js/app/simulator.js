@@ -4,12 +4,12 @@ $(document).ready(function() {
 	
 	$('#btnConfigAll').click( function(){		
 		var obj=GetValue();
-		if($('#btnConfigAll').text() =='Start') {
+		if($('#btnConfigAll').text() =='Start all') {
 
 			for(i = 0; i <= 3; i++)
 				obj[i].Status = 'Start';
 
-			$('#btnConfigAll').text('Stop');
+			$('#btnConfigAll').text('Stop all');
 			$('#btnConfig1').text('Stop');
 			$('#btnConfig1').text('Stop');
 			$('#btnConfig2').text('Stop');
@@ -18,9 +18,9 @@ $(document).ready(function() {
 		}
 		else {
 			for(i = 0; i <= 3; i++)
-				obj[i].Status = 'Stop';
+				obj[i].Status = 'Stop all';
 
-			$('#btnConfigAll').text('Start');
+			$('#btnConfigAll').text('Start all');
 			$('#btnConfig1').text('Start');
 			$('#btnConfig1').text('Start');
 			$('#btnConfig2').text('Start');
@@ -95,11 +95,11 @@ function CheckButton(){
 	
 	//Ca 4 nut chua hoat dong hoac da chay xong
 	if(countStart === 4)
-		$('#btnConfigAll').text('Start');
+		$('#btnConfigAll').text('Start all');
 
 	//Ca 4 nut dang chay
 	if(countStop === 4)
-		$('#btnConfigAll').text('Stop');
+		$('#btnConfigAll').text('Stop all');
 
 	console.log('countStart: ' + countStart + '; countStop: ' + countStop);
 }
