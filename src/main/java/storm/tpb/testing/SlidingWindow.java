@@ -253,10 +253,10 @@ public class SlidingWindow implements Serializable {
     }
 
     //Ranking acc theo Transaction Type
-    public void listAmountAcc(String TranType, long amount, String account, long timetamp) {
-        listAmountAcc(TranType, System.currentTimeMillis(), (int) amount, account, timetamp);
+    public void listAmountAcc(String TranType, long amount, String account, long timetamp, int TOP) {
+        listAmountAcc(TranType, System.currentTimeMillis(), (int) amount, account, timetamp, TOP);
     }
-    public synchronized void listAmountAcc(String TranType, long time, int amount, String account, long timetamp) {
+    public synchronized void listAmountAcc(String TranType, long time, int amount, String account, long timetamp, int TOP) {
         try {
             if (!TranType.equals(PARAM.TransCode.TRANTYPEFAKE.getValue())) {
                 //cacheTimeAcc.add(time);
@@ -328,7 +328,7 @@ public class SlidingWindow implements Serializable {
                     JSONObject obj = new JSONObject();
                     obj.put("TransactionType", tranType);
                     int i = 1;
-                    for (int j = 0; j < 5 && j < asList.size(); j++) {
+                    for (int j = 0; j < TOP && j < asList.size(); j++) {
 
                         //Map<String, String> mapBot = new HashMap<String, String>();
 
@@ -342,7 +342,7 @@ public class SlidingWindow implements Serializable {
                     }
 
                     int k = 1;
-                    for (int j = asList.size() - 1; j >= asList.size() - 5 && j >= 0; j--) {
+                    for (int j = asList.size() - 1; j >= asList.size() - TOP && j >= 0; j--) {
 
                         obj.put("TopTen-Top" + Integer.toString(k) + "-" + Long.toString(this.window) + "-Acc", asList.get(j).getacc_no());
                         obj.put("TopTen-Top" + Integer.toString(k) + "-" + Long.toString(this.window) + "-Amount", asList.get(j).getamount().toString());

@@ -86,7 +86,7 @@ public class TopologyControl {
                 .each(valueChartNew, new SaveRedisForChart(Sliding, SlidingWindow.Time.SECONDS, ChannelCode), new Fields("doneValueChart"));
 
         //Ranking TransactionType
-        parsedStream.each(new Fields("amount", "acc_no", "timestamp", "trx_code"), new RankingsBolt(Sliding, SlidingWindow.Time.SECONDS), new Fields("DoneRanking"));
+        parsedStream.each(new Fields("amount", "acc_no", "timestamp", "trx_code"), new RankingsBolt(Sliding, SlidingWindow.Time.SECONDS, Integer.parseInt(Properties.getString("Ranking.TOP"))), new Fields("DoneRanking"));
     }
 
     //add du lieu dau vao thanh JSON
