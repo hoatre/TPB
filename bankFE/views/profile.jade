@@ -1,15 +1,26 @@
 extends layout
 
 block content
+  - var imageURL, fbLink;
+    if(customer != null && customer.ImageUrl != null && customer.ImageUrl != '')
+      -imageURL = customer.ImageUrl;
+    else
+      -imageURL = '/assets/images/user-2.jpg';
+
+    if(customer != null && customer.FBLINK != null && customer.FBLINK != '')
+      -fbLink = customer.FBLINK;
+    else
+      -fbLink = '#';  
+
   // START YOUR CONTENT HERE
   .row
     .col-lg-3.col-md-3
       .well.well-sm.white
         .profile-pic
           a(href='#')
-            img.img-responsive(src='/assets/images/user-2.jpg', alt='')
+            img.img-responsive(src='#{imageURL}', alt='')
         p.text-center
-          button.btn.btn-facebook.btn-xs(type='button', data-placement='top', data-rel='tooltip', title='Visit My Facebook', role='button')
+          a.btn.btn-facebook.btn-xs(href='#{fbLink}', target='_blank', data-placement='top', data-rel='tooltip', title='Visit My Facebook', role='button')
             i.fa.fa-facebook.icon-only
           button.btn.btn-twitter.btn-xs(type='button', data-placement='top', data-rel='tooltip', title='Visit My Twitter', role='button')
             i.fa.fa-twitter.icon-only

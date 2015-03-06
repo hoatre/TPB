@@ -13,7 +13,7 @@ var commonConfig = require('../config/common');
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3030');
+var port = normalizePort(process.env.PORT || commonConfig.port);
 app.set('port', port);
 
 /**
@@ -24,8 +24,8 @@ var server = http.createServer(app);
 
 //Begin -Phong
 const redis = require('redis');
-const client1 = redis.createClient(); // redis client
-//const client1 = redis.createClient(6379, commonConfig.serverRedis, {}); // redis server
+//const client1 = redis.createClient(); // redis client
+const client1 = redis.createClient(6379, commonConfig.serverRedis, {}); // redis server
 log('info', 'connected to redis server');
 
 var io = require('socket.io').listen(server);

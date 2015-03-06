@@ -13,7 +13,7 @@ block content
           th(data-hide='phone,tablet') Account
           th(data-class='expand') Full name
           th(data-hide='phone,tablet') Gender
-          th(data-hide='phone,tablet') Bob
+          th(data-hide='phone,tablet') Bod
           th(data-hide='phone,tablet') Phonenumber
           th Address
       tbody
@@ -35,3 +35,10 @@ block content
             td #{customer.ADDRESS}             
   // End jQuery Datatable
   // END YOUR CONTENT HERE
+block append script
+  //App script  
+  // PAGE LEVEL PLUGINS JS  
+  script(src='assets/js/plugins/datatables/jquery.dataTables.min.js')
+  script(src='assets/js/plugins/datatables/datatables.js')
+  script(src='assets/js/plugins/datatables/datatables.responsive.js')  
+  script(src='/assets/js/plugins/datatables/datatables.init.js')  
