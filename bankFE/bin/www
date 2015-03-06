@@ -24,8 +24,8 @@ var server = http.createServer(app);
 
 //Begin -Phong
 const redis = require('redis');
-//const client1 = redis.createClient(); // redis client
-const client1 = redis.createClient(6379, commonConfig.serverRedis, {}); // redis server
+const client1 = redis.createClient(); // redis client
+//const client1 = redis.createClient(6379, commonConfig.serverRedis, {}); // redis server
 log('info', 'connected to redis server');
 
 var io = require('socket.io').listen(server);
