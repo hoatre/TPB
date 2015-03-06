@@ -274,7 +274,7 @@ io.sockets.on('connection',function(socket){
 
         //Add new: Check data
         data.forEach(function(obj){
-            CheckChannel(data.channel);
+            CheckChannel(obj.Channel);
         })
     }),
     //Xu ly button 1 click
