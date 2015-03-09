@@ -18,6 +18,5 @@ public class ValueChartBolt extends BaseFunction{
     }
     public void execute(TridentTuple tuple, TridentCollector collector) {
         this.sliding.GetlistTotal(tuple.getStringByField("ch_id"), tuple.getLongByField("timestamp"), tuple.getLongByField("amount"));
-        collector.emit(new Values(this.sliding.getWindow(),this.sliding.getListTotal()));
     }
 }

@@ -28,7 +28,7 @@ public class SaveRedisForChart extends BaseFunction {
     }
     public synchronized void execute(TridentTuple tuple, TridentCollector collector) {
         try {
-            List<SlidingWindow.TransactionTotal> listTotal = (ArrayList<SlidingWindow.TransactionTotal>)tuple.get(1);
+            List<SlidingWindow.TransactionTotal> listTotal = (ArrayList<SlidingWindow.TransactionTotal>)tuple.get(0);
 
             this.sliding.chartFlot(listTotal);
         }catch (Exception e)

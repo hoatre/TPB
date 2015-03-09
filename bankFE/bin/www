@@ -118,6 +118,8 @@ var productType = [];
 var totalNoTran = 0;
 var totalAmount = 0;
 var lengthRange = 1000000000;
+var lrangeData1Day;
+
 
 //Get list Channels from DB
 function GetChannelList()

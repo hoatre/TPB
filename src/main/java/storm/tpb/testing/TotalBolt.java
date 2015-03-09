@@ -28,9 +28,9 @@ public class TotalBolt extends BaseRichBolt {
         this.emitRatePer = emitRatePer;
     }
     public void execute(Tuple tuple) {
-        this.sliding.mark(tuple.getIntegerByField("amount"), tuple.getLongByField("timestamp"));
-        collector.emit(new Values(this.sliding.getCount(),this.sliding.getSum()));
-        System.out.println("count : " + Long.toString(this.sliding.getCount()) + " sum : " + Long.toString(this.sliding.getSum()));
+        //this.sliding.mark(tuple.getIntegerByField("amount"), tuple.getLongByField("timestamp"));
+        //collector.emit(new Values(this.sliding.getCount(),this.sliding.getSum()));
+       // System.out.println("count : " + Long.toString(this.sliding.getCount()) + " sum : " + Long.toString(this.sliding.getSum()));
     }
     public void prepare(Map stormConf, TopologyContext context,
                         OutputCollector collector) {
