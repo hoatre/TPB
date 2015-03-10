@@ -65,6 +65,7 @@ function OnLoad() {
         });
         if(str.toLowerCase().localeCompare("1 Minute".toLowerCase()) == 0)
         {
+
             socket.emit('open 1 Minute',"1 Minute");
             createLineChart(time1);
             //alert('1 minute');
@@ -84,33 +85,7 @@ function OnLoad() {
     }).change();
 }
 
-////set ranking
-//function TopTen(Top, slidingTime) {
-//    socket.on('Top-' + Top + '-' + slidingTime, function (data1) {
-//        var array = $.map(data1, function (value, index) {
-//            return [value];
-//            console.log(value);
-//        });
-//
-//        var TopTenDepositTop1Acc = document.getElementById(Top + "-Account");
-//        if(TopTenDepositTop1Acc == null || TopTenDepositTop1Acc == undefined)
-//            return;
-//
-//        TopTenDepositTop1Acc.innerHTML = (array[0] != null || array[0] != undefined)? array[0] : '';
-//        TopTenDepositTop1Acc.href = profileHost + TopTenDepositTop1Acc.innerHTML;
-//
-//        var TopTenDepositTop1Amount = document.getElementById(Top + "-Amount");
-//        if(TopTenDepositTop1Amount == null || TopTenDepositTop1Amount == undefined)
-//            return;
-//        TopTenDepositTop1Amount.innerHTML = (array[1] != null || array[1] != undefined)? array[1] : '';
-//    });
-//}
-
-
-setInterval(function() {    
-    //TopBot(time1);
-    //TopBot(time2);
-    //TopBot(time3);
+setInterval(function() {
     TotalCountAmount();
 }, 1000);
 
@@ -132,8 +107,6 @@ function TopBot(slidingTime){
                             jsonRanking[0]["TopTen-Bot" + j.toString() + "-" + slidingTime.toString() + "-Amount"]];
                         var arrayTop = [jsonRanking[0]["TopTen-Top" + j.toString() + "-" + slidingTime.toString() + "-Acc"],
                             jsonRanking[0]["TopTen-Top" + j.toString() + "-" + slidingTime.toString() + "-Amount"]];
-                        //SetRanking('TopTen' + jsonRanking[0]["TransactionType"] + '-Top' + j.toString(), arrayTop, jsonRanking[0]["TransactionType"]);
-                        //SetRanking('TopTen' + jsonRanking[0]["TransactionType"] + '-Bot' + j.toString(), arrayBot, jsonRanking[0]["TransactionType"]);
 
                         var valueAmount = (arrayTop[1] != null || arrayTop[1] != undefined) ? arrayTop[1] : '';
                         var valueAccount = (arrayTop[0] != null || arrayTop[0] != undefined) ? arrayTop[0] : '';
@@ -153,7 +126,6 @@ function TopBot(slidingTime){
 
                     if($('#topFiveDown' + jsonRanking[0]["TransactionType"]).is(":visible"))
                         $('#topFiveDown'+ jsonRanking[0]["TransactionType"] +' ul').html(dataBot);
-                    //console.info(dataTop); //Debug
                 }
             }
 
@@ -252,6 +224,10 @@ function createLineChart(time) {
             },
             toolTip: {
                 shared: true
+
+            },
+            axisY:{
+                includeZero: false
 
             },
             animationEnabled: true,

@@ -38,15 +38,16 @@ public class SlidingWindow implements Serializable {
     private long window;
     private long alphaWindow;
     private long last=System.currentTimeMillis();
-    private long lastChart=System.currentTimeMillis();
-    private long lastAcc=System.currentTimeMillis();
+    private long lastChart=0;
+    private long lastCount=0;
+    private long lastAcc=0;
     private double average;
     private double alpha = -1D;
     private boolean sliding = false;
     private List<Transaction> listTransChart = new ArrayList<Transaction>();
     private List<Transaction> listTransAcc = new ArrayList<Transaction>();
     private List<TransactionCount> listTransCount = new ArrayList<TransactionCount>();
-    List<TransactionTotal> listTotal = new ArrayList<TransactionTotal>();
+    private List<TransactionTotal> listTotal = new ArrayList<TransactionTotal>();
 
     private long count=0;
     private long sumAmount=0;
@@ -59,21 +60,45 @@ public class SlidingWindow implements Serializable {
         return this.sliding((long) (time.getTime() * count));
     }
     public SlidingWindow sliding(long window) {
-            this.sliding = true;
-            this.window = window;
-            AddCount();
+        this.sliding = true;
+        this.window = window;
+        AddCount(this.window);
+        AddlistTransChart(this.window);
         return this;
     }
-    public synchronized void AddCount(){
+    public synchronized void AddCount(long window){
         try {
             Jedis jedis = new Jedis(Properties.getString("redis.host"), Properties.getInt("redis.port"));
             jedis.connect();
-            long lenghtRedis = jedis.llen("real-time-count-chart-" + Long.toString(this.window));
+            long lenghtRedis = jedis.llen("real-time-count-chart-" + Long.toString(window));
             if (lenghtRedis > 0) {
-                List<String> list = jedis.lrange("real-time-count-chart-" + Long.toString(this.window), 0, lenghtRedis);
+                List<String> list = jedis.lrange("real-time-count-chart-" + Long.toString(window), 0, lenghtRedis);
                 for (String a : list) {
                     JSONObject jsonObj = new JSONObject(a);
                     this.listTransCount.add(new TransactionCount(jsonObj.getLong("time")));
+                }
+            }
+            jedis.disconnect();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    public synchronized void AddlistTransChart(long window){
+        try {
+            Jedis jedis = new Jedis(Properties.getString("redis.host"), Properties.getInt("redis.port"));
+            jedis.connect();
+            long lenghtRedis = jedis.llen("cache-listTransChart-" + Long.toString(window));
+            if (lenghtRedis > 0) {
+                List<String> list = jedis.lrange("cache-listTransChart-" + Long.toString(window), 0, lenghtRedis);
+                for (String a : list) {
+                    JSONObject jsonObj = new JSONObject(a);
+                    if(!jsonObj.toString().equals("{}")) {
+                        Transaction tran = new Transaction();
+                        tran.settimetamp(jsonObj.getLong("timetamp"));
+                        tran.setch_id(jsonObj.getString("channel"));
+                        tran.setamount(jsonObj.getInt("amount"));
+                        this.listTransChart.add(tran);
+                    }
                 }
             }
             jedis.disconnect();
@@ -104,8 +129,9 @@ public class SlidingWindow implements Serializable {
     public synchronized void GetlistTotal(long time, String channel, long timetamp, int amount) {
         try {
             // bo qua kafka fake
+            Transaction tran = new Transaction();
             if (!channel.equals(PARAM.Channel.CHANNELFAKE.getValue())) {
-                Transaction tran = new Transaction();
+
                 tran.settimetamp(timetamp);
                 tran.setch_id(channel);
                 tran.setamount(amount);
@@ -116,15 +142,29 @@ public class SlidingWindow implements Serializable {
                     }
                 }
             }
-            Integer a = 0;
+
+            Jedis jedis = new Jedis(Properties.getString("redis.host"), Properties.getInt("redis.port"));
+            jedis.connect();
+
             //xoa item ngoai sliding
             if (!listTransChart.isEmpty())
                 while (listTransChart.get(0).gettimetamp() < this.lastChart) {
-                    a++;
                     listTransChart.remove(0);
+                    jedis.blpop(0, "cache-listTransChart-" + Long.toString(this.window));
                     if (listTransChart.isEmpty())
                         break;
                 }
+            if (!channel.equals(PARAM.Channel.CHANNELFAKE.getValue())) {
+                if (!listTransChart.isEmpty()) {
+                    JSONObject obj = new JSONObject();
+                    obj.put("channel", tran.getch_id());
+                    obj.put("amount", tran.getamount());
+                    obj.put("timetamp", tran.gettimetamp());
+                    jedis.rpush("cache-listTransChart-" + Long.toString(this.window), obj.toString());
+
+                }
+            }
+            jedis.disconnect();
 
             //add list tong amount va count theo channels
             List<TransactionTotal> listTransTotal= new ArrayList<TransactionTotal>();
@@ -141,7 +181,6 @@ public class SlidingWindow implements Serializable {
                     if (existing == null) {
                         as.setcount(1);
                         aggregate.put(key, as);
-                        //continue;
                     }else {
                         long counts = aggregate.get(key).getcount();
                         counts++;
@@ -160,7 +199,7 @@ public class SlidingWindow implements Serializable {
             else
                 this.lastChart = listTransChart.get(0).gettimetamp();
 
-            chartFlot(asList);
+            chartFlot(this.listTotal);
 
         }catch (Exception e)
         {
@@ -180,14 +219,14 @@ public class SlidingWindow implements Serializable {
             listTransCount.add(tran);
 
             if (this.sliding) {
-                if ((time - this.lastChart) > this.window) {
-                    this.lastChart = time - this.window;
+                if ((time - this.lastCount) > this.window) {
+                    this.lastCount = time - this.window;
                 }
             }
             Jedis jedis = new Jedis(Properties.getString("redis.host"), Properties.getInt("redis.port"));
             jedis.connect();
             if(!listTransCount.isEmpty()) {
-                while (listTransCount.get(0).gettimestamp() < this.lastChart) {
+                while (listTransCount.get(0).gettimestamp() < this.lastCount) {
                     listTransCount.remove(0);
                     jedis.blpop(0, "real-time-count-chart-" + Long.toString(this.window));
                     if (listTransCount.isEmpty())
@@ -206,6 +245,11 @@ public class SlidingWindow implements Serializable {
 
             }
             jedis.disconnect();
+
+            if(listTransCount.isEmpty())
+                this.lastCount = time - this.window;
+            else
+                this.lastCount = listTransCount.get(0).gettimestamp();
         }catch (Exception e){
             e.printStackTrace();
         }

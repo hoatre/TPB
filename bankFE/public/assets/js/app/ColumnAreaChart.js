@@ -39,7 +39,7 @@ function OpenSocket(){
     });
 
     socket.on('GetDataColumnChart',function(data1){
-        var MonthInYear = ["Jan", "Feb",  "Mar", "Apr", "May", "Jun", "July", "Agu", "Sep", "Oct", "Nov", "Dec"];
+        var MonthInYear = ["Jan", "Feb",  "Mar", "Apr", "May", "Jun", "Jul", "Agu", "Sep", "Oct", "Nov", "Dec"];
         var dataPointsColumnChartCount = [];
         var dataPointsColumnChartAmount = [];
         var dataColumnChart = [];
