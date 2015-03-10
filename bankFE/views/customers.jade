@@ -13,7 +13,7 @@ block content
           th(data-hide='phone,tablet') Account
           th(data-class='expand') Full name
           th(data-hide='phone,tablet') Gender
-          th(data-hide='phone,tablet') Bod
+          th(data-hide='phone,tablet') DOB
           th(data-hide='phone,tablet') Phonenumber
           th Address
       tbody
@@ -30,8 +30,12 @@ block content
                 | Male
               else
                 | Female
-            td #{customer.BOD}
-            td #{customer.PHONENUMBER}
+            td #{customer.DOB}
+            td
+              if(customer.PHONENUMBER != null && customer.PHONENUMBER != '')
+                | #{customer.PHONENUMBER}
+              else
+                | N/A
             td #{customer.ADDRESS}             
   // End jQuery Datatable
   // END YOUR CONTENT HERE
