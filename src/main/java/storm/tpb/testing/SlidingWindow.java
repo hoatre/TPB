@@ -136,13 +136,13 @@ public class SlidingWindow implements Serializable {
                 tran.setch_id(channel);
                 tran.setamount(amount);
                 listTransChart.add(tran);
-                if (this.sliding) {
-                    if ((time - this.lastChart) > this.window) {
-                        this.lastChart = time - this.window;
-                    }
+
+            }
+            if (this.sliding) {
+                if ((time - this.lastChart) > this.window) {
+                    this.lastChart = time - this.window;
                 }
             }
-
             Jedis jedis = new Jedis(Properties.getString("redis.host"), Properties.getInt("redis.port"));
             jedis.connect();
 
