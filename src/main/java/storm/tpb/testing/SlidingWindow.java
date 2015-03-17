@@ -223,7 +223,7 @@ public class SlidingWindow implements Serializable {
                 int average = Properties.getInt("Chart.Average.Point");
                 if(listTransCount.size() > limit) {
                     int listSize = listTransCount.size();
-                    for (int i = 0; i < listSize; i+=average) {
+                    for (int i = 0; i < listSize/average; i+=average) {
                         listTransCount.remove(i);
                         jedis.blpop(i,"real-time-count-chart-" + Long.toString(this.window));
                     }
