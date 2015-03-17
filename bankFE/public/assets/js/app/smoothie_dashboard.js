@@ -54,7 +54,7 @@ function OpenSocket(){
 }
 
 function AddCombobox(){
-    var x = document.getElementById("SlidingTimeCbo");
+    var x = document.getElementById("SlidingTimeSmoothieCbo");
     var Cbotext = ["1 Minute", "1 hour", "1 day"];
     var CboValue = ["time1", "time2", "time3"];
     for(var i = 0; i<Cbotext.length; i++) {
@@ -69,8 +69,8 @@ function OnLoad() {
     OpenSocket();
     AddCombobox();
     //set event selected cho combobox time
-    $('#SlidingTimeCbo').change(function() {
-        var SlidingTimeSmoothieCbo = document.getElementById("SlidingTimeCbo");
+    $('#SlidingTimeSmoothieCbo').change(function() {
+        var SlidingTimeSmoothieCbo = document.getElementById("SlidingTimeSmoothieCbo");
         var CboValue = SlidingTimeSmoothieCbo.options[SlidingTimeSmoothieCbo.selectedIndex].value;
 
         if(CboValue.toLowerCase().localeCompare("time1".toLowerCase()) == 0)
@@ -95,6 +95,8 @@ function OnLoad() {
 
     }).change();
 }
+
+
 
 setInterval(function() {
     TotalCountAmount();

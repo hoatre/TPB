@@ -27,10 +27,10 @@ public class EWMA implements Serializable {
     // Unix load average-style alpha constants
     public static final double ONE_MINUTE_ALPHA = 1 - Math.exp(-5d /
             60d / 1d);
-    public static final double FIVE_MINUTE_ALPHA = 1 - Math.exp(-5d /
-            60d / 5d);
-    public static final double FIFTEEN_MINUTE_ALPHA = 1 - Math.exp(-5d
-            / 60d / 15d);
+    public static final double ONE_HOUR_ALPHA = 1 - Math.exp(-5d /
+            60d / 60d);
+    public static final double ONE_DAY_ALPHA = 1 - Math.exp(-5d
+            / 60d / 1440d);
     private long window;
     private long alphaWindow;
     private long last=0;
@@ -75,13 +75,6 @@ public class EWMA implements Serializable {
             listTrans.remove(0);
             System.out.println("XOA" + a.toString());
         }
-
-     /*   while (cacheTime.get(0) < this.last) {
-            a++;
-            cacheTime.remove(0);
-            System.out.println("XOA" + a.toString());
-        }*/
-
 
         count = listTrans.size();
         for (int j=0; j< count;j++)
