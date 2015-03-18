@@ -40,6 +40,7 @@ public class SlidingWindow implements Serializable {
     private long last=System.currentTimeMillis();
     private long lastChart=0;
     private long lastCount=0;
+    private long lastCountAverage=0;
     private long lastAcc=0;
     private double average;
     private double alpha = -1D;
@@ -47,7 +48,6 @@ public class SlidingWindow implements Serializable {
     private List<Transaction> listTransChart = new ArrayList<Transaction>();
     private List<Transaction> listTransAcc = new ArrayList<Transaction>();
     private List<TransactionCount> listTransCount = new ArrayList<TransactionCount>();
-    //private List<TransactionTotal> listTotal = new ArrayList<TransactionTotal>();
     private List<TransactionTotal> listTransTotal= new ArrayList<TransactionTotal>();
 
     private long count=0;
@@ -209,7 +209,18 @@ public class SlidingWindow implements Serializable {
             e.printStackTrace();
         }
     }
+    public static int randInt(int min, int max) {
 
+        // NOTE: Usually this should be a field rather than a method
+        // variable so that it is not re-seeded every call.
+        Random rand = new Random();
+
+        // nextInt is normally exclusive of the top value,
+        // so add 1 to make it inclusive
+        int randomNum = rand.nextInt((max - min) + 1) + min;
+
+        return randomNum;
+    }
     // Save redis for canvas chart & total count amount
     public void chartFlot(List<TransactionTotal> listTotal) {
         chartFlot(System.currentTimeMillis(), listTotal);
@@ -218,22 +229,45 @@ public class SlidingWindow implements Serializable {
         try {
             Jedis jedis = new Jedis(Properties.getString("redis.host"), Properties.getInt("redis.port"));
             jedis.connect();
-            if (!listTransCount.isEmpty()) {
-                int limit = Properties.getInt("Chart.Limit.Point");
-                int average = Properties.getInt("Chart.Average.Point");
-                if(listTransCount.size() > limit) {
-                    int listSize = listTransCount.size();
-                    for (int i = 0; i < listSize/average; i+=average) {
-                        listTransCount.remove(i);
-                        jedis.blpop(i,"real-time-count-chart-" + Long.toString(this.window));
-                    }
+//
+//            if(!listTransCount.isEmpty()){
+//                int limit = Properties.getInt("Chart.Limit.Point");
+//                if(listTransCount.size() > limit){
+//                    int random = randInt(0, listTransCount.size() - 1);
+//                    listTransCount.remove(random);
+//                    jedis.blpop(random,"real-time-count-chart-" + Long.toString(this.window));
+//                }
+//            }
+            if(this.window == (PARAM.SlidingTime.Time1.getTime()*1000)){
+                TransactionCount tran = new TransactionCount();
+                tran.settimestamp(time);
+                tran.setListTotal(listTotal);
+                listTransCount.add(tran);
+            }else if(this.window == (PARAM.SlidingTime.Time2.getTime()*1000)){
+                if(listTransCount.isEmpty()){
+                    TransactionCount tran = new TransactionCount();
+                    tran.settimestamp(time);
+                    tran.setListTotal(listTotal);
+                    listTransCount.add(tran);
+                }else if(time - listTransCount.get(listTransCount.size() - 1).gettimestamp() >= 60000){
+                    TransactionCount tran = new TransactionCount();
+                    tran.settimestamp(time);
+                    tran.setListTotal(listTotal);
+                    listTransCount.add(tran);
+                }
+            }else if(this.window == (PARAM.SlidingTime.Time3.getTime()*1000)){
+                if(listTransCount.isEmpty()) {
+                    TransactionCount tran = new TransactionCount();
+                    tran.settimestamp(time);
+                    tran.setListTotal(listTotal);
+                    listTransCount.add(tran);
+                }else if(time - listTransCount.get(listTransCount.size() - 1).gettimestamp() >= (60000*15)){
+                    TransactionCount tran = new TransactionCount();
+                    tran.settimestamp(time);
+                    tran.setListTotal(listTotal);
+                    listTransCount.add(tran);
                 }
             }
-
-            TransactionCount tran = new TransactionCount();
-            tran.settimestamp(time);
-            tran.setListTotal(listTotal);
-            listTransCount.add(tran);
 
             if (this.sliding) {
                 if ((time - this.lastCount) > this.window) {
@@ -252,14 +286,14 @@ public class SlidingWindow implements Serializable {
 
             if (!listTransCount.isEmpty()) {
                 JSONObject obj = new JSONObject();
-                    for (TransactionTotal a : listTransCount.get(listTransCount.size() - 1).getListTotal()) {
-                        obj.put(a.getchannel() + "-count", a.getcount());
-                        obj.put(a.getchannel() + "-sum", a.getamount());
-                    }
+                for (TransactionTotal a : listTransCount.get(listTransCount.size() - 1).getListTotal()) {
+                    obj.put(a.getchannel() + "-count", a.getcount());
+                    obj.put(a.getchannel() + "-sum", a.getamount());
+                }
 
-                    obj.put("time", listTransCount.get(listTransCount.size() - 1).gettimestamp());
-                    //save for canvas chart
-                    jedis.rpush("real-time-count-chart-" + Long.toString(this.window), obj.toString());
+                obj.put("time", listTransCount.get(listTransCount.size() - 1).gettimestamp());
+                //save for canvas chart
+                jedis.rpush("real-time-count-chart-" + Long.toString(this.window), obj.toString());
             }
             jedis.disconnect();
 

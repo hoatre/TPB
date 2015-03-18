@@ -115,11 +115,7 @@ var t1, t2, t3;
 var channelCode = [];
 var transactionCode = [];
 var productType = [];
-var totalNoTran = 0;
-var totalAmount = 0;
-var lengthRange = 1000000000;
-var lrangeData1Day;
-
+var list = [];
 
 //Get list Channels from DB
 function GetChannelList()
@@ -270,14 +266,45 @@ function redis_hmget_top(key, socket){
     });
 }
 
-function redis_lrange(key, socket){
-    client1.lrange(key, 0, lengthRange, function(err, items) {
+function callLIndex(callback, key, i) {
+    client1.lindex(key, i, function(err, result) {
         if (err) {
             log('error', "error");
         } else {
-           socket.emit('listChart-' + key,items);
-           //log('info', items);
+            callback(err, result)
         }
+    });
+}
+
+function redis_lrange(key, socket){
+
+    client1.llen(key, function(err, items){
+        //log('info', "llen: " + items);
+        //if(parseInt(items) > 500){
+        //    list = [];
+        //    var av = parseInt(parseInt(items)/500 + 1);
+        //    log('info', "av : " + av);
+        //    for(var i = 0; i < parseInt(items); i+=av){
+        //        callLIndex(function(err, result) {
+        //
+        //            list.push(result);
+        //            log('info', "length in : " + list.length);
+        //        }, key, i);
+        //    }
+        //    log('info', "list size : " + list.length);
+        //    log('info', "list : " + list);
+        //    socket.emit('listChart-' + key,list);
+        //}else{
+            client1.lrange(key, 0, parseInt(items), function(err, items2) {
+                if (err) {
+                    log('error', "error");
+                } else {
+                    socket.emit('listChart-' + key,items2);
+                    //log('info', "items size : " + items2.length);
+                }
+            });
+        //}
+
     });
 }
 
@@ -287,6 +314,9 @@ clearInterval(t3);
 clearInterval(t1);
 
 // open socket theo time
+io.sockets.on('disconnect',function(socket){
+
+});
 io.sockets.on('connection',function(socket){
     console.log('Connection socket!!!')
     socket.emit('listChannelCode',channelCode);
@@ -300,6 +330,7 @@ io.sockets.on('connection',function(socket){
         }),
     socket.on('time1', function (data1) {
         log('info', "open 1 Minute");
+        clearInterval(t1);
         clearInterval(t2);
         clearInterval(t3);
         redis_lrange('real-time-count-chart-' + commonConfig.SlidingTimeMinute, socket);
@@ -311,6 +342,7 @@ io.sockets.on('connection',function(socket){
     socket.on('time2', function (data1) {
         log('info', "open 1 hour");
         clearInterval(t1);
+        clearInterval(t2);
         clearInterval(t3);
         redis_lrange('real-time-count-chart-' + commonConfig.SlidingTimeHour, socket);
         GetBotTop(commonConfig.SlidingTimeHour, socket);
@@ -321,8 +353,9 @@ io.sockets.on('connection',function(socket){
     }),
     socket.on('time3', function (data1) {
         log('info', "open 1 day");
-        clearInterval(t2);
         clearInterval(t1);
+        clearInterval(t2);
+        clearInterval(t3);
         redis_lrange('real-time-count-chart-' + commonConfig.SlidingTimeDay, socket);
         GetBotTop(commonConfig.SlidingTimeDay, socket);
         t3 = setInterval(function() {
