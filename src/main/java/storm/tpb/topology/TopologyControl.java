@@ -30,7 +30,7 @@ import java.util.Map;
  */
 public class TopologyControl {
 
-    private static Fields valueChartNew = new Fields("window", "listTotal");
+    private static Fields valueChartNew = new Fields("listTotal");
 
     private static final String KAFKA_TOPIC =
             Properties.getString("storm.kafka_topic");
@@ -82,11 +82,10 @@ public class TopologyControl {
 
         //dem count sum theo channel
         parsedStream.each(new Fields("ch_id", "timestamp", "amount"), new ValueChartBolt(Sliding, SlidingWindow.Time.SECONDS)
-                , valueChartNew)
-                .each(valueChartNew, new SaveRedisForChart(Sliding, SlidingWindow.Time.SECONDS, ChannelCode), new Fields("doneValueChart"));
+                , valueChartNew);
 
         //Ranking TransactionType
-        parsedStream.each(new Fields("amount", "acc_no", "timestamp", "trx_code"), new RankingsBolt(Sliding, SlidingWindow.Time.SECONDS), new Fields("DoneRanking"));
+        parsedStream.each(new Fields("amount", "acc_no", "timestamp", "trx_code"), new RankingsBolt(Sliding, SlidingWindow.Time.SECONDS, Integer.parseInt(Properties.getString("Ranking.TOP"))), new Fields("DoneRanking"));
     }
 
     //add du lieu dau vao thanh JSON

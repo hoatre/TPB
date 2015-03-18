@@ -118,6 +118,8 @@ var productType = [];
 var totalNoTran = 0;
 var totalAmount = 0;
 var lengthRange = 1000000000;
+var lrangeData1Day;
+
 
 //Get list Channels from DB
 function GetChannelList()
@@ -296,7 +298,7 @@ io.sockets.on('connection',function(socket){
     socket.on('EventComboboxPie', function (data1) {
 	    GetDataPieChart(data1[0], socket);	    
         }),
-    socket.on('open 1 Minute', function (data1) {
+    socket.on('time1', function (data1) {
         log('info', "open 1 Minute");
         clearInterval(t2);
         clearInterval(t3);
@@ -306,7 +308,7 @@ io.sockets.on('connection',function(socket){
             redis_lrange('real-time-count-chart-' + commonConfig.SlidingTimeMinute, socket);
         }, commonConfig.SlidingTimeDelayMinute);
     }),
-    socket.on('open 1 hour', function (data1) {
+    socket.on('time2', function (data1) {
         log('info', "open 1 hour");
         clearInterval(t1);
         clearInterval(t3);
@@ -317,7 +319,7 @@ io.sockets.on('connection',function(socket){
             redis_lrange('real-time-count-chart-' + commonConfig.SlidingTimeHour, socket);
         }, commonConfig.SlidingTimeDelayHour);
     }),
-    socket.on('open 1 day', function (data1) {
+    socket.on('time3', function (data1) {
         log('info', "open 1 day");
         clearInterval(t2);
         clearInterval(t1);

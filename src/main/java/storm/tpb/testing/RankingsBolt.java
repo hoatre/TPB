@@ -15,12 +15,14 @@ import java.util.Collections;
 public class RankingsBolt extends BaseFunction{
     private SlidingWindow sliding;
     private SlidingWindow.Time emitRatePer;
-    public RankingsBolt(SlidingWindow ewma, SlidingWindow.Time emitRatePer){
+    private int TOP;
+    public RankingsBolt(SlidingWindow ewma, SlidingWindow.Time emitRatePer, int TOP){
         this.sliding = ewma;
         this.emitRatePer = emitRatePer;
+        this.TOP = TOP;
     }
     public void execute(TridentTuple tuple, TridentCollector collector) {
         this.sliding.listAmountAcc(tuple.getStringByField("trx_code"), tuple.getLongByField("amount"),
-                tuple.getStringByField("acc_no"), tuple.getLongByField("timestamp"));
+                tuple.getStringByField("acc_no"), tuple.getLongByField("timestamp"), this.TOP);
     }
 }

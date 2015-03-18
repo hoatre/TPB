@@ -74,4 +74,23 @@ router.get('/chart', function(req, res) {
 	res.render('chart', { title: 'chart' });
 });
 
+//smoothie chart display
+router.get('/smoothieChart', function(req, res, next) {
+
+	console.log('smoothieChart request');
+	//res.render('index', { title: 'Dashboard' });
+	var db = req.db;
+	var TransactionTypes = db.collection('TransactionTypes');
+	TransactionTypes.find({}).toArray(function(error, transactionTypes) {
+		if (error) return next(error);
+		if (!transactionTypes) return next(new Error('Get list transactionTypes fail.'));
+
+		res.render('smoothieChart', {
+			title: 'smoothieChart',
+			TransactionTypes: transactionTypes || []
+		});
+	});
+
+});
+
 module.exports = router;
