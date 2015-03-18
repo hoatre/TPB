@@ -55,7 +55,7 @@ function OpenSocket(){
 
 function AddCombobox(){
     var x = document.getElementById("SlidingTimeCbo");
-    var Cbotext = ["1 Minute", "1 hour", "1 day"];
+    var Cbotext = ["1 Minute", "1 Hour", "1 Day"];
     var CboValue = ["time1", "time2", "time3"];
     for(var i = 0; i<Cbotext.length; i++) {
         var option = document.createElement("option");
