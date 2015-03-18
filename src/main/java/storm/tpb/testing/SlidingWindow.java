@@ -229,20 +229,45 @@ public class SlidingWindow implements Serializable {
         try {
             Jedis jedis = new Jedis(Properties.getString("redis.host"), Properties.getInt("redis.port"));
             jedis.connect();
-
-            if(!listTransCount.isEmpty()){
-                int limit = Properties.getInt("Chart.Limit.Point");
-                if(listTransCount.size() > limit){
-                    int random = randInt(0, listTransCount.size() - 1);
-                    listTransCount.remove(random);
-                    jedis.blpop(random,"real-time-count-chart-" + Long.toString(this.window));
+//
+//            if(!listTransCount.isEmpty()){
+//                int limit = Properties.getInt("Chart.Limit.Point");
+//                if(listTransCount.size() > limit){
+//                    int random = randInt(0, listTransCount.size() - 1);
+//                    listTransCount.remove(random);
+//                    jedis.blpop(random,"real-time-count-chart-" + Long.toString(this.window));
+//                }
+//            }
+            if(this.window == (PARAM.SlidingTime.Time1.getTime()*1000)){
+                TransactionCount tran = new TransactionCount();
+                tran.settimestamp(time);
+                tran.setListTotal(listTotal);
+                listTransCount.add(tran);
+            }else if(this.window == (PARAM.SlidingTime.Time2.getTime()*1000)){
+                if(listTransCount.isEmpty()){
+                    TransactionCount tran = new TransactionCount();
+                    tran.settimestamp(time);
+                    tran.setListTotal(listTotal);
+                    listTransCount.add(tran);
+                }else if(time - listTransCount.get(listTransCount.size() - 1).gettimestamp() >= 60000){
+                    TransactionCount tran = new TransactionCount();
+                    tran.settimestamp(time);
+                    tran.setListTotal(listTotal);
+                    listTransCount.add(tran);
+                }
+            }else if(this.window == (PARAM.SlidingTime.Time3.getTime()*1000)){
+                if(listTransCount.isEmpty()) {
+                    TransactionCount tran = new TransactionCount();
+                    tran.settimestamp(time);
+                    tran.setListTotal(listTotal);
+                    listTransCount.add(tran);
+                }else if(time - listTransCount.get(listTransCount.size() - 1).gettimestamp() >= (60000*15)){
+                    TransactionCount tran = new TransactionCount();
+                    tran.settimestamp(time);
+                    tran.setListTotal(listTotal);
+                    listTransCount.add(tran);
                 }
             }
-
-            TransactionCount tran = new TransactionCount();
-            tran.settimestamp(time);
-            tran.setListTotal(listTotal);
-            listTransCount.add(tran);
 
             if (this.sliding) {
                 if ((time - this.lastCount) > this.window) {
