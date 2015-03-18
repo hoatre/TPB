@@ -16,5 +16,5 @@ module.exports = {
 
 	SlidingTimeDelayMinute : 1000,
 	SlidingTimeDelayHour : 60000,
-	SlidingTimeDelayDay : 3600000
+	SlidingTimeDelayDay : 900000
 }
