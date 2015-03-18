@@ -52,6 +52,7 @@ router.get('/profile/:id', function(req, res, next) {
 	    if (!customer) return next(new Error('Get detail fail.'));
 
 	    resCustomer	= customer;
+	    var INTERACTION = JSON.parse(resCustomer.INTERACTION);
 
 	    var CustomerLogs = db.collection('CustomerLogs');
 	    CustomerLogs.find({acc_no:req.params.id}).sort({timestamp: -1}).limit(5).toArray(function(error, customerLogs) {
@@ -61,6 +62,7 @@ router.get('/profile/:id', function(req, res, next) {
 	    	res.render('profile', {
 			    title: 'Profile',
 			    customer: resCustomer || [],
+			    INTERACTION: INTERACTION,
 			    customerLogs: customerLogs || []
 			});
     	});

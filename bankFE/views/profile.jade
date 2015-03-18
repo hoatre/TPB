@@ -10,7 +10,9 @@ block content
     if(customer != null && customer.FBLINK != null && customer.FBLINK != '')
       -fbLink = customer.FBLINK;
     else
-      -fbLink = '#';  
+      -fbLink = '#';
+
+
 
   // START YOUR CONTENT HERE
   .row
@@ -28,8 +30,12 @@ block content
             i.fa.fa-google-plus.icon-only
       .alert.bg-primary
         button.close(type='button', data-dismiss='alert', aria-hidden='true') ×
-        p
-          | Young, talent, IT Business, Monthly Spending: 9M VND
+        p          
+          | Interest: #{customer.INTEREST}
+          | <br/>Friends: #{customer.FRIENDS}
+          | <br/>Monthly Spending: #{customer.MONTHLYSPENDING}M VND
+          | <br/>Marrige Status: #{customer.MARRIGESTATUS}
+          | <br/>Occupation: #{customer.OCCUPATION}                    
     .col-lg-9.col-md-9
       .tc-tabs
         // Nav tabs style 1
@@ -81,26 +87,26 @@ block content
                         i.fa.fa-sort-alpha-desc.bigger-110
                       .clearfix
                     .portlet-body.skills.light
-                      .progress(data-percent='75%')
-                        .progress-bar.progress-bar-success(role='progressbar', style='width: 75%')
-                          span.sr-only 75% Complete
+                      .progress(data-percent='#{INTERACTION.ATM}%')
+                        .progress-bar.progress-bar-success(role='progressbar', style='width: #{INTERACTION.ATM}%')
+                          span.sr-only #{INTERACTION.ATM}% Complete
                         span.progress-type ATM
-                        span.progress-completed 75%
-                      .progress(data-percent='40%')
-                        .progress-bar.progress-bar-warning(role='progressbar', style='width: 40%')
-                          span.sr-only 40% Complete
+                        span.progress-completed #{INTERACTION.ATM}%
+                      .progress(data-percent='#{INTERACTION.Branches}%')
+                        .progress-bar.progress-bar-warning(role='progressbar', style='width: #{INTERACTION.Branches}%')
+                          span.sr-only #{INTERACTION.Branches}% Complete
                         span.progress-type Branches
-                        span.progress-completed 40%
-                      .progress(data-percent='26%')
-                        .progress-bar.progress-bar-danger(role='progressbar', style='width: 26%')
-                          span.sr-only 26% Complete
+                        span.progress-completed #{INTERACTION.Branches}%
+                      .progress(data-percent='#{INTERACTION.eBank}%')
+                        .progress-bar.progress-bar-danger(role='progressbar', style='width: #{INTERACTION.eBank}%')
+                          span.sr-only #{INTERACTION.eBank}% Complete
                         span.progress-type e-Bank
-                        span.progress-completed 26%
-                      .progress(data-percent='80%')
-                        .progress-bar(role='progressbar', style='width: 80%')
-                          span.sr-only 80% Complete
+                        span.progress-completed #{INTERACTION.eBank}%
+                      .progress(data-percent='#{INTERACTION.ContactCenter}%')
+                        .progress-bar(role='progressbar', style='width: #{INTERACTION.ContactCenter}%')
+                          span.sr-only #{INTERACTION.ContactCenter}% Complete
                         span.progress-type Contact Center
-                        span.progress-completed 80%
+                        span.progress-completed #{INTERACTION.ContactCenter}%
             .row
               .col-md-12
                 .portlet
