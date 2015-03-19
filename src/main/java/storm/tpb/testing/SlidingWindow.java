@@ -295,8 +295,8 @@ public class SlidingWindow implements Serializable {
                 if (lenghtRedis > 0) {
                     String a = jedis.lindex("real-time-count-chart-" + Long.toString(window), lenghtRedis - 1);
                         JSONObject jsonObj = new JSONObject(a);
-                        for(int i = 0; i < TransactionCode.size(); i++){
-                            if(jsonObj.isNull(TransactionCode.get(i))){
+                        for(int i = 0; i < ChannelCode.size(); i++){
+                            if(!jsonObj.isNull(ChannelCode.get(i))){
                                 c++;
                             }
                         }
