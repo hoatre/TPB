@@ -294,17 +294,19 @@ public class SlidingWindow implements Serializable {
                 long lenghtRedis = jedis.llen("real-time-count-chart-" + Long.toString(window));
                 if (lenghtRedis > 0) {
                     String a = jedis.lindex("real-time-count-chart-" + Long.toString(window), lenghtRedis - 1);
-                        JSONObject jsonObj = new JSONObject(a);
-                        for(int i = 0; i < ChannelCode.size(); i++){
-                            if(!jsonObj.isNull(ChannelCode.get(i))){
-                                c++;
-                            }
+                    JSONObject jsonObj = new JSONObject(a);
+                    for (int i = 0; i < ChannelCode.size(); i++) {
+                        if (!jsonObj.isNull(ChannelCode.get(i))) {
+                            c++;
                         }
+                    }
                 }
-                if(obj.length() != 0 || c == 0) {
-                    obj.put("time", listTransCount.get(listTransCount.size() - 1).gettimestamp());
-                    //save for canvas chart
-                    jedis.rpush("real-time-count-chart-" + Long.toString(this.window), obj.toString());
+                if (obj.length() != 0 || c == 0) {
+                    if (listTransCount.size() == lenghtRedis + 1) {
+                        obj.put("time", listTransCount.get(listTransCount.size() - 1).gettimestamp());
+                        //save for canvas chart
+                        jedis.rpush("real-time-count-chart-" + Long.toString(this.window), obj.toString());
+                    }
                 }
             }
             jedis.disconnect();
