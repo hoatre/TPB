@@ -290,10 +290,11 @@ public class SlidingWindow implements Serializable {
                     obj.put(a.getchannel() + "-count", a.getcount());
                     obj.put(a.getchannel() + "-sum", a.getamount());
                 }
-
-                obj.put("time", listTransCount.get(listTransCount.size() - 1).gettimestamp());
-                //save for canvas chart
-                jedis.rpush("real-time-count-chart-" + Long.toString(this.window), obj.toString());
+                if(obj.length() == 0) {
+                    obj.put("time", listTransCount.get(listTransCount.size() - 1).gettimestamp());
+                    //save for canvas chart
+                    jedis.rpush("real-time-count-chart-" + Long.toString(this.window), obj.toString());
+                }
             }
             jedis.disconnect();
 
