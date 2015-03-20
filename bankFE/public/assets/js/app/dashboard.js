@@ -29,9 +29,14 @@ var time1 = 60000;
 var time2 = 3600000;
 var time3 = 86400000;
 var jsonObj;
+var jsonObj_time1;
+var jsonObj_time2;
+var jsonObj_time3;
 var totalCount = 0;
 var totalSum = 0;
-var ListRanking = [];
+var chartCD1;
+var SlidingTimeCbo ;
+var timer;
 
 function OpenSocket(){
     socket.on('listChannelCode',function(data1){
@@ -42,6 +47,7 @@ function OpenSocket(){
             var dataSeries = { xValueType: "dateTime", type: "line", showInLegend: true, name: channelCode[i].ChannelName, dataPoints:[]};
             data.push(dataSeries);
         }
+        //CreateChart();
     });
     socket.on('listTransactionCode',function(data1){
         transactionCode = $.map(data1, function (value, index) {
@@ -51,12 +57,21 @@ function OpenSocket(){
         TopBot(time2);
         TopBot(time3);
     });
+    socket.on('listChart-real-time-count-chart-' + time1,function(data1){
+        jsonObj_time1 = $.parseJSON('[' + data1 + ']');
+    });
+    socket.on('listChart-real-time-count-chart-' + time2,function(data1){
+        jsonObj_time2 = $.parseJSON('[' + data1 + ']');
+    });
+    socket.on('listChart-real-time-count-chart-' + time3,function(data1){
+        jsonObj_time3 = $.parseJSON('[' + data1 + ']');
+    });
 }
 
 function AddCombobox(){
     var x = document.getElementById("SlidingTimeCbo");
     var Cbotext = ["1 Minute", "1 Hour", "1 Day"];
-    var CboValue = ["time1", "time2", "time3"];
+    var CboValue = ["60000", "3600000", "86400000"];
     for(var i = 0; i<Cbotext.length; i++) {
         var option = document.createElement("option");
         option.text = Cbotext[i];
@@ -68,35 +83,83 @@ function AddCombobox(){
 function OnLoad() {
     OpenSocket();
     AddCombobox();
+    CreateChart();
     //set event selected cho combobox time
     $('#SlidingTimeCbo').change(function() {
         var SlidingTimeSmoothieCbo = document.getElementById("SlidingTimeCbo");
         var CboValue = SlidingTimeSmoothieCbo.options[SlidingTimeSmoothieCbo.selectedIndex].value;
 
-        if(CboValue.toLowerCase().localeCompare("time1".toLowerCase()) == 0)
+        if(CboValue.toLowerCase().localeCompare("60000".toLowerCase()) == 0)
         {
-
-            socket.emit(CboValue,"");
-            createLineChart(time1);
-            //alert('1 minute');
+            jsonObj = jsonObj_time1;
         }
-        else if(CboValue.toLowerCase().localeCompare("time2".toLowerCase()) == 0)
+        else if(CboValue.toLowerCase().localeCompare("3600000".toLowerCase()) == 0)
         {
-            socket.emit(CboValue,"");
-            createLineChart(time2);
-            //alert('1 hour');
+            jsonObj = jsonObj_time2;
         }
-        else if(CboValue.toLowerCase().localeCompare("time3".toLowerCase()) == 0)
+        else if(CboValue.toLowerCase().localeCompare("86400000".toLowerCase()) == 0)
         {
-            socket.emit(CboValue,"");
-            createLineChart(time3);
-            //alert('1 day');
+            jsonObj = jsonObj_time3;
         }
 
     }).change();
+
+}
+
+function CreateChart(){
+    chartCD1 = new CanvasJS.Chart("chartCD",
+        {
+            zoomEnabled: true,
+            title: {
+                text: ""
+            },
+            toolTip: {
+                shared: true
+
+            },
+            axisY:{
+                includeZero: false
+
+            },
+            animationEnabled: true,
+            legend:{
+                cursor:"pointer",
+                itemclick : function(e) {
+                    if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                        e.dataSeries.visible = false;
+                        for(var m=0;m<channelCode.length;m++){
+                            if(channelCode[m].ChannelName.toString() === e.dataSeries.name.toString()) {
+                                channelCode[m].Display = "0";
+                            }
+                        }
+                    }
+                    else {
+                        e.dataSeries.visible = true;
+                        for(var i = 0;i<channelCode.length;i++){
+                            if(channelCode[i].ChannelName.toString() === e.dataSeries.name.toString()) {
+                                channelCode[i].Display = "1";
+                            }
+                        }
+                    }
+                    chartCD1.render();
+                }
+            },
+            data:data
+        });
+    chartCD1.render();
 }
 
 setInterval(function() {
+    SlidingTimeCbo = document.getElementById("SlidingTimeCbo");
+    timer = SlidingTimeCbo.options[SlidingTimeCbo.selectedIndex].value;
+    if(timer == time1)
+        jsonObj = jsonObj_time1;
+    else if(timer == time2)
+        jsonObj = jsonObj_time2;
+    else if(timer == time3)
+        jsonObj = jsonObj_time3;
+    buidData();
+    chartCD1.render();
     TotalCountAmount();
 }, 1000);
 
@@ -158,12 +221,16 @@ function SetRanking(Top, array, TranType){
     TopTenDepositTop1Amount.innerHTML = (array[1] != null || array[1] != undefined) ? array[1] : '';
 }
 // build data for chart
-function buidData(data)
+function buidData()
 {
+    if(timer == time1)
+        jsonObj = jsonObj_time1;
+    else if(timer == time2)
+        jsonObj = jsonObj_time2;
+    else if(timer == time3)
+        jsonObj = jsonObj_time3;
     for(var k=0;k<data.length;k++) {
         for (var i = 0; i < channelCode.length; i++) {
-
-
             if(data[k].name == channelCode[i].ChannelName) {
                 var dataPoints = [];
                 var visible = false;
@@ -225,51 +292,7 @@ function TotalCountAmount()
 }
 
 // khoi tao chart
-function createLineChart(time) {
-
-    var chartCD1 = new CanvasJS.Chart("chartCD",
-        {
-            zoomEnabled: true,
-            title: {
-                text: ""
-            },
-            toolTip: {
-                shared: true
-
-            },
-            axisY:{
-                includeZero: false
-
-            },
-            animationEnabled: true,
-            legend:{
-                cursor:"pointer",
-                itemclick : function(e) {
-                    if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
-                        e.dataSeries.visible = false;
-                        for(var m=0;m<channelCode.length;m++){
-                            if(channelCode[m].ChannelName.toString() === e.dataSeries.name.toString()) {
-                                channelCode[m].Display = "0";
-                            }
-                        }
-                    }
-                    else {
-                        e.dataSeries.visible = true;
-                        for(var i = 0;i<channelCode.length;i++){
-                            if(channelCode[i].ChannelName.toString() === e.dataSeries.name.toString()) {
-                                channelCode[i].Display = "1";
-                            }
-                        }
-                    }
-                    chartCD1.render();
-                }
-            },
-            data:data
-        });
-  socket.on('listChart-real-time-count-chart-' + time,function(data1){
-      jsonObj = $.parseJSON('[' + data1 + ']');
-      buidData(data);
-      chartCD1.render();
-  });
-
-}
+//function createLineChart(time) {
+//    buidData();
+//    chartCD1.render();
+//}
