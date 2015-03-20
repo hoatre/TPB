@@ -47,7 +47,6 @@ function OpenSocket(){
             var dataSeries = { xValueType: "dateTime", type: "line", showInLegend: true, name: channelCode[i].ChannelName, dataPoints:[]};
             data.push(dataSeries);
         }
-        //CreateChart();
     });
     socket.on('listTransactionCode',function(data1){
         transactionCode = $.map(data1, function (value, index) {
