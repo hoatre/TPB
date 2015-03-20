@@ -121,7 +121,6 @@ function CreateChart(){
                 includeZero: false
 
             },
-            animationEnabled: true,
             legend:{
                 cursor:"pointer",
                 itemclick : function(e) {
@@ -257,8 +256,6 @@ function buidData()
             }
         }
     }
-
-    return data;
 }
 
 //set total count & amount
@@ -290,9 +287,3 @@ function TotalCountAmount()
     var TotalAmount = document.getElementById("TotalAmount");
     TotalAmount.innerHTML = totalSum.toString();
 }
-
-// khoi tao chart
-//function createLineChart(time) {
-//    buidData();
-//    chartCD1.render();
-//}
