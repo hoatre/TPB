@@ -65,6 +65,7 @@ public class SlidingWindow implements Serializable {
         this.window = window;
         AddCount(this.window);
         AddlistTransChart(this.window);
+        AddListTranAcc(this.window);
         return this;
     }
     public synchronized void AddCount(long window){
@@ -106,6 +107,30 @@ public class SlidingWindow implements Serializable {
             for (int i = 0; i < listTransChart.size(); i++) {
                 listTransTotal.add(new TransactionTotal(listTransChart.get(i).getamount(), listTransChart.get(i).getch_id(), 0));
             }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    public synchronized void AddListTranAcc(long window){
+        try {
+            Jedis jedis = new Jedis(Properties.getString("redis.host"), Properties.getInt("redis.port"));
+            jedis.connect();
+            long lenghtRedis = jedis.llen("cache-listTransAcc-" + Long.toString(window));
+            if (lenghtRedis > 0) {
+                List<String> list = jedis.lrange("cache-listTransAcc-" + Long.toString(window), 0, lenghtRedis);
+                for (String a : list) {
+                    JSONObject jsonObj = new JSONObject(a);
+                    if(!jsonObj.toString().equals("{}")) {
+                        Transaction tran = new Transaction();
+                        tran.settimetamp(jsonObj.getLong("timetamp"));
+                        tran.setacc_no(jsonObj.getString("account"));
+                        tran.setamount(jsonObj.getInt("amount"));
+                        tran.settrx_code(jsonObj.getString("TranType"));
+                        this.listTransAcc.add(tran);
+                    }
+                }
+            }
+            jedis.disconnect();
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -229,15 +254,6 @@ public class SlidingWindow implements Serializable {
         try {
             Jedis jedis = new Jedis(Properties.getString("redis.host"), Properties.getInt("redis.port"));
             jedis.connect();
-//
-//            if(!listTransCount.isEmpty()){
-//                int limit = Properties.getInt("Chart.Limit.Point");
-//                if(listTransCount.size() > limit){
-//                    int random = randInt(0, listTransCount.size() - 1);
-//                    listTransCount.remove(random);
-//                    jedis.blpop(random,"real-time-count-chart-" + Long.toString(this.window));
-//                }
-//            }
             if(this.window == (PARAM.SlidingTime.Time1.getTime()*1000)){
                 TransactionCount tran = new TransactionCount();
                 tran.settimestamp(time);
@@ -326,6 +342,8 @@ public class SlidingWindow implements Serializable {
     }
     public synchronized void listAmountAcc(String TranType, long time, int amount, String account, long timetamp, int TOP) {
         try {
+            Jedis jedis = new Jedis(Properties.getString("redis.host"), Properties.getInt("redis.port"));
+            jedis.connect();
             if (!TranType.equals(PARAM.TransCode.TRANTYPEFAKE.getValue())) {
                 Transaction tran = new Transaction();
                 tran.settimetamp(timetamp);
@@ -333,6 +351,12 @@ public class SlidingWindow implements Serializable {
                 tran.setamount(amount);
                 tran.settrx_code(TranType);
                 listTransAcc.add(tran);
+                JSONObject jsonO = new JSONObject();
+                jsonO.put("timetamp", listTransAcc.get(listTransAcc.size() - 1).gettimetamp());
+                jsonO.put("account", listTransAcc.get(listTransAcc.size() - 1).getacc_no());
+                jsonO.put("amount", listTransAcc.get(listTransAcc.size() - 1).getamount());
+                jsonO.put("TranType", listTransAcc.get(listTransAcc.size() - 1).gettrx_code());
+                jedis.rpush("cache-listTransAcc-" + Long.toString(this.window), jsonO.toString());
             }
             if (this.sliding) {
                 if ((time - this.lastAcc) > this.window) {
@@ -345,6 +369,7 @@ public class SlidingWindow implements Serializable {
                 while (listTransAcc.get(0).gettimetamp() < this.lastAcc) {
                     a++;
                     listTransAcc.remove(0);
+                    jedis.blpop(0, "cache-listTransAcc-" + Long.toString(this.window));
                     if (listTransAcc.isEmpty())
                         break;
                 }
@@ -383,8 +408,7 @@ public class SlidingWindow implements Serializable {
                 }
 
                 Collections.sort(asList);
-                Jedis jedis = new Jedis(Properties.getString("redis.host"), Properties.getInt("redis.port"));
-                jedis.connect();
+
                 if (!asList.isEmpty()) {
                     JSONObject obj = new JSONObject();
                     obj.put("TransactionType", tranType);
