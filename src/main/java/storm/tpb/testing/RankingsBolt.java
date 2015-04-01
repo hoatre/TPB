@@ -22,7 +22,9 @@ public class RankingsBolt extends BaseFunction{
         this.TOP = TOP;
     }
     public void execute(TridentTuple tuple, TridentCollector collector) {
+        System.out.println("RankingsBoltBG");
         this.sliding.listAmountAcc(tuple.getStringByField("trx_code"), tuple.getLongByField("amount"),
                 tuple.getStringByField("acc_no"), tuple.getLongByField("timestamp"), this.TOP);
+        System.out.println("RankingsBolt");
     }
 }

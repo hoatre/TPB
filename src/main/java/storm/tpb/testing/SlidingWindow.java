@@ -77,7 +77,8 @@ public class SlidingWindow implements Serializable {
                 List<String> list = jedis.lrange("real-time-count-chart-" + Long.toString(window), 0, lenghtRedis);
                 for (String a : list) {
                     JSONObject jsonObj = new JSONObject(a);
-                    this.listTransCount.add(new TransactionCount(jsonObj.getLong("time")));
+                    if(jsonObj.has("time"))
+                        this.listTransCount.add(new TransactionCount(jsonObj.getLong("time")));
                 }
             }
             jedis.disconnect();
@@ -96,9 +97,12 @@ public class SlidingWindow implements Serializable {
                     JSONObject jsonObj = new JSONObject(a);
                     if(!jsonObj.toString().equals("{}")) {
                         Transaction tran = new Transaction();
-                        tran.settimetamp(jsonObj.getLong("timetamp"));
-                        tran.setch_id(jsonObj.getString("channel"));
-                        tran.setamount(jsonObj.getInt("amount"));
+                        if(jsonObj.has("timetamp"))
+                            tran.settimetamp(jsonObj.getLong("timetamp"));
+                        if(jsonObj.has("channel"))
+                            tran.setch_id(jsonObj.getString("channel"));
+                        if(jsonObj.has("amount"))
+                            tran.setamount(jsonObj.getInt("amount"));
                         this.listTransChart.add(tran);
                     }
                 }
@@ -122,10 +126,14 @@ public class SlidingWindow implements Serializable {
                     JSONObject jsonObj = new JSONObject(a);
                     if(!jsonObj.toString().equals("{}")) {
                         Transaction tran = new Transaction();
-                        tran.settimetamp(jsonObj.getLong("timetamp"));
-                        tran.setacc_no(jsonObj.getString("account"));
-                        tran.setamount(jsonObj.getInt("amount"));
-                        tran.settrx_code(jsonObj.getString("TranType"));
+                        if(jsonObj.has("timetamp"))
+                            tran.settimetamp(jsonObj.getLong("timetamp"));
+                        if(jsonObj.has("account"))
+                            tran.setacc_no(jsonObj.getString("account"));
+                        if(jsonObj.has("amount"))
+                            tran.setamount(jsonObj.getInt("amount"));
+                        if(jsonObj.has("TranType"))
+                            tran.settrx_code(jsonObj.getString("TranType"));
                         this.listTransAcc.add(tran);
                     }
                 }
@@ -342,6 +350,7 @@ public class SlidingWindow implements Serializable {
     }
     public synchronized void listAmountAcc(String TranType, long time, int amount, String account, long timetamp, int TOP) {
         try {
+            //System.out.println("listAmountAccBG");
             Jedis jedis = new Jedis(Properties.getString("redis.host"), Properties.getInt("redis.port"));
             jedis.connect();
             if (!TranType.equals(PARAM.TransCode.TRANTYPEFAKE.getValue())) {
@@ -443,6 +452,7 @@ public class SlidingWindow implements Serializable {
                 this.lastAcc = listTransAcc.get(0).gettimetamp();
             else
                 this.lastAcc = time - this.window;
+            //System.out.println("listAmountAccEnd");
         }catch (Exception e){
             e.printStackTrace();
         }

@@ -103,7 +103,7 @@ public class TopologyControl {
             for (int i = 0; i < this.fields.size(); i++) {
                 values.add(map.get(this.fields.get(i)));
             }
-
+            System.out.println("JsonProjectFunction : " + tuple.toString());
             collector.emit(values);
         }
     }

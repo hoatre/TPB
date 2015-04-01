@@ -28,7 +28,7 @@ public class StoreTransactionToMongoDB extends BaseFunction {
                     JSONValue.parse(json);
             Values values = new Values();
 
-            if(!map.get("acc_no").equals("000-000-00000000")) {
+            if(!map.get("acc_no").equals("000-000-00000000") && map.get("acc_no") != null) {
                 DBCollection collection = Utils.checkConnection("CustomerLogs");
                 DBCollection collectionChannel = Utils.checkConnection("Channels");
                 DBCollection collectionTransactionTypes = Utils.checkConnection("TransactionTypes");
@@ -50,6 +50,7 @@ public class StoreTransactionToMongoDB extends BaseFunction {
 
                 collection.insert(dbObject);
             }
+            System.out.println("StoreTransactionToMongoDB");
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (MongoException e) {
