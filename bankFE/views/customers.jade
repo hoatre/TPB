@@ -4,7 +4,7 @@ block content
   // START YOUR CONTENT HERE
   .page-header.no-padding-bottom
     h4
-      | Form List
+      | Customer List
       small                    
   .well.white
     table#SampleDT.datatable.table.table-hover.table-striped.table-bordered.tc-table
@@ -13,11 +13,11 @@ block content
           th(data-hide='phone,tablet') Account
           th(data-class='expand') Full name
           th(data-hide='phone,tablet') Gender
-          th(data-hide='phone,tablet') Bob
+          th(data-hide='phone,tablet') DOB
           th(data-hide='phone,tablet') Phonenumber
           th Address
       tbody
-      if(customers == null || customers.lenght == 0)
+      if(customers == null || customers.length == 0)
         | Khong co du lieu
       else
         each customer, index in customers
@@ -30,8 +30,19 @@ block content
                 | Male
               else
                 | Female
-            td #{customer.BOD}
-            td #{customer.PHONENUMBER}
-            td #{customer.ADDRESS}             
+            td #{customer.DOB}
+            td
+              if(customer.PHONENUMBER != null && customer.PHONENUMBER != '')
+                | #{customer.PHONENUMBER}
+              else
+                | N/A
+            td #{customer.ADDRESS}
   // End jQuery Datatable
   // END YOUR CONTENT HERE
+block append script
+  //App script  
+  // PAGE LEVEL PLUGINS JS  
+  script(src='assets/js/plugins/datatables/jquery.dataTables.min.js')
+  script(src='assets/js/plugins/datatables/datatables.js')
+  script(src='assets/js/plugins/datatables/datatables.responsive.js')  
+  script(src='/assets/js/plugins/datatables/datatables.init.js')  

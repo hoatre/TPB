@@ -1,6 +1,9 @@
 package storm.tpb.testing;
+
+import java.io.Serializable;
+
 //ss
-public class Transaction {
+public class Transaction implements Serializable {
 	   private String trx_id;
 	   private String trx_code;
 	   private String ch_id;

@@ -3,7 +3,21 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Dashboard' });
+
+  	console.log('Dashboard request');
+	//res.render('index', { title: 'Dashboard' });
+	var db = req.db;
+	var TransactionTypes = db.collection('TransactionTypes');
+    TransactionTypes.find({}).toArray(function(error, transactionTypes) {
+	    if (error) return next(error);
+	    if (!transactionTypes) return next(new Error('Get list transactionTypes fail.'));
+
+	    res.render('index', {
+	      title: 'Dashboard',
+	      TransactionTypes: transactionTypes || []
+	    });
+  	});
+
 });
 
 router.get('/customers', function(req, res) {
@@ -11,7 +25,7 @@ router.get('/customers', function(req, res) {
 
 	var db = req.db;
 	var Customers = db.collection('Customers');
-    Customers.find({}).skip(1).limit(30).toArray(function(error, customers) {
+    Customers.find({}).skip(1).limit(300).toArray(function(error, customers) {
 	    if (error) return next(error);
 	    if (!customers) return next(new Error('Get listcustomers fail.'));
 
@@ -38,6 +52,7 @@ router.get('/profile/:id', function(req, res, next) {
 	    if (!customer) return next(new Error('Get detail fail.'));
 
 	    resCustomer	= customer;
+	    var INTERACTION = JSON.parse(resCustomer.INTERACTION);
 
 	    var CustomerLogs = db.collection('CustomerLogs');
 	    CustomerLogs.find({acc_no:req.params.id}).sort({timestamp: -1}).limit(5).toArray(function(error, customerLogs) {
@@ -47,11 +62,37 @@ router.get('/profile/:id', function(req, res, next) {
 	    	res.render('profile', {
 			    title: 'Profile',
 			    customer: resCustomer || [],
+			    INTERACTION: INTERACTION,
 			    customerLogs: customerLogs || []
 			});
     	});
 	    
   	});
+});
+
+//chart display
+router.get('/chart', function(req, res) {
+	console.log('chart request');	
+	res.render('chart', { title: 'chart' });
+});
+
+//smoothie chart display
+router.get('/smoothieChart', function(req, res, next) {
+
+	console.log('smoothieChart request');
+	//res.render('index', { title: 'Dashboard' });
+	var db = req.db;
+	var TransactionTypes = db.collection('TransactionTypes');
+	TransactionTypes.find({}).toArray(function(error, transactionTypes) {
+		if (error) return next(error);
+		if (!transactionTypes) return next(new Error('Get list transactionTypes fail.'));
+
+		res.render('smoothieChart', {
+			title: 'smoothieChart',
+			TransactionTypes: transactionTypes || []
+		});
+	});
+
 });
 
 module.exports = router;

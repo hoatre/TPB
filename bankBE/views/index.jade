@@ -1,0 +1,347 @@
+extends layout
+
+block content  
+  // START YOUR CONTENT HERE
+  .row
+    .col-lg-12.col-sm-12
+      // Server Info Charts .morris
+      .portlet
+        .portlet-heading.inverse
+          .portlet-title
+            h4
+              i.fa.fa-line-chart
+              |  Branches Statics
+          .portlet-widgets
+            a#daterange.tooltip-primary(href='javascript:;', data-placement='top', data-rel='tooltip', title='DateRangePicker')
+              i.fa.fa-calendar
+            span.divider
+            a(data-toggle='collapse', data-parent='#accordion', href='#m-charts')
+              i.fa.fa-chevron-down
+          .clearfix
+        #m-charts.panel-collapse.collapse.in
+          .portlet-body
+            .row
+              .col-sm-9
+                h4 Branches Statics
+                //canvas#chart.chart-holder(style='height: 220px!important; min-height:220px;')
+                #chartCD(style='height: 250px; width: 100%;')
+              .col-sm-3
+                h4 Settings
+                //hr.separator
+                //h5 Channels
+                // Channel Options
+                //.tcb
+                  //label.tcb-inline
+                    //input#line11.tc.tc-success(type='checkbox', checked='true', name='Line11')
+                    //span.labels  Brand 1
+                  //label.tcb-inline
+                    //input#line21.tc.tc-info(type='checkbox', checked='true', name='Line21')
+                    //span.labels  Brand 2
+                  //label.tcb-inline
+                    //input#line31.tc(type='checkbox', checked='true', name='Line31')
+                    //span.labels  Brand 3
+                  //label.tcb-inline
+                    //input#line41.tc.tc-warning(type='checkbox', checked='true', , name='Line41')
+                    //span.labels  Contact Center
+                // Channel Options END
+                hr.separator
+                h5 Time
+                select#SlidingTimeCbo.form-control
+                  option 1 Minute
+                  option 1 Hour
+                  option 1 Day
+            hr.separator
+            .row
+              .col-sm-6.col-xs-6.text-center
+                a.tile-button.btn.btn-white(href='#')
+                  .tile-content-wrapper
+                    #TotalNoTran.tile-content.text-primary
+                      | 475
+                    small
+                      | Total No. of Transactions
+              .col-sm-6.col-xs-6.text-center
+                a.tile-button.btn.btn-primary(href='#')
+                  .tile-content-wrapper
+                    #TotalAmount.tile-content
+                      span $
+                      | 270
+                    small
+                      | Total Amount
+      // End Server Info Charts .morris
+      // End Statics Charts
+    // //col-lg-9
+  // Recent activities
+  .row
+    .col-lg-4.col-sm-12
+      // Recent Activities
+      .portlet.no-border-bottom
+        .portlet-heading.dark
+          .portlet-title
+            h4
+              i.fa.fa-list-ul
+              |  Top 5 Deposit
+          .portlet-widgets
+            a(data-toggle='collapse', data-parent='#accordion', href='#topFiveDeposit')
+              i.fa.fa-chevron-down
+          .clearfix
+        #topFiveDeposit.panel-collapse.collapse.in
+          .portlet-body.no-padding
+            .tc-tabs.no-margin
+              .tab-content.no-padding.no-border-left.no-border-right.no-border-bottom
+                .tab-pane.active
+                  ul.lists
+                    li
+                      span#TopTenDE-Top1-Amount.topstatistic - Invoice has been paid please active my server
+                      span.icons
+                        i.fa.fa-envelope
+                      a#TopTenDE-Top1-Account(href='#') #808936                      
+                    li
+                      span#TopTenDE-Top2-Amount.topstatistic - New Server's Name Server IPs
+                      span.icons
+                        i.fa.fa-envelope
+                      a#TopTenDE-Top2-Account(href='#') #857517                      
+                    li
+                      span#TopTenDE-Top3-Amount.topstatistic - unsuspended reseller dineshrv all account urgent
+                      span.icons
+                        i.fa.fa-envelope
+                      a#TopTenDE-Top3-Account(href='#') #225310                      
+                    li
+                      span#TopTenDE-Top4-Amount.topstatistic - Mail Not Received
+                      span.icons
+                        i.fa.fa-envelope
+                      a#TopTenDE-Top4-Account(href='#') #597608                      
+                    li
+                      span#TopTenDE-Top5-Amount.topstatistic - Plase update my new mail address
+                      span.icons
+                        i.fa.fa-envelope
+                      a#TopTenDE-Top5-Account(href='#') #597607                      
+      // End Recent Activities
+    .col-lg-4.col-sm-12
+      // Recent Activities
+      .portlet.no-border-bottom
+        .portlet-heading.dark
+          .portlet-title
+            h4
+              i.fa.fa-list-ul
+              |  Top 5 Withdrawl
+          .portlet-widgets
+            a(data-toggle='collapse', data-parent='#accordion', href='#topFiveWithdrawl')
+              i.fa.fa-chevron-down
+          .clearfix
+        #topFiveWithdrawl.panel-collapse.collapse.in
+          .portlet-body.no-padding
+            .tc-tabs.no-margin
+              .tab-content.no-padding.no-border-left.no-border-right.no-border-bottom
+                .tab-pane.active
+                  ul.lists
+                    li
+                      span#TopTenWI-Top1-Amount.topstatistic - Plase update my new mail address
+                      span.icons
+                        i.fa.fa-envelope
+                      a#TopTenWI-Top1-Account(href='#') #597607                      
+                    li
+                      span#TopTenWI-Top2-Amount.topstatistic - Plase update my new mail address
+                      span.icons
+                        i.fa.fa-envelope
+                      a#TopTenWI-Top2-Account(href='#') #597607                      
+                    li
+                      span#TopTenWI-Top3-Amount.topstatistic - Plase update my new mail address
+                      span.icons
+                        i.fa.fa-envelope
+                      a#TopTenWI-Top3-Account(href='#') #597607                      
+                    li
+                      span#TopTenWI-Top4-Amount.topstatistic - Plase update my new mail address
+                      span.icons
+                        i.fa.fa-envelope
+                      a#TopTenWI-Top4-Account(href='#') #597607                      
+                    li
+                      span#TopTenWI-Top5-Amount.topstatistic - Plase update my new mail address
+                      span.icons
+                        i.fa.fa-envelope
+                      a#TopTenWI-Top5-Account(href='#') #597607                      
+      // End Recent Activities
+    .col-lg-4.col-sm-12
+      // Recent Activities
+      .portlet.no-border-bottom
+        .portlet-heading.dark
+          .portlet-title
+            h4
+              i.fa.fa-list-ul
+              |  Top 5 Transfer
+          .portlet-widgets
+            a(data-toggle='collapse', data-parent='#accordion', href='#topFiveTransfer')
+              i.fa.fa-chevron-down
+          .clearfix
+        #topFiveTransfer.panel-collapse.collapse.in
+          .portlet-body.no-padding
+            .tc-tabs.no-margin
+              .tab-content.no-padding.no-border-left.no-border-right.no-border-bottom
+                .tab-pane.active
+                  ul.lists
+                    li
+                      span#TopTenTF-Top1-Amount.topstatistic - Plase update my new mail address
+                      span.icons
+                        i.fa.fa-envelope
+                      a#TopTenTF-Top1-Account(href='#') #597607                      
+                    li
+                      span#TopTenTF-Top2-Amount.topstatistic - Plase update my new mail address
+                      span.icons
+                        i.fa.fa-envelope
+                      a#TopTenTF-Top2-Account(href='#') #597607                      
+                    li
+                      span#TopTenTF-Top3-Amount.topstatistic - Plase update my new mail address
+                      span.icons
+                        i.fa.fa-envelope
+                      a#TopTenTF-Top3-Account(href='#') #597607                      
+                    li
+                      span#TopTenTF-Top4-Amount.topstatistic - Plase update my new mail address
+                      span.icons
+                        i.fa.fa-envelope
+                      a#TopTenTF-Top4-Account(href='#') #597607                      
+                    li
+                      span#TopTenTF-Top5-Amount.topstatistic - Plase update my new mail address
+                      span.icons
+                        i.fa.fa-envelope
+                      a#TopTenTF-Top5-Account(href='#') #597607                      
+      // End Recent Activities
+  .row
+    .col-lg-4.col-sm-12
+      // Recent Activities
+      .portlet.no-border-bottom
+        .portlet-heading.dark
+          .portlet-title
+            h4
+              i.fa.fa-list-ul
+              |  Bottom 5 Deposit
+          .portlet-widgets
+            a(data-toggle='collapse', data-parent='#accordion', href='#topFiveDownDeposit')
+              i.fa.fa-chevron-down
+          .clearfix
+        #topFiveDownDeposit.panel-collapse.collapse.in
+          .portlet-body.no-padding
+            .tc-tabs.no-margin
+              .tab-content.no-padding.no-border-left.no-border-right.no-border-bottom
+                .tab-pane.active
+                  ul.lists
+                    li
+                      span#TopTenDE-Bot5-Amount.topstatistic - Plase update my new mail address
+                      span.icons
+                        i.fa.fa-envelope
+                      a#TopTenDE-Bot5-Account(href='#') #597607                      
+                    li
+                      span#TopTenDE-Bot4-Amount.topstatistic - Plase update my new mail address
+                      span.icons
+                        i.fa.fa-envelope
+                      a#TopTenDE-Bot4-Account(href='#') #597607                      
+                    li
+                      span#TopTenDE-Bot3-Amount.topstatistic - Plase update my new mail address
+                      span.icons
+                        i.fa.fa-envelope
+                      a#TopTenDE-Bot3-Account(href='#') #597607                      
+                    li
+                      span#TopTenDE-Bot2-Amount.topstatistic - Plase update my new mail address
+                      span.icons
+                        i.fa.fa-envelope
+                      a#TopTenDE-Bot2-Account(href='#') #597607                      
+                    li
+                      span#TopTenDE-Bot1-Amount.topstatistic - Plase update my new mail address
+                      span.icons
+                        i.fa.fa-envelope
+                      a#TopTenDE-Bot1-Account(href='#') #597607                      
+      // End Recent Activities
+    .col-lg-4.col-sm-12
+      // Recent Activities
+      .portlet.no-border-bottom
+        .portlet-heading.dark
+          .portlet-title
+            h4
+              i.fa.fa-list-ul
+              |  Bottom 5 Withdrawl
+          .portlet-widgets
+            a(data-toggle='collapse', data-parent='#accordion', href='#topFiveDownWithdrawl')
+              i.fa.fa-chevron-down
+          .clearfix
+        #topFiveDownWithdrawl.panel-collapse.collapse.in
+          .portlet-body.no-padding
+            .tc-tabs.no-margin
+              .tab-content.no-padding.no-border-left.no-border-right.no-border-bottom
+                .tab-pane.active
+                  ul.lists
+                    li
+                      span#TopTenWI-Bot5-Amount.topstatistic - Plase update my new mail address
+                      span.icons
+                        i.fa.fa-envelope
+                      a#TopTenWI-Bot5-Account(href='#') #597607                      
+                    li
+                      span#TopTenWI-Bot4-Amount.topstatistic - Plase update my new mail address
+                      span.icons
+                        i.fa.fa-envelope
+                      a#TopTenWI-Bot4-Account(href='#') #597607                      
+                    li
+                      span#TopTenWI-Bot3-Amount.topstatistic - Plase update my new mail address
+                      span.icons
+                        i.fa.fa-envelope
+                      a#TopTenWI-Bot3-Account(href='#') #597607                      
+                    li
+                      span#TopTenWI-Bot2-Amount.topstatistic - Plase update my new mail address
+                      span.icons
+                        i.fa.fa-envelope
+                      a#TopTenWI-Bot2-Account(href='#') #597607                      
+                    li
+                      span#TopTenWI-Bot1-Amount.topstatistic - Plase update my new mail address
+                      span.icons
+                        i.fa.fa-envelope
+                      a#TopTenWI-Bot1-Account(href='#') #597607                      
+      // End Recent Activities
+    .col-lg-4.col-sm-12
+      // Recent Activities
+      .portlet.no-border-bottom
+        .portlet-heading.dark
+          .portlet-title
+            h4
+              i.fa.fa-list-ul
+              |  Bottom 5 Transfer
+          .portlet-widgets
+            a(data-toggle='collapse', data-parent='#accordion', href='#topFiveDownTransfer')
+              i.fa.fa-chevron-down
+          .clearfix
+        #topFiveDownTransfer.panel-collapse.collapse.in
+          .portlet-body.no-padding
+            .tc-tabs.no-margin
+              .tab-content.no-padding.no-border-left.no-border-right.no-border-bottom
+                .tab-pane.active
+                  ul.lists
+                    li
+                      span#TopTenTF-Bot5-Amount.topstatistic - Plase update my new mail address
+                      span.icons
+                        i.fa.fa-envelope
+                      a#TopTenTF-Bot5-Account(href='#') #597607                      
+                    li
+                      span#TopTenTF-Bot4-Amount.topstatistic - Plase update my new mail address
+                      span.icons
+                        i.fa.fa-envelope
+                      a#TopTenTF-Bot4-Account(href='#') #597607                      
+                    li
+                      span#TopTenTF-Bot3-Amount.topstatistic - Plase update my new mail address
+                      span.icons
+                        i.fa.fa-envelope
+                      a#TopTenTF-Bot3-Account(href='#') #597607                      
+                    li
+                      span#TopTenTF-Bot2-Amount.topstatistic - Plase update my new mail address
+                      span.icons
+                        i.fa.fa-envelope
+                      a#TopTenTF-Bot2-Account(href='#') #597607                      
+                    li
+                      span#TopTenTF-Bot1-Amount.topstatistic - Plase update my new mail address
+                      span.icons
+                        i.fa.fa-envelope
+                      a#TopTenTF-Bot1-Account(href='#') #597607                      
+      // End Recent Activities
+  // END YOUR CONTENT HERE
+
+block append script
+  //App script
+  script(src='socket.io/socket.io.js')
+  script(src='/assets/js/app/smoothie.js') //Chart
+  script(src='/assets/js/app/canvasjs.min.js') //Chart
+  script(src='/assets/js/app/dashboard.js') //Sefl code for dashboard    

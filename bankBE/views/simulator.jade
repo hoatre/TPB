@@ -1,0 +1,309 @@
+extends layout
+
+block content
+  // START YOUR CONTENT HERE
+  .row
+    .col-lg-9
+      .row              
+        //Basic Portlet
+        .col-lg-6
+          .portlet.portlet-basic
+            .portlet-heading
+              .portlet-title
+                h4 Configure 1
+              .portlet-widgets
+                a(data-toggle='collapse', data-parent='#accordion', href='#config1')
+                  i.fa.fa-chevron-down
+                  span.divider
+              //  a.box-close(href='#')
+              //    i.fa.fa-times.text-danger
+              .clearfix
+            #config1.panel-collapse.collapse.in
+              .portlet-body
+                form.form-horizontal(role='form', method='post')
+                  .form-group
+                    label.col-sm-3.control-label Account
+                    .col-sm-9
+                      input#txtAccount1.form-control(type='text', placeholder='Account')
+                  .form-group
+                    label.col-sm-3.control-label Time
+                    .col-sm-9
+                      input#txtTime1.form-control(type='text', placeholder='Time', value='1000')
+                  .form-group
+                    label.col-sm-3.control-label Message
+                    .col-sm-9
+                      input#txtCountMessage1.form-control(type='text', placeholder='Message', value='40')
+                  .form-group
+                    label.col-sm-3.control-label Amount
+                    .col-sm-3
+                      input#txtAmountFrom1.form-control(type='text', placeholder='Amount', value='10')
+                    .col-sm-1
+                      | -
+                    .col-sm-4
+                      input#txtAmountTo1.form-control(type='text', placeholder='Amount', value='30')
+                  .form-group
+                    label.col-sm-3.control-label Channel
+                    .col-sm-9
+                      select#cboChannel1.form-control.selectpicker
+                        if(channels == null || channels.length == 0)
+                          option No data
+                        else
+                          each channel, index in channels
+                            option(value='#{channel.ChannelCode}' name='#{channel.ChannelCode}') #{channel.ChannelName}
+                  .form-group
+                    label.col-sm-3.control-label Product
+                    .col-sm-9
+                      select#cboProduct1.form-control.selectpicker
+                        if(products == null || products.length == 0)
+                          option No data
+                        else
+                          each product, index in products
+                            option(value='#{product.ProductCode}' name='#{product.ChannelCode}') #{product.ProductName}
+                  .form-group
+                    label.col-sm-3.control-label Transaction Type
+                    .col-sm-9
+                      select#cboTransactionType1.form-control.selectpicker
+                        if(transactionTypes == null || transactionTypes.length == 0)
+                          option No data
+                        else
+                          each transactionType, index in transactionTypes
+                            option(value='#{transactionType.TransactionCode}' name='#{transactionType.TransactionCode}') #{transactionType.TransactionName}
+                  .form-actions
+                    .form-group
+                      .col-sm-offset-5.col-sm-10
+                        button#btnConfig1.btn.btn-primary(type='button') Start
+        //Basic Portlet
+        .col-lg-6
+          .portlet.portlet-basic
+            .portlet-heading
+              .portlet-title
+                h4 Configure 2
+              .portlet-widgets
+                a(data-toggle='collapse', data-parent='#accordion', href='#config2')
+                  i.fa.fa-chevron-down
+                  span.divider
+              //  a.box-close(href='#')
+              //    i.fa.fa-times.text-danger
+              .clearfix
+            #config2.panel-collapse.collapse.in
+              .portlet-body
+                form.form-horizontal(role='form', method='post')
+                  .form-group
+                    label.col-sm-3.control-label Account
+                    .col-sm-9
+                      input#txtAccount2.form-control(type='text', placeholder='Account')
+                  .form-group
+                    label.col-sm-3.control-label Time
+                    .col-sm-9
+                      input#txtTime2.form-control(type='text', placeholder='Time', value='2000')
+                  .form-group
+                    label.col-sm-3.control-label Message
+                    .col-sm-9
+                      input#txtCountMessage2.form-control(type='text', placeholder='Message', value='30')
+                  .form-group
+                    label.col-sm-3.control-label Amount
+                    .col-sm-3
+                      input#txtAmountFrom2.form-control(type='text', placeholder='Amount', value='20')
+                    .col-sm-1
+                      | -
+                    .col-sm-4
+                      input#txtAmountTo2.form-control(type='text', placeholder='Amount', value='40')
+                  .form-group
+                    label.col-sm-3.control-label Channel
+                    .col-sm-9
+                      select#cboChannel2.form-control.selectpicker
+                        if(channels == null || channels.length == 0)
+                          option No data
+                        else
+                          each channel, index in channels
+                            option(value='#{channel.ChannelCode}' name='#{channel.ChannelCode}') #{channel.ChannelName}
+                  .form-group
+                    label.col-sm-3.control-label Product
+                    .col-sm-9
+                      select#cboProduct2.form-control.selectpicker
+                        if(products == null || products.length == 0)
+                          option No data
+                        else
+                          each product, index in products
+                            option(value='#{product.ProductCode}' name='#{product.ChannelCode}') #{product.ProductName}
+                  .form-group
+                    label.col-sm-3.control-label Transaction Type
+                    .col-sm-9
+                      select#cboTransactionType2.form-control.selectpicker
+                        if(transactionTypes == null || transactionTypes.length == 0)
+                          option No data
+                        else
+                          each transactionType, index in transactionTypes
+                            option(value='#{transactionType.TransactionCode}' name='#{transactionType.TransactionCode}') #{transactionType.TransactionName}
+                  .form-actions
+                    .form-group
+                      .col-sm-offset-5.col-sm-10
+                        button#btnConfig2.btn.btn-primary(type='button') Start
+      .row
+        //Basic Portlet
+        .col-lg-6
+          .portlet.portlet-basic
+            .portlet-heading
+              .portlet-title
+                h4 Configure 3
+              .portlet-widgets
+                a(data-toggle='collapse', data-parent='#accordion', href='#config3')
+                  i.fa.fa-chevron-down
+                  span.divider
+              //  a.box-close(href='#')
+              //    i.fa.fa-times.text-danger
+              .clearfix
+            #config3.panel-collapse.collapse.in
+              .portlet-body
+                form.form-horizontal(role='form', method='post')
+                  .form-group
+                    label.col-sm-3.control-label Account
+                    .col-sm-9
+                      input#txtAccount3.form-control(type='text', placeholder='Account')
+                  .form-group
+                    label.col-sm-3.control-label Time
+                    .col-sm-9
+                      input#txtTime3.form-control(type='text', placeholder='Time', value='3000')
+                  .form-group
+                    label.col-sm-3.control-label Message
+                    .col-sm-9
+                      input#txtCountMessage3.form-control(type='text', placeholder='Message', value='20')
+                  .form-group
+                    label.col-sm-3.control-label Amount
+                    .col-sm-3
+                      input#txtAmountFrom3.form-control(type='text', placeholder='Amount', value='30')
+                    .col-sm-1
+                      | -
+                    .col-sm-4
+                      input#txtAmountTo3.form-control(type='text', placeholder='Amount', value='50')
+                  .form-group
+                    label.col-sm-3.control-label Channel
+                    .col-sm-9
+                      select#cboChannel3.form-control.selectpicker
+                        if(channels == null || channels.length == 0)
+                          option No data
+                        else
+                          each channel, index in channels
+                            option(value='#{channel.ChannelCode}' name='#{channel.ChannelCode}') #{channel.ChannelName}
+                  .form-group
+                    label.col-sm-3.control-label Product
+                    .col-sm-9
+                      select#cboProduct3.form-control.selectpicker
+                        if(products == null || products.length == 0)
+                          option No data
+                        else
+                          each product, index in products
+                            option(value='#{product.ProductCode}' name='#{product.ChannelCode}') #{product.ProductName}
+                  .form-group
+                    label.col-sm-3.control-label Transaction Type
+                    .col-sm-9
+                      select#cboTransactionType3.form-control.selectpicker
+                        if(transactionTypes == null || transactionTypes.length == 0)
+                          option No data
+                        else
+                          each transactionType, index in transactionTypes
+                            option(value='#{transactionType.TransactionCode}' name='#{transactionType.TransactionCode}') #{transactionType.TransactionName}
+                  .form-actions
+                    .form-group
+                      .col-sm-offset-5.col-sm-10
+                        button#btnConfig3.btn.btn-primary(type='button') Start
+        //Basic Portlet
+        .col-lg-6
+          .portlet.portlet-basic
+            .portlet-heading
+              .portlet-title
+                h4 Configure 4
+              .portlet-widgets
+                a(data-toggle='collapse', data-parent='#accordion', href='#config4')
+                  i.fa.fa-chevron-down
+                  span.divider
+              //  a.box-close(href='#')
+              //    i.fa.fa-times.text-danger
+              .clearfix
+            #config4.panel-collapse.collapse.in
+              .portlet-body
+                form.form-horizontal(role='form', method='post')
+                  .form-group
+                    label.col-sm-3.control-label Account
+                    .col-sm-9
+                      input#txtAccount4.form-control(type='text', placeholder='Account')
+                  .form-group
+                    label.col-sm-3.control-label Time
+                    .col-sm-9
+                      input#txtTime4.form-control(type='text', placeholder='Time', value = '4000')
+                  .form-group
+                    label.col-sm-3.control-label Message
+                    .col-sm-9
+                      input#txtCountMessage4.form-control(type='text', placeholder='Message', value = '10')
+                  .form-group
+                    label.col-sm-3.control-label Amount
+                    .col-sm-3
+                      input#txtAmountFrom4.form-control(type='text', placeholder='Amount', value = '40')
+                    .col-sm-1
+                      | -
+                    .col-sm-4
+                      input#txtAmountTo4.form-control(type='text', placeholder='Amount', value = '60')
+                  .form-group
+                    label.col-sm-3.control-label Channel
+                    .col-sm-9
+                      select#cboChannel4.form-control.selectpicker
+                        if(channels == null || channels.length == 0)
+                          option No data
+                        else
+                          each channel, index in channels
+                            option(value='#{channel.ChannelCode}' name='#{channel.ChannelCode}') #{channel.ChannelName}
+                  .form-group
+                    label.col-sm-3.control-label Product
+                    .col-sm-9
+                      select#cboProduct4.form-control.selectpicker
+                        if(products == null || products.length == 0)
+                          option No data
+                        else
+                          each product, index in products
+                            option(value='#{product.ProductCode}' name='#{product.ChannelCode}') #{product.ProductName}
+                  .form-group
+                    label.col-sm-3.control-label Transaction Type
+                    .col-sm-9
+                      select#cboTransactionType4.form-control.selectpicker
+                        if(transactionTypes == null || transactionTypes.length == 0)
+                          option No data
+                        else
+                          each transactionType, index in transactionTypes
+                            option(value='#{transactionType.TransactionCode}' name='#{transactionType.TransactionCode}') #{transactionType.TransactionName}
+                  .form-actions
+                    .form-group
+                      .col-sm-offset-5.col-sm-10
+                        button#btnConfig4.btn.btn-primary(type='button') Start 
+      .row
+        .form-actions
+          form.form-horizontal(role='form', method='post')
+            .form-group
+              .col-sm-offset-5.col-sm-8
+                button#btnConfigAll.btn.btn-primary(type='button') Start all
+    //statistic table
+    .col-lg-3
+      .portlet.portlet-basic
+        .portlet-heading
+          .portlet-title
+            h4 Data transactions log
+          .portlet-widgets
+            a(data-toggle='collapse', data-parent='#accordion', href='#dataTransaction')
+              i.fa.fa-chevron-down
+              span.divider
+          //  a.box-close(href='#')
+          //    i.fa.fa-times.text-danger
+          .clearfix
+        #dataTransaction.panel-collapse.collapse.in
+          .portlet-body
+            table#dataCompare.datatable.table.table-hover.table-striped.table-bordered.tc-table
+              thead
+                tr                      
+                  th(data-class='expand') Channel
+                  th(data-hide='phone,tablet') Transaction
+                  th(data-hide='phone,tablet') Amount
+              tbody
+  // END YOUR CONTENT HERE
+block append script
+  //App script
+  script(src='socket.io/socket.io.js')
+  script(src='/assets/js/app/simulator.js') //Sefl code for dashboard     

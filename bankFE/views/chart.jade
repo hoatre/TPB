@@ -1,0 +1,57 @@
+extends layout
+block content
+  // START YOUR CONTENT HERE
+  .row
+    .col-lg-12
+      .portlet
+        .portlet-heading.inverse
+          .portlet-title
+            h4 Total Count and Amount of Channel by Year
+          .portlet-widgets
+            a(data-toggle='collapse', data-parent='#accordion', href='#chart-1')
+              i.fa.fa-chevron-down
+          .clearfix
+        #chart-1.panel-collapse.collapse.in
+          .portlet-body
+            .row
+              .col-lg-9
+                // Chart content 1
+                #ColumnChart(style='height: 250px; width: 100%;')
+              .col-lg-3
+                form.form-horizontal(role='form', method='post')
+                  .form-group
+                    label.col-sm-4.control-label Channel
+                    .col-sm-8
+                      select#ChannelCbo.form-control.selectpicker
+                  .form-group
+                    label.col-sm-4.control-label Year
+                    .col-sm-8
+                      select#YearColumnCbo.form-control.selectpicker(data-style='btn-warning', data-live-search='true')
+  .row
+    .col-lg-12
+      .portlet
+        .portlet-heading.inverse
+          .portlet-title
+            h4 Percentage of Products by Year
+          .portlet-widgets
+            a(data-toggle='collapse', data-parent='#accordion', href='#chart-3')
+              i.fa.fa-chevron-down
+          .clearfix
+        #chart-3.panel-collapse.collapse.in
+          .portlet-body
+            .row
+              .col-lg-9
+                // Chart content
+                #PieChart(style='height: 350px; width: 100%;')
+              .col-lg-3
+                form.form-horizontal(role='form', method='post')
+                  .form-group
+                    label.col-sm-4.control-label Year
+                    .col-sm-8
+                      select#YearPieCbo.form-control.selectpicker(data-style='btn-warning', data-live-search='true')
+  // END YOUR CONTENT HERE
+block append script
+  //App script
+  script(src='socket.io/socket.io.js')
+  script(src='/assets/js/app/ColumnAreaChart.js') //Chart
+  script(src='/assets/js/app/canvasjs.min.js') //Chart

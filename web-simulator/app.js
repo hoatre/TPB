@@ -17,10 +17,11 @@ var express = require('express')
     , io = require('socket.io').listen(server);
 
 //---------------variable--------------------------
-//var ADD_KAFKA='localhost:2181';
-var ADD_KAFKA='10.20.252.201:2181';
+var ADD_KAFKA='localhost:2181';
+//var ADD_KAFKA='10.20.252.201:2181';
 var ADD_MONGODB_CIC="mongodb://10.20.252.202:27017/CIC";
-var ADD_MONGODB_CLOUBBANK="mongodb://10.20.252.202:27017/CloudBank";
+var ADD_MONGODB_CLOUBBANK="mongodb://localhost:27017/CloudBank";
+//var ADD_MONGODB_CLOUBBANK="mongodb://10.20.252.202:27017/CloudBank";
 //---------------variable--------------------------
 
 // all environments
@@ -751,6 +752,7 @@ GetAccountNumberList();
  Node.js server script
  Required node packages: express, redis, socket.io
  */
+
 
 var t1, t2, t3;
 var Deposit = "DE";

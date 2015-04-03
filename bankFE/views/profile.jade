@@ -1,15 +1,28 @@
 extends layout
 
 block content
+  - var imageURL, fbLink;
+    if(customer != null && customer.ImageUrl != null && customer.ImageUrl != '')
+      -imageURL = customer.ImageUrl;
+    else
+      -imageURL = '/assets/images/user-2.jpg';
+
+    if(customer != null && customer.FBLINK != null && customer.FBLINK != '')
+      -fbLink = customer.FBLINK;
+    else
+      -fbLink = '#';
+
+
+
   // START YOUR CONTENT HERE
   .row
     .col-lg-3.col-md-3
       .well.well-sm.white
         .profile-pic
           a(href='#')
-            img.img-responsive(src='/assets/images/user-2.jpg', alt='')
+            img.img-responsive(src='#{imageURL}', alt='')
         p.text-center
-          button.btn.btn-facebook.btn-xs(type='button', data-placement='top', data-rel='tooltip', title='Visit My Facebook', role='button')
+          a.btn.btn-facebook.btn-xs(href='#{fbLink}', target='_blank', data-placement='top', data-rel='tooltip', title='Visit My Facebook', role='button')
             i.fa.fa-facebook.icon-only
           button.btn.btn-twitter.btn-xs(type='button', data-placement='top', data-rel='tooltip', title='Visit My Twitter', role='button')
             i.fa.fa-twitter.icon-only
@@ -17,8 +30,12 @@ block content
             i.fa.fa-google-plus.icon-only
       .alert.bg-primary
         button.close(type='button', data-dismiss='alert', aria-hidden='true') ×
-        p
-          | Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin nunc lorem, rutrum non porta.
+        p          
+          | Interest: #{customer.INTEREST}
+          | <br/>Friends: #{customer.FRIENDS}
+          | <br/>Monthly Spending: #{customer.MONTHLYSPENDING}M VND
+          | <br/>Marrige Status: #{customer.MARRIGESTATUS}
+          | <br/>Occupation: #{customer.OCCUPATION}                    
     .col-lg-9.col-md-9
       .tc-tabs
         // Nav tabs style 1
@@ -47,7 +64,7 @@ block content
                         dt Birthday
                         dd #{customer.DOB}
                         dt Gender
-                        dd 
+                        dd
                           if(customer.GENDER == 1)
                             | Male
                           else
@@ -65,31 +82,31 @@ block content
                   .portlet.no-border
                     .portlet-heading.dark
                       .portlet-title
-                        h4 Interests
+                        h4 Interaction Channels
                       .portlet-widgets
                         i.fa.fa-sort-alpha-desc.bigger-110
                       .clearfix
                     .portlet-body.skills.light
-                      .progress(data-percent='75%')
-                        .progress-bar.progress-bar-success(role='progressbar', style='width: 75%')
-                          span.sr-only 75% Complete
-                        span.progress-type Lorem ipsum dolor
-                        span.progress-completed 75%
-                      .progress(data-percent='40%')
-                        .progress-bar.progress-bar-warning(role='progressbar', style='width: 40%')
-                          span.sr-only 40% Complete
-                        span.progress-type Lorem ipsum dolor
-                        span.progress-completed 40%
-                      .progress(data-percent='26%')
-                        .progress-bar.progress-bar-danger(role='progressbar', style='width: 26%')
-                          span.sr-only 26% Complete
-                        span.progress-type Lorem ipsum dolor
-                        span.progress-completed 26%
-                      .progress(data-percent='80%')
-                        .progress-bar(role='progressbar', style='width: 80%')
-                          span.sr-only 80% Complete
-                        span.progress-type Lorem ipsum dolor
-                        span.progress-completed 80%
+                      .progress(data-percent='#{INTERACTION.ATM}%')
+                        .progress-bar.progress-bar-success(role='progressbar', style='width: #{INTERACTION.ATM}%')
+                          span.sr-only #{INTERACTION.ATM}% Complete
+                        span.progress-type ATM
+                        span.progress-completed #{INTERACTION.ATM}%
+                      .progress(data-percent='#{INTERACTION.Branches}%')
+                        .progress-bar.progress-bar-warning(role='progressbar', style='width: #{INTERACTION.Branches}%')
+                          span.sr-only #{INTERACTION.Branches}% Complete
+                        span.progress-type Branches
+                        span.progress-completed #{INTERACTION.Branches}%
+                      .progress(data-percent='#{INTERACTION.eBank}%')
+                        .progress-bar.progress-bar-danger(role='progressbar', style='width: #{INTERACTION.eBank}%')
+                          span.sr-only #{INTERACTION.eBank}% Complete
+                        span.progress-type e-Bank
+                        span.progress-completed #{INTERACTION.eBank}%
+                      .progress(data-percent='#{INTERACTION.ContactCenter}%')
+                        .progress-bar(role='progressbar', style='width: #{INTERACTION.ContactCenter}%')
+                          span.sr-only #{INTERACTION.ContactCenter}% Complete
+                        span.progress-type Contact Center
+                        span.progress-completed #{INTERACTION.ContactCenter}%
             .row
               .col-md-12
                 .portlet
@@ -97,8 +114,7 @@ block content
                   .portlet-heading.dark
                     .portlet-title
                       h4
-                        | Responsive table 
-                        small.text-white (css only)
+                        | Recent Activities
                     .portlet-widgets
                       a(data-toggle='collapse', data-parent='#accordion', href='#basic')
                         i.fa.fa-chevron-down
@@ -108,7 +124,7 @@ block content
                     .clearfix
                   #basic.panel-collapse.collapse.in
                     .portlet-body.no-padding
-                      if(customerLogs == null || customerLogs.lenght == 0)
+                      if(customerLogs == null || customerLogs.length == 0)
                         | Khong co du lieu
                       else                                
                         table.table.table-bordered.table-hover.tc-table
@@ -120,11 +136,11 @@ block content
                             tbody
                               each customerLog, index in customerLogs
                                 - var transName = customerLog.trx_name == null ? '' : customerLog.trx_name;
-                                - var chanelName = customerLog.ch_name == null ? '' : customerLog.ch_name+", ";
-                                - var chanelAdd = customerLog.ch_add == null ? '' : customerLog.ch_add;
-                                - var activity = '[' + customerLog.trx_id + '] ' + transName + ' (' + customerLog.amount + ' VND, ' + customerLog.acc_no + ')';
+                                - var channelName = customerLog.ch_name == null ? '' : customerLog.ch_name+", ";
+                                - var channelAdd = customerLog.ch_add == null ? '' : customerLog.ch_add;
+                                - var activity = '[' + customerLog.trx_id + '] ' + transName + ' (' + customerLog.amount + ' VND)';
                                 //var test = jQuery.timeago(new Date(customerLog.timestamp));
-                                - var detail= chanelname + chaneladd;
+                                - var detail= channelName + channelAdd;
                                 tr
                                   td.hidden-xs 
                                     abbr.timeago(title='#{new Date(customerLog.timestamp).toISOString()}')

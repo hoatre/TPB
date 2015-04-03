@@ -13,7 +13,7 @@ var commonConfig = require('../config/common');
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3030');
+var port = normalizePort(process.env.PORT || commonConfig.port);
 app.set('port', port);
 
 /**
@@ -24,8 +24,8 @@ var server = http.createServer(app);
 
 //Begin -Phong
 const redis = require('redis');
-const client1 = redis.createClient(6379, commonConfig.serverRedis, {});
-//const client1 = redis.createClient();
+const client1 = redis.createClient(); // redis server
+//const client1 = redis.createClient(6379, commonConfig.serverRedis, {}); // redis server
 log('info', 'connected to redis server');
 
 var io = require('socket.io').listen(server);
@@ -38,12 +38,9 @@ console.log('Server running the port: ' + port);
  * Listen on provided port, on all network interfaces.
  */
 
-//server.listen(port);
 server.listen(app.get('port'), function () {
-console.log("Express server listening on port " + app.get('port'));
-}); 
-
-//const socket  = io.listen(server);
+    console.log("Express server listening on port " + app.get('port'));
+});
 
 server.on('error', onError);
 server.on('listening', onListening);
@@ -53,19 +50,19 @@ server.on('listening', onListening);
  */
 
 function normalizePort(val) {
-  var port = parseInt(val, 10);
+    var port = parseInt(val, 10);
 
-  if (isNaN(port)) {
-    // named pipe
-    return val;
-  }
+    if (isNaN(port)) {
+        // named pipe
+        return val;
+    }
 
-  if (port >= 0) {
-    // port number
-    return port;
-  }
+    if (port >= 0) {
+        // port number
+        return port;
+    }
 
-  return false;
+    return false;
 }
 
 /**
@@ -73,27 +70,27 @@ function normalizePort(val) {
  */
 
 function onError(error) {
-  if (error.syscall !== 'listen') {
-    throw error;
-  }
+    if (error.syscall !== 'listen') {
+        throw error;
+    }
 
-  var bind = typeof port === 'string'
-    ? 'Pipe ' + port
-    : 'Port ' + port
+    var bind = typeof port === 'string'
+        ? 'Pipe ' + port
+        : 'Port ' + port
 
-  // handle specific listen errors with friendly messages
-  switch (error.code) {
-    case 'EACCES':
-      console.error(bind + ' requires elevated privileges');
-      process.exit(1);
-      break;
-    case 'EADDRINUSE':
-      console.error(bind + ' is already in use');
-      process.exit(1);
-      break;
-    default:
-      throw error;
-  }
+    // handle specific listen errors with friendly messages
+    switch (error.code) {
+        case 'EACCES':
+            console.error(bind + ' requires elevated privileges');
+            process.exit(1);
+            break;
+        case 'EADDRINUSE':
+            console.error(bind + ' is already in use');
+            process.exit(1);
+            break;
+        default:
+            throw error;
+    }
 }
 
 /**
@@ -101,32 +98,136 @@ function onError(error) {
  */
 
 function onListening() {
-  var addr = server.address();
-  var bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
-  debug('Listening on ' + bind);
+    var addr = server.address();
+    var bind = typeof addr === 'string'
+        ? 'pipe ' + addr
+        : 'port ' + addr.port;
+    debug('Listening on ' + bind);
 }
 
 
 
 //Begin - Phong
 
+var mongoskin = require('mongoskin');
+var db = mongoskin.db(commonConfig.serverMongo, {safe:true});
 var t1, t2, t3;
-var Deposit = "DE";
-var Withdrawal = "WI";
-var Transfer_From = "TF";
-var Branch1 = "B1";
-var Branch2 = "B2";
-var Branch3 = "B3";
-var Contact_Center = "Contact";
-var totalNoTran = 0;
-var totalAmount = 0;
-var time1 = 60000;
-var time2 = 3600000;
-var time3 = 86400000;
-var lengthRange = 1000000000;
+var channelCode = [];
+var transactionCode = [];
+var productType = [];
+var list = [];
 
+//Get list Channels from DB
+function GetChannelList()
+{
+    var Channels = db.collection('Channels'); // ten bang
+    Channels.find().toArray(function(error, channels) {
+        if (error) return next(error);
+        if (!channels) return next(new Error('Get all channel fail.'));
+        channelCode = channels.map(function(item){
+            var text = '{"ChannelCode":"' + item.ChannelCode + '", "ChannelName":"' + item.ChannelName + '", "ChannelAddress":"' + item.ChannelAddress + '", "Display":"' + "0" +'", "Count":"' + "0" +'", "Sum":"' + "0" + '"}';
+            return text;
+        })
+    });
+}
+GetChannelList();
+
+//Get list TranSactionType from DB
+function GetTransactionList()
+{
+    var TransactionTypes = db.collection('TransactionTypes'); // ten bang
+    TransactionTypes.find().toArray(function(error, transactionTypes) {
+        if (error) return next(error);
+        if (!transactionTypes) return next(new Error('Get all channel fail.'));
+
+        transactionCode = transactionTypes.map(function(item){
+            return item.TransactionCode;
+        })
+
+    });
+
+}
+GetTransactionList();
+
+//Get list ProductType from DB
+function GetProductList()
+{
+    var Products = db.collection('Products'); // ten bang
+    Products.find().toArray(function(error, Products) {
+        if (error) return next(error);
+        if (!Products) return next(new Error('Get all channel fail.'));
+        var list = [];
+        list = Products.map(function(item){
+            return item.ProductType;
+        })
+        productType = list.filter(function(item, pos) {
+            return list.indexOf(item) == pos;
+        })
+    });
+
+}
+GetProductList();
+
+//Get data for Pie Chart
+function GetDataPieChart(year, socket)
+{
+    var ReportProductYears = db.collection('ReportProductYears'); // ten bang
+    var dataColumnChart = [];
+    ReportProductYears.find({Year:year}).toArray(function(error, ReportProductYears) {
+        if (error) return next(error);
+        if (!ReportProductYears) return next(new Error('Get all ReportProductYears fail.'));
+        dataColumnChart = ReportProductYears.map(function(item){
+            return '{"ProductType":"' + item.ProductType + '", "Year":"' + item.Year + '", "Count":"' + item.Count + '"}';
+        })
+        socket.emit('GetDataPieChart', dataColumnChart);
+    });
+
+}
+
+//Get data for Column Chart
+function GetDataColumnChart(channel, year, socket)
+{
+    var ReportChannelYears = db.collection('ReportChannelYears'); // ten bang
+    var dataColumnChart = [];
+    ReportChannelYears.find({ChannelCode:channel, Year:year}).toArray(function(error, ReportChannelYears) {
+        if (error) return next(error);
+        if (!ReportChannelYears) return next(new Error('Get all ReportChannelYears fail.'));
+        dataColumnChart = ReportChannelYears.map(function(item){
+            return '{"ChannelCode":"' + item.ChannelCode + '", "ChannelName":"' + item.ChannelName + '", "ChannelAddress":"' + item.ChannelAddress + '", "Month":"' + item.Month + '", "Year":"' + item.Year + '", "Count":"' + item.Count +'", "Amount":"' + item.Amount + '"}';
+        })
+        socket.emit('GetDataColumnChart', dataColumnChart);
+
+    });
+
+}
+
+//save data ColumnChart
+function SaveDataColumnChart(year, month, ChannelCode, ChannelName, ChannelAddress, amount, count){
+    log('info', "SaveDataColumnChart begin");
+    var ReportChannelYears = db.collection('ReportChannelYears'); // ten bang
+    var document = {ChannelCode:ChannelCode, ChannelName:ChannelName, ChannelAddress:ChannelAddress, Year:year.toString(), Month:month.toString(), Amount:amount, Count:count};
+    ReportChannelYears.insert(document, {w: 1}, function(err, records){
+
+    });
+    log('info', "SaveDataColumnChart done");
+}
+
+//save data PieChart
+function SaveDataPieChart(productType, year, count){
+    log('info', "SaveDataPieChart begin");
+    var ReportProductYears = db.collection('ReportProductYears'); // ten bang
+    var document = {ProductType:productType, Year:year.toString(), Count:count};
+    ReportProductYears.insert(document, {w: 1}, function(err, records){
+
+    });
+    log('info', "SaveDataPieChart done");
+}
+
+//Ramdom Int
+function randomInt (low, high) {
+    return Math.floor(Math.random() * (parseInt(high) - parseInt(low)) + parseInt(low));
+}
+//show log
 function log(type, msg) {
 
     var color   = '\u001b[0m',
@@ -152,110 +253,88 @@ function log(type, msg) {
     console.log(color + '   ' + type + '  - ' + reset + msg);
 }
 
-function redis_get(key, socket){
-    client1.get(key, function(err, items) {
-        if (err) {
-            log('error', "error");
-        } else {
-            socket.emit('CountChart-' + key,items);
-            log('info', "CountChart-" + key + " : " + items);
-        }
-    });
-}
-function redis_get_total(key, socket){
-    client1.get(key, function(err, items) {
-        if (err) {
-            log('error', "error");
-        } else {
-            socket.emit('Total-' + key,items);
-            log('info', "Total-" + key + " : " + items);
-        }
-    });
-}
 function redis_hmget_top(key, socket){
-    client1.hmget(key, "Acc", "Amount", function (err, items) {
+    client1.get(key, function (err, items) {
         if (err) {
             log('error', "error");
         } else {
-            socket.emit('Top-' + key, items);
-            log('info', "Top-" + key + " : " + items);
+            socket.emit('emitRanking-' + key, items);
+            //log('info', items);
+        }
+
+    });
+}
+
+function callLIndex(callback, key, i) {
+    client1.lindex(key, i, function(err, result) {
+        if (err) {
+            log('error', "error");
+        } else {
+            callback(err, result)
         }
     });
 }
 
 function redis_lrange(key, socket){
-    client1.lrange(key, 0, lengthRange, function(err, items) {
-        if (err) {
-            log('error', "error");
-        } else {
-           socket.emit('listChart-' + key,items);
-            //log('info', items);
-        }
+
+    client1.llen(key, function(err, items){
+        client1.lrange(key, 0, parseInt(items), function(err, items2) {
+            if (err) {
+                log('error', "error");
+            } else {
+                socket.emit('listChart-' + key,items2);
+            }
+        });
     });
 }
 
-/*
-t1 = setInterval(function() {
-    setTime(time1);
-}, 1000);
-t2 = setInterval(function() {
-    setTime(time2);
-}, 1000);
-t3 = setInterval(function() {
-    setTime(time3);
-}, 1000);
-
-clearInterval(t2);
-clearInterval(t3);
-clearInterval(t1);
-*/
-io.sockets.on('connection',function(socket){
-    console.log('Connection socket!!!')
-    socket.on('open 1 Minute', function (data1) {
-        log('warn', "open 1 Minute");
-        clearInterval(t2);
-        clearInterval(t3);
-        t1 = setInterval(function() {
-            setTime(time1, socket);
-            redis_lrange('real-time-count-chart-' + time1, socket);
-        }, 1000);
-    }),
-    socket.on('open 1 hour', function (data1) {
-        log('warn', "open 1 hour");
-        clearInterval(t1);
-        clearInterval(t3);
-        t2 = setInterval(function() {
-            setTime(time2, socket);
-            redis_lrange('real-time-count-chart-' + time2, socket);
-        }, 1000);
-    }),
-    socket.on('open 1 day', function (data1) {
-        log('warn', "open 1 day");
-        clearInterval(t2);
-        clearInterval(t1);
-        t3 = setInterval(function() {
-            setTime(time3, socket);
-            redis_lrange('real-time-count-chart-' + time3, socket);
-        }, 1000);
-    })
+// open socket theo time
+io.sockets.on('disconnect',function(socket){
+    console.log('Disconnect socket!!!')
 });
 
-function setTime(slidingTime, socket){
-    redis_get('real-time-count-' + Branch1 + '-' + slidingTime, socket);
-    redis_get('real-time-count-' + Branch2 + '-' + slidingTime, socket);
-    redis_get('real-time-count-' + Branch3 + '-' + slidingTime, socket);
-    redis_get('real-time-count-' + Contact_Center + '-' + slidingTime, socket);
-    redis_get('real-time-sum-' + Branch1 + '-' + slidingTime, socket);
-    redis_get('real-time-sum-' + Branch2 + '-' + slidingTime, socket);
-    redis_get('real-time-sum-' + Branch3 + '-' + slidingTime, socket);
-    redis_get('real-time-sum-' + Contact_Center + '-' + slidingTime, socket);
-    for(z=1; z <= 5; z++) {
-        redis_hmget_top('TopTen' + Deposit + '-Top' + z.toString() + "-" + slidingTime, socket);
-        redis_hmget_top('TopTen' + Withdrawal + '-Top' + z.toString() + "-" + slidingTime, socket);
-        redis_hmget_top('TopTen' + Deposit + '-Bot' + z.toString() + "-" + slidingTime, socket);
-        redis_hmget_top('TopTen' + Withdrawal + '-Bot' + z.toString() + "-" + slidingTime, socket);
-        redis_hmget_top('TopTen' + Transfer_From + '-Bot' + z.toString() + "-" + slidingTime, socket);
-        redis_hmget_top('TopTen' + Transfer_From + '-Top' + z.toString() + "-" + slidingTime, socket);
+io.sockets.on('connection',function(socket){
+    console.log('Connection socket!!!')
+    socket.emit('listChannelCode',channelCode);
+    socket.emit('listTransactionCode',transactionCode);
+    socket.emit('listProductType',productType);
+    socket.on('EventComboboxColumn', function (data1) {
+        GetDataColumnChart(data1[0], data1[1], socket);
+    }),
+        socket.on('EventComboboxPie', function (data1) {
+            GetDataPieChart(data1[0], socket);
+        }),
+
+        redis_lrange('real-time-count-chart-' + commonConfig.SlidingTimeMinute, socket);
+    t1 = setInterval(function() {
+        GetBotTop(commonConfig.SlidingTimeMinute, socket);
+        GetBotTop(commonConfig.SlidingTimeDay, socket);
+        GetBotTop(commonConfig.SlidingTimeHour, socket);
+        redis_lrange('real-time-count-chart-' + commonConfig.SlidingTimeMinute, socket);
+    }, commonConfig.SlidingTimeDelayMinute);
+
+    redis_lrange('real-time-count-chart-' + commonConfig.SlidingTimeHour, socket);
+    GetBotTop(commonConfig.SlidingTimeHour, socket);
+    t2 = setInterval(function() {
+
+        redis_lrange('real-time-count-chart-' + commonConfig.SlidingTimeHour, socket);
+    }, commonConfig.SlidingTimeDelayHour);
+
+    redis_lrange('real-time-count-chart-' + commonConfig.SlidingTimeDay, socket);
+    GetBotTop(commonConfig.SlidingTimeDay, socket);
+    t3 = setInterval(function() {
+
+        redis_lrange('real-time-count-chart-' + commonConfig.SlidingTimeDay, socket);
+    }, commonConfig.SlidingTimeDelayDay);
+});
+
+// get ranking acc trong redis
+function GetBotTop(slidingTime, socket){
+    //log('info', transactionCode.length);
+    var channelCodeI = JSON.parse('[' + channelCode + ']');
+    for(i=0; i<transactionCode.length; i++)
+    {
+        redis_hmget_top('Ranking-' + transactionCode[i] + '-' + slidingTime, socket);
     }
 }
 
@@ -319,13 +398,13 @@ function recursive()
 {
 
     cnt++;
-    console.log('conf1 status:'+obj.status);
+    //console.log('conf1 status:'+obj.status);
     if (obj.countmessage!=''&&cnt >= obj.countmessage||obj.status=='stop') {
-        console.log('stop conf1');
+        //console.log('stop conf1');
         clearTimeout(t);
     }
     else {
-        console.log('conf1'+obj.channel+':'+obj.countmessage+'-'+obj.amountto+':'+obj.amountfrom);
+        console.log('fake kafka');
         t = setTimeout(recursive, obj.time);
         send(msg);
     }

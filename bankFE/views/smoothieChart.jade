@@ -1,0 +1,136 @@
+extends layout
+
+block content  
+  // START YOUR CONTENT HERE
+  .row
+    .col-lg-12.col-sm-12
+      // Server Info Charts .morris
+      .portlet
+        .portlet-heading.inverse
+          .portlet-title
+            h4
+              i.fa.fa-line-chart
+              |  Branches Statics
+          .portlet-widgets
+            a#daterange.tooltip-primary(href='javascript:;', data-placement='top', data-rel='tooltip', title='DateRangePicker')
+              i.fa.fa-calendar
+            span.divider
+            a(data-toggle='collapse', data-parent='#accordion', href='#m-charts')
+              i.fa.fa-chevron-down
+          .clearfix
+        #m-charts.panel-collapse.collapse.in
+          .portlet-body
+            .row
+              .col-sm-9
+                h4 Branches Statics
+                //canvas#chart.chart-holder(style='height: 220px!important; min-height:220px;')
+                #chartCD(style='height: 250px; width: 100%;')
+              .col-sm-3
+                h4 Settings
+                //hr.separator
+                //h5 Channels
+                // Channel Options
+                //.tcb
+                  //label.tcb-inline
+                    //input#line11.tc.tc-success(type='checkbox', checked='true', name='Line11')
+                    //span.labels  Brand 1
+                  //label.tcb-inline
+                    //input#line21.tc.tc-info(type='checkbox', checked='true', name='Line21')
+                    //span.labels  Brand 2
+                  //label.tcb-inline
+                    //input#line31.tc(type='checkbox', checked='true', name='Line31')
+                    //span.labels  Brand 3
+                  //label.tcb-inline
+                    //input#line41.tc.tc-warning(type='checkbox', checked='true', , name='Line41')
+                    //span.labels  Contact Center
+                // Channel Options END
+                hr.separator
+                h5 Time
+                select#SlidingTimeSmoothieCbo.form-control
+            hr.separator
+            .row
+              .col-sm-6.col-xs-6.text-center
+                a.tile-button.btn.btn-white(href='#')
+                  .tile-content-wrapper
+                    #TotalNoTran.tile-content.text-primary
+                      | 475
+                    small
+                      | Total No. of Transactions
+              .col-sm-6.col-xs-6.text-center
+                a.tile-button.btn.btn-primary(href='#')
+                  .tile-content-wrapper
+                    #TotalAmount.tile-content
+                      span $
+                      | 270
+                    small
+                      | Total Amount
+      // End Server Info Charts .morris
+      // End Statics Charts
+    // //col-lg-9
+  //Check list
+  //.row
+  //  #transactionList.col-lg-12.col-sm-12
+  //      if(TransactionTypes == null || TransactionTypes.length == 0)
+  //        | Khong co du lieu
+  //      else
+  //        each transactionType, index in TransactionTypes
+  //          label.tcb-inline.col-sm-3.col-lg-2
+  //            input.tc.tc-success(type='checkbox', checked='true', name='#Five{transactionType.TransactionName}', id='Five#{transactionType.TransactionCode}') 
+  //            span.labels  #{transactionType.TransactionName} (Top)
+  //          label.tcb-inline.col-sm-3.col-lg-2
+  //            input.tc.tc-success(type='checkbox', checked='true', name='FiveDown#{transactionType.TransactionName}', id='FiveDown#{transactionType.TransactionCode}') 
+  //            span.labels  #{transactionType.TransactionName} (Bot)
+  // Recent activities
+  .row
+    if(TransactionTypes == null || TransactionTypes.length == 0)
+      | Khong co du lieu
+    else
+      each transactionType, index in TransactionTypes
+        .col-lg-4.col-sm-12
+          // Recent Activities
+          .portlet.no-border-bottom
+            .portlet-heading.dark
+              .portlet-title
+                h4
+                  i.fa.fa-list-ul
+                  |  Top 5 #{transactionType.TransactionName}
+              .portlet-widgets
+                a(data-toggle='collapse', data-parent='#accordion', href='#topFive#{transactionType.TransactionCode}')
+                  i.fa.fa-chevron-down
+              .clearfix
+            .panel-collapse.collapse.in(id ='topFive#{transactionType.TransactionCode}')
+              .portlet-body.no-padding
+                .tc-tabs.no-margin
+                  .tab-content.no-padding.no-border-left.no-border-right.no-border-bottom
+                    .tab-pane.active
+                      ul.lists
+                                             
+          // End Recent Activities
+        .col-lg-4.col-sm-12
+          // Recent Activities
+          .portlet.no-border-bottom
+            .portlet-heading.dark
+              .portlet-title
+                h4
+                  i.fa.fa-list-ul
+                  |  Bottom 5 #{transactionType.TransactionName}
+              .portlet-widgets
+                a(data-toggle='collapse', data-parent='#accordion', href='#topFiveDown#{transactionType.TransactionCode}')
+                  i.fa.fa-chevron-down
+              .clearfix
+            .panel-collapse.collapse.in(id='topFiveDown#{transactionType.TransactionCode}')
+              .portlet-body.no-padding
+                .tc-tabs.no-margin
+                  .tab-content.no-padding.no-border-left.no-border-right.no-border-bottom
+                    .tab-pane.active
+                      ul.lists
+                                       
+      // End Recent Activities
+  // END YOUR CONTENT HERE
+
+block append script
+  //App script
+  script(src='socket.io/socket.io.js')
+  script(src='/assets/js/app/smoothie.js') //Chart
+  script(src='/assets/js/app/canvasjs.min.js') //Chart
+  script(src='/assets/js/app/smoothie_dashboard.js') //Sefl code for dashboard

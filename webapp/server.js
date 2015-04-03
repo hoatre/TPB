@@ -137,19 +137,23 @@ io.sockets.on('connection',function(socket){
         log('warn', "open 1 hour");
         clearInterval(t1);
         clearInterval(t3);
+        setTime(time2);
+        redis_lrange('real-time-count-chart-' + time2);
         t2 = setInterval(function() {
             setTime(time2);
             redis_lrange('real-time-count-chart-' + time2);
-        }, 1000);
+        }, 10000);
     }),
     socket.on('open 1 day', function (data1) {
         log('warn', "open 1 day");
         clearInterval(t2);
         clearInterval(t1);
+        setTime(time3);
+        redis_lrange('real-time-count-chart-' + time3);
         t3 = setInterval(function() {
             setTime(time3);
             redis_lrange('real-time-count-chart-' + time3);
-        }, 1000);
+        }, 100000);
     })
 });
 
@@ -197,15 +201,18 @@ var obj = {
     b: 5
 }
 var cnt=-1;
+function randomInt (low, high) {
+    return Math.floor(Math.random() * (parseInt(high) - parseInt(low)) + parseInt(low));
+}
 var trans = {
-    trx_id: 0,
+    trx_id: randomInt(1,100),
     trx_code: "TranTypeFake",
     ch_id: "ChannelFake",
-    amount: 0,
+    amount: randomInt(1,100),
     acc_no: "000-000-00000000",
     prd_id: "ProductFake",
     timestamp: new Date().getTime(),
-    count: 0
+    count: randomInt(1,100)
 };
 var msg = JSON.stringify(trans);
 

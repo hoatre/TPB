@@ -6,10 +6,10 @@ nav.navbar-top(role='navigation')
       i.fa.fa-bars
     .navbar-brand
       a(href='/')
-        // <img src="assets/images/logo.png" alt="logo" class="img-responsive">
+        // <img src="assets/images/logo.png " alt="logo" class="img-responsive">
   // END BRAND HEADING
   .nav-top
-    // BEGIN RIGHT SIDE DROPDOWN BUTTONS
+    // BEGIN RIGHT SIDE DROPDOWN BUTTON
     ul.nav.navbar-right
       li.dropdown
         button.navbar-toggle(type='button', data-toggle='collapse', data-target='.sidebar-collapse')
@@ -28,10 +28,10 @@ nav.navbar-top(role='navigation')
                 a(href='#')
                   .row
                     .col-xs-2
-                      img.img-circle(src='assets/images/user-profile-1.jpg', alt='')
+                      //img.img-circle(src='assets/images/user-profile-1.jpg', alt='')
                     .col-xs-10
                       p
-                        strong John Smith
+                        strong Cuong Nguyen
                         | : Hi again! I wanted to let you know that the order...
                       p.small
                         i.fa.fa-clock-o
@@ -40,10 +40,10 @@ nav.navbar-top(role='navigation')
                 a(href='#')
                   .row
                     .col-xs-2
-                      img.img-circle(src='assets/images/user-profile-2.jpg', alt='')
+                      //img.img-circle(src='assets/images/user-profile-2.jpg', alt='')
                     .col-xs-10
                       p
-                        strong Roddy Austin
+                        strong Hieu Le
                         | : Thanks for the info, if you need anything...
                       p.small
                         i.fa.fa-clock-o
@@ -138,20 +138,14 @@ nav.navbar-top(role='navigation')
                     .progress-bar.progress-bar-danger(role='progressbar', aria-valuenow='66', aria-valuemin='0', aria-valuemax='100', style='width: 66%;')
           li.dropdown-footer
             a(href='#')
-              | View All Tasks
-      // Speech Icon
-      li.dropdown
-        a.speech-button(href='#')
-          i.fa.fa-microphone
+              | View All Tasks      
       // Speech Icon
       li.dropdown.user-box
-        a.dropdown-toggle(href='#', data-toggle='dropdown')
-          img.img-circle(src='assets/images/user.jpg', alt='')
-          span.user-info John Smith
+        a.dropdown-toggle(href='#', data-toggle='dropdown')          
           b.caret
         ul.dropdown-menu.dropdown-user
           li
-            a(href='/profile')
+            a(href='#')
               i.fa.fa-user
               |  My Profile
           li
@@ -167,7 +161,7 @@ nav.navbar-top(role='navigation')
               i.fa.fa-gear
               |  Settings
           li
-            a(href='login.html')
+            a(href='#')
               i.fa.fa-power-off
               |  Logout
       // Search Box
@@ -180,32 +174,7 @@ nav.navbar-top(role='navigation')
               form(role='search')
                 input.form-control(type='text', placeholder='Search')
       // Search Box
-    // END RIGHT SIDE DROPDOWN BUTTONS
-    // BEGIN TOP MENU
-    .collapse.navbar-collapse.top-collapse
-      // .nav
-      ul.nav.navbar-left.navbar-nav
-        li
-          a(href='/') Dashboard
-        li.dropdown
-          a.dropdown-toggle(href='#', data-toggle='dropdown')
-            | Components 
-            b.caret
-          ul.dropdown-menu
-            li
-              a(href='elements-ui.html') Elements
-            li
-              a(href='button-ui.html') Buttons & Icons
-            li
-              a(href='portlet.html') Portlet
-            li
-              a(href='jquery-ui.html') jQuery UI
-        li
-          a(href='front/index.html')
-            | FrontEnd 
-            span.badge.badge-primary New
-      // /.nav
-    // END TOP MENU
+    // END RIGHT SIDE DROPDOWN BUTTONS    
   // /.nav-top
 // /.navbar-top
 // END TOP NAVIGATION

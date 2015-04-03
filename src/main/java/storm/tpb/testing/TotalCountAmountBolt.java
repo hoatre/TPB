@@ -22,8 +22,8 @@ public class TotalCountAmountBolt extends BaseFunction{
         this.emitRatePer = emitRatePer;
     }
     public void execute(TridentTuple tuple, TridentCollector collector) {
-        this.sliding.mark(tuple.getLongByField("amount"), tuple.getLongByField("timestamp"));
-        collector.emit(new Values(this.sliding.getCount(),this.sliding.getSum(),this.sliding.getWindow()));
-        System.out.println("count : " + Long.toString(this.sliding.getCount()) + " sum : " + Long.toString(this.sliding.getSum()));
+        //this.sliding.mark(tuple.getLongByField("amount"), tuple.getLongByField("timestamp"));
+//        collector.emit(new Values(this.sliding.getCount(),this.sliding.getSum(),this.sliding.getWindow()));
+//        System.out.println("count : " + Long.toString(this.sliding.getCount()) + " sum : " + Long.toString(this.sliding.getSum()));
     }
 }
