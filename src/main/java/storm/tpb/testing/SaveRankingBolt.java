@@ -66,18 +66,20 @@ public class SaveRankingBolt extends BaseFunction{
                 obj.put("TransactionType", tranType);
                 int i = 1;
                 for (int j = 0; j < TOP && j < asList.size(); j++) {
-
-                    obj.put("TopTen-Bot" + Integer.toString(i) + "-" + (long) this.Sliding + "-Acc", asList.get(j).getString("account"));
-                    obj.put("TopTen-Bot" + Integer.toString(i) + "-" + (long) this.Sliding + "-Amount", asList.get(j).getLong("sum"));
-                    i++;
+                    if(asList.get(j).has("account")) {
+                        obj.put("TopTen-Bot" + Integer.toString(i) + "-" + (long) this.Sliding + "-Acc", asList.get(j).getString("account"));
+                        obj.put("TopTen-Bot" + Integer.toString(i) + "-" + (long) this.Sliding + "-Amount", asList.get(j).getLong("sum"));
+                        i++;
+                    }
                 }
 
                 int k = 1;
                 for (int j = asList.size() - 1; j >= asList.size() - TOP && j >= 0; j--) {
-
-                    obj.put("TopTen-Top" + Integer.toString(k) + "-" + (long) this.Sliding + "-Acc",  asList.get(j).getString("account"));
-                    obj.put("TopTen-Top" + Integer.toString(k) + "-" + (long) this.Sliding + "-Amount", asList.get(j).getLong("sum"));
-                    k++;
+                    if(asList.get(j).has("account")) {
+                        obj.put("TopTen-Top" + Integer.toString(k) + "-" + (long) this.Sliding + "-Acc", asList.get(j).getString("account"));
+                        obj.put("TopTen-Top" + Integer.toString(k) + "-" + (long) this.Sliding + "-Amount", asList.get(j).getLong("sum"));
+                        k++;
+                    }
                 }
                 if (obj != null && !tranType.equals(PARAM.TransCode.TRANTYPEFAKE.getValue()))
                     jedis.set("Ranking-" + tranType + "-" + (long) this.Sliding, obj.toString());
@@ -86,7 +88,7 @@ public class SaveRankingBolt extends BaseFunction{
             {
                 JSONObject obj = new JSONObject();
                 obj.put("TransactionType", tranType);
-                jedis.set("Ranking-" + tranType + "-" + (long)this.Sliding, obj.toString());
+                jedis.set("Ranking-" + tranType + "-" + (long) this.Sliding, obj.toString());
             }
 
             jedis.disconnect();
