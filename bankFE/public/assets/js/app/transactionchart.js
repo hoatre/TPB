@@ -47,10 +47,10 @@ function OpenSocket(){
 
         channelCode = JSON.parse('[' + data1 + ']');
 
-        for (var i = 0; i < channelCode.length; i++) {
-            var dataSeries = { xValueType: "dateTime", type: "line", showInLegend: true, name: channelCode[i].ChannelName, dataPoints:[]};
+        //for (var i = 0; i < channelCode.length; i++) {
+            var dataSeries = { xValueType: "dateTime", type: "line", showInLegend: false, name: "totaltrans", dataPoints:[]};
             data.push(dataSeries);
-        }
+        //}
     });
     socket.on('listTransactionCode',function(data1){
         transactionCode = $.map(data1, function (value, index) {
@@ -59,20 +59,27 @@ function OpenSocket(){
         for (var p = 0; p < transactionCode.length; p++) {
             socket.on('emitRanking-Ranking-' + transactionCode[p] + '-' + time1.toString(), function (data1) {
                 dataRanking_time1 = data1;
-                TopBot();
+                //TopBot();
             });
             socket.on('emitRanking-Ranking-' + transactionCode[p] + '-' + time2.toString(), function (data1) {
                 dataRanking_time2 = data1;
-                TopBot();
+                //TopBot();
             });
             socket.on('emitRanking-Ranking-' + transactionCode[p] + '-' + time3.toString(), function (data1) {
                 dataRanking_time3 = data1;
-                TopBot();
+                //TopBot();
             });
-
         }
     });
+
+    socket.on('loadtransactionchart-real-time-count-chart-60000',function(data1){
+	//alert('loadtransactionchart-real-time-count-chart-');
+        jsonObj_time1 = $.parseJSON('[' + data1 + ']');
+	buidDataOff();
+    });
+
     socket.on('listChart-real-time-count-chart-' + time1,function(data1){
+	//alert('listChart-real-time-count-chart');
         jsonObj_time1 = $.parseJSON('[' + data1 + ']');
     });
     socket.on('listChart-real-time-count-chart-' + time2,function(data1){
@@ -83,7 +90,7 @@ function OpenSocket(){
     });
 }
 
-function AddCombobox(){
+/*function AddCombobox(){
     var x = document.getElementById("SlidingTimeCbo");
     var Cbotext = ["1 Minute", "1 Hour", "1 Day"];
     var CboValue = ["60000", "3600000", "86400000"];
@@ -93,31 +100,13 @@ function AddCombobox(){
         option.value = CboValue[i];
         x.add(option);
     }
-}
+}*/
 
 function OnLoad() {
     OpenSocket();
-    AddCombobox();
+    //AddCombobox();
     CreateChart();
-    //set event selected cho combobox time
-    $('#SlidingTimeCbo').change(function() {
-        var SlidingTimeSmoothieCbo = document.getElementById("SlidingTimeCbo");
-        var CboValue = SlidingTimeSmoothieCbo.options[SlidingTimeSmoothieCbo.selectedIndex].value;
-
-        if(CboValue.toLowerCase().localeCompare("60000".toLowerCase()) == 0)
-        {
-            jsonObj = jsonObj_time1;
-        }
-        else if(CboValue.toLowerCase().localeCompare("3600000".toLowerCase()) == 0)
-        {
-            jsonObj = jsonObj_time2;
-        }
-        else if(CboValue.toLowerCase().localeCompare("86400000".toLowerCase()) == 0)
-        {
-            jsonObj = jsonObj_time3;
-        }
-
-    }).change();
+    
 
 }
 
@@ -162,23 +151,25 @@ function CreateChart(){
         });
     chartCD1.render();
 }
-
+//int cnt=0;
 setInterval(function() {
     SlidingTimeCbo = document.getElementById("SlidingTimeCbo");
-    timer = SlidingTimeCbo.options[SlidingTimeCbo.selectedIndex].value;
-    if(timer == time1)
-        jsonObj = jsonObj_time1;
-    else if(timer == time2)
-        jsonObj = jsonObj_time2;
-    else if(timer == time3)
-        jsonObj = jsonObj_time3;
+    //timer = SlidingTimeCbo.options[SlidingTimeCbo.selectedIndex].value;
+    jsonObj = jsonObj_time1;
+    if(dataPoints.length>0)
+    {
     buidData();
+    }
+    if(dataPoints.length==0)
+    {
+    	//buidDataOff();
+    }
     chartCD1.render();
     TotalCountAmount();
 }, 1000);
 
 // set ranking
-function TopBot(){
+/*function TopBot(){
     SlidingTimeCbo = document.getElementById("SlidingTimeCbo");
     timer = SlidingTimeCbo.options[SlidingTimeCbo.selectedIndex].value;
     if(timer == time1)
@@ -233,43 +224,86 @@ function SetRanking(Top, array, TranType){
     if (TopTenDepositTop1Amount == null || TopTenDepositTop1Amount == undefined)
         return;
     TopTenDepositTop1Amount.innerHTML = (array[1] != null || array[1] != undefined) ? array[1] : '';
-}
+}*/
 // build data for chart
+var dataPoints = [];
 function buidData()
 {
-    if(timer == time1)
-        jsonObj = jsonObj_time1;
-    else if(timer == time2)
-        jsonObj = jsonObj_time2;
-    else if(timer == time3)
-        jsonObj = jsonObj_time3;
+    jsonObj = jsonObj_time1;
+    
+
+    totalCount = 0;
+    
     for(var k=0;k<data.length;k++) {
         for (var i = 0; i < channelCode.length; i++) {
-            if(data[k].name == channelCode[i].ChannelName) {
-                var dataPoints = [];
-                var visible = false;
-                for (var j = 0; j < jsonObj.length; j += 1) {
-
-                    if (visible == false && jsonObj[j][channelCode[i].ChannelCode + "-count"] != null && jsonObj[j][channelCode[i].ChannelCode + "-count"] != "") visible = true;
-                    if(jsonObj[j][channelCode[i].ChannelCode + "-count"] != null && jsonObj[j][channelCode[i].ChannelCode + "-count"] != "") {
-                        dataPoints.push({
-                            x: new Date(jsonObj[j]["time"]),
-                            y: parseInt(jsonObj[j][channelCode[i].ChannelCode + "-count"])
-                        });
-                    }
-                }
-                if (visible == true) {
-                    data[k].dataPoints = dataPoints;
-                    data[k].showInLegend = true;
-                    if(typeof(data[k].visible) === "undefined" || data[k].visible)
-                        channelCode[i].Display = "1";
-                }else{
-                    data[k].showInLegend = false;
-                    data[k].dataPoints = [];
-                    channelCode[i].Display = "0";
-                }
+            //if(data[k].name == channelCode[i].ChannelName) {
+                
+                var visible = true;
+		if(jsonObj[jsonObj.length - 1][channelCode[i].ChannelCode + "-count"] != null
+                && jsonObj[jsonObj.length - 1][channelCode[i].ChannelCode + "-count"] != undefined) {
+                totalCount = parseInt(totalCount) + parseInt(jsonObj[jsonObj.length - 1][channelCode[i].ChannelCode + "-count"]);
             }
-        }
+                
+	}
+	
+	var timestamp = dataPoints[0].x.getTime();
+	var timestamp1mn=timestamp-60000;
+	//alert(timestamp+"_"+timestamp1mn);
+	
+	var date= new Date(jsonObj[jsonObj.length - 1]["time"]);
+	//alert(date.getTime());
+	var timestamp = date.getTime();
+	var timestamp1mn=timestamp-60000;
+	for(var clr=0;clr<dataPoints.length-1;clr++)
+	{
+		if(timestamp1mn>dataPoints[clr].x.getTime())
+		{
+			dataPoints.splice(clr, 1);
+		}
+	}
+
+			dataPoints.push({
+		                    x: date,
+		                    y: parseInt(totalCount)
+		                });
+			//dataPoints.splice(0, 2);
+			data[k].dataPoints = dataPoints;
+
+    }
+}
+//buidDataOff();
+socket.emit('BuidDataOff',"Start");
+function buidDataOff()
+{
+    jsonObj = jsonObj_time1;
+    
+    
+    dataPoints=[];
+    for(var k=0;k<data.length;k++) {
+	
+	
+	for (var j = 0; j < jsonObj.length; j += 1) {
+		totalCount = 0;
+		var date;
+		//var total = 0;
+		//var time;
+		
+		for (var i = 0; i < channelCode.length; i++) {
+			if(jsonObj[j][channelCode[i].ChannelCode + "-count"] != null && jsonObj[j][channelCode[i].ChannelCode + "-count"] != "") {
+			
+                        totalCount = parseInt(totalCount) + parseInt(jsonObj[j][channelCode[i].ChannelCode + "-count"]);
+			date= new Date(jsonObj[j]["time"]);
+			
+                        }
+		        
+		}
+		dataPoints.push({
+		                    x: date,
+		                    y: parseInt(totalCount)
+		                });
+		
+			data[k].dataPoints = dataPoints;
+		}
     }
 }
 
