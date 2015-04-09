@@ -20,6 +20,60 @@ router.get('/', function(req, res, next) {
 
 });
 
+router.get('/transactionchart', function(req, res, next) {
+
+  	console.log('Dashboard request');
+	//res.render('index', { title: 'Dashboard' });
+	var db = req.db;
+	var TransactionTypes = db.collection('TransactionTypes');
+    TransactionTypes.find({}).toArray(function(error, transactionTypes) {
+	    if (error) return next(error);
+	    if (!transactionTypes) return next(new Error('Get list transactionTypes fail.'));
+
+	    res.render('transactionchart', {
+	      title: 'Dashboard',
+	      TransactionTypes: transactionTypes || []
+	    });
+  	});
+
+});
+
+router.get('/branchtransactionchart', function(req, res, next) {
+
+  	console.log('Dashboard request');
+	//res.render('index', { title: 'Dashboard' });
+	var db = req.db;
+	var TransactionTypes = db.collection('TransactionTypes');
+    TransactionTypes.find({}).toArray(function(error, transactionTypes) {
+	    if (error) return next(error);
+	    if (!transactionTypes) return next(new Error('Get list transactionTypes fail.'));
+
+	    res.render('branchtransactionchart', {
+	      title: 'Dashboard',
+	      TransactionTypes: transactionTypes || []
+	    });
+  	});
+
+});
+
+router.get('/stackbar', function(req, res, next) {
+
+  	console.log('Dashboard request');
+	//res.render('index', { title: 'Dashboard' });
+	var db = req.db;
+	var TransactionTypes = db.collection('TransactionTypes');
+    TransactionTypes.find({}).toArray(function(error, transactionTypes) {
+	    if (error) return next(error);
+	    if (!transactionTypes) return next(new Error('Get list transactionTypes fail.'));
+
+	    res.render('stackbar', {
+	      title: 'Dashboard',
+	      TransactionTypes: transactionTypes || []
+	    });
+  	});
+
+});
+
 router.get('/customers', function(req, res) {
 	console.log('customers request');
 
