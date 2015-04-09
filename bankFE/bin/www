@@ -111,10 +111,12 @@ function onListening() {
 
 var mongoskin = require('mongoskin');
 var db = mongoskin.db(commonConfig.serverMongo, {safe:true});
-var t1, t2, t3;
+var t1, t2, t3,t4,t5;
 var channelCode = [];
 var transactionCode = [];
+var transactionCodeJson = [];
 var productType = [];
+var productTypeJson = [];
 var list = [];
 
 //Get list Channels from DB
@@ -148,6 +150,21 @@ function GetTransactionList()
 
 }
 GetTransactionList();
+function GetTransactionListJson()
+{
+    var TransactionTypes = db.collection('TransactionTypes'); // ten bang
+    TransactionTypes.find().toArray(function(error, transactionTypes) {
+        if (error) return next(error);
+        if (!transactionTypes) return next(new Error('Get all transactionTypes fail.'));
+        transactionCodeJson = transactionTypes.map(function(item){
+            var text = '{"TransactionCode":"' + item.TransactionCode + '", "TransactionName":"' + item.TransactionName+ '"}';
+            return text;
+        })
+    });
+
+}
+
+GetTransactionListJson();
 
 //Get list ProductType from DB
 function GetProductList()
@@ -167,6 +184,21 @@ function GetProductList()
 
 }
 GetProductList();
+
+function GetProductListJson()
+{
+    var Products = db.collection('Products'); // ten bang
+    Products.find().toArray(function(error, products) {
+        if (error) return next(error);
+        if (!products) return next(new Error('Get all products fail.'));
+        productTypeJson = products.map(function(item){
+            var text = '{"ProductCode":"' + item.ProductCode + '", "ProductName":"' + item.ProductName+ '"}';
+            return text;
+        })
+    });
+
+}
+GetProductListJson();
 
 //Get data for Pie Chart
 function GetDataPieChart(year, socket)
@@ -276,8 +308,9 @@ function callLIndex(callback, key, i) {
 }
 
 function redis_lrange(key, socket){
-
+    console.log('key: '+key);
     client1.llen(key, function(err, items){
+	
         client1.lrange(key, 0, parseInt(items), function(err, items2) {
             if (err) {
                 log('error', "error");
@@ -296,8 +329,11 @@ io.sockets.on('disconnect',function(socket){
 io.sockets.on('connection',function(socket){
     console.log('Connection socket!!!')
     socket.emit('listChannelCode',channelCode);
+    //console.log("----------------"+transactionCodeJson.length);
     socket.emit('listTransactionCode',transactionCode);
+    socket.emit('listTransactionCodeJson',transactionCodeJson);
     socket.emit('listProductType',productType);
+    socket.emit('listProductTypeJson',productTypeJson);
     socket.on('EventComboboxColumn', function (data1) {
         GetDataColumnChart(data1[0], data1[1], socket);
     }),
@@ -326,6 +362,20 @@ io.sockets.on('connection',function(socket){
 
         redis_lrange('real-time-count-chart-' + commonConfig.SlidingTimeDay, socket);
     }, commonConfig.SlidingTimeDelayDay);
+    t4 = setInterval(function() {
+
+        redis_lrange('real-time-count-tran-' + commonConfig.SlidingTimeMinute, socket);
+	
+    }, commonConfig.SlidingTimeDelayMinute);
+    t5 = setInterval(function() {
+
+        redis_lrange('real-time-count-product-' + commonConfig.SlidingTimeMinute, socket);
+	
+    }, commonConfig.SlidingTimeDelayMinute);
+    socket.on('BuidDataOff',function(data){
+	console.log('BuidDataOff');
+	loadtransactionchart('real-time-count-chart-' + commonConfig.SlidingTimeMinute, socket);
+    });
 });
 
 // get ranking acc trong redis
@@ -338,3 +388,19 @@ function GetBotTop(slidingTime, socket){
     }
 }
 
+
+function loadtransactionchart(key,socket)
+{
+    client1.llen(key, function(err, items){
+	
+        client1.lrange(key, 0, parseInt(items), function(err, items2) {
+            if (err) {
+                log('error', "error");
+            } else {
+		console.log('key: '+key);
+                socket.emit('loadtransactionchart-' + key,items2);
+            }
+        });
+    });
+}
+//End. 
