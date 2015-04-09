@@ -125,8 +125,20 @@ router.get('/profile/:id', function(req, res, next) {
 });
 
 //chart display
-router.get('/chart', function(req, res) {
+router.get('/transactiontypechart', function(req, res) {
 	console.log('chart request');	
+	res.render('transactiontypechart', { title: 'transactiontypechart' });
+});
+
+//chart display
+router.get('/transactionchart', function(req, res) {
+	console.log('chart request');
+	res.render('transactionchart', { title: 'transactionchart' });
+});
+
+//chart display
+router.get('/chart', function(req, res) {
+	console.log('chart request');
 	res.render('chart', { title: 'chart' });
 });
 
