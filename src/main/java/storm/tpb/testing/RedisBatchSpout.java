@@ -11,6 +11,7 @@ import backtype.storm.topology.OutputFieldsDeclarer;
 import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Values;
 import redis.clients.jedis.Jedis;
+import storm.tpb.util.Properties;
 import storm.trident.operation.TridentCollector;
 import storm.trident.spout.IBatchSpout;
 
@@ -60,7 +61,8 @@ public class RedisBatchSpout implements IBatchSpout {
             List<String> list = jedis.lrange("Sliding-data", 0, jedis.llen("Sliding-data"));
             jedis.disconnect();
             collector.emit(new Values(list));
-            Thread.sleep(1500);
+            System.out.println("spout done");
+            Thread.sleep(Properties.getInt("Load.Interval.Time"));
             Thread.yield();
         }catch (Exception e){
             Thread.yield();

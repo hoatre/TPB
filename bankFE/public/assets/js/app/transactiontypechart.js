@@ -143,30 +143,8 @@ function CreateChart(){
 
             },
             axisY:{
-                includeZero: false
+                includeZero: true
 
-            },
-            legend:{
-                cursor:"pointer",
-                itemclick : function(e) {
-                    if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
-                        e.dataSeries.visible = true;
-                        /*for(var m=0;m<channelCode.length;m++){
-                            if(transactionCode[m].TransactionName.toString() === e.dataSeries.name.toString()) {
-                                //channelCode[m].Display = "0";
-                            }
-                        }*/
-                    }
-                    else {
-                        e.dataSeries.visible = true;
-                        /*for(var i = 0;i<channelCode.length;i++){
-                            if(channelCode[i].ChannelName.toString() === e.dataSeries.name.toString()) {
-                                channelCode[i].Display = "1";
-                            }
-                        }*/
-                    }
-                    chartCD1.render();
-                }
             },
             data:data
         });
@@ -184,7 +162,7 @@ setInterval(function() {
     //    jsonObj = jsonObj_time3;
     buidData();
     chartCD1.render();
-    TotalCountAmount();
+    //TotalCountAmount();
 }, 1000);
 
 /*
@@ -264,8 +242,8 @@ function buidData()
                 var visible = false;
                 for (var j = 0; j < jsonObj.length; j += 1) {
 
-                    if (visible == false && jsonObj[j][transactionCode[i].TransactionCode + "-count"] != null && jsonObj[j][transactionCode[i].TransactionCode + "-count"] != "") visible = true;
-                    if(jsonObj[j][transactionCode[i].TransactionCode + "-count"] != null && jsonObj[j][transactionCode[i].TransactionCode + "-count"] != "") {
+                    //if (visible == false && jsonObj[j][transactionCode[i].TransactionCode + "-count"] != null && jsonObj[j][transactionCode[i].TransactionCode + "-count"] != "") visible = true;
+                    //if(jsonObj[j][transactionCode[i].TransactionCode + "-count"] != null && jsonObj[j][transactionCode[i].TransactionCode + "-count"] != "") {
 			//if(dataPoints.length>40)
 			//{
 				//dataPoints.splice(0, dataPoints.length-40);
@@ -288,9 +266,9 @@ function buidData()
                     data[k].dataPoints = [];
                     transactionCode[i].Display = "0";
                 }*/
-            }
         }
     }
+
 }
 
 //set total count & amount

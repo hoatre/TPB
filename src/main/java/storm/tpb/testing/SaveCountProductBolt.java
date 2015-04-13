@@ -27,7 +27,7 @@ public class SaveCountProductBolt extends BaseFunction{
             if(!list.isEmpty() && list != null) {
                 for (String a : list) {
                     JSONObject jsonObject = new JSONObject(a);
-                    jsonAll.put(jsonObject.getString("prd_id") + "-count", jsonObject.getString("count"));
+                    jsonAll.put(jsonObject.getString("prd_id") + "-count", jsonObject.getLong("count"));
                 }
             }
             jsonAll.put("time", System.currentTimeMillis());

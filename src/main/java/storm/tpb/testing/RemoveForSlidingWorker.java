@@ -39,9 +39,17 @@ public class RemoveForSlidingWorker {
                             ;
                         }
                     }
-                    RemoveRealTimeSliding((long)PARAM.SlidingTime.Time1.getTime() * 1000, jedis, currentTime);
-                    RemoveRealTimeSliding((long)PARAM.SlidingTime.Time2.getTime() * 1000, jedis, currentTime);
-                    RemoveRealTimeSliding((long)PARAM.SlidingTime.Time3.getTime() * 1000, jedis, currentTime);
+                    RemoveRealTimeSliding((long)PARAM.SlidingTime.Time1.getTime() * 1000, jedis, currentTime, "real-time-count-chart-");
+                    RemoveRealTimeSliding((long)PARAM.SlidingTime.Time2.getTime() * 1000, jedis, currentTime, "real-time-count-chart-");
+                    RemoveRealTimeSliding((long)PARAM.SlidingTime.Time3.getTime() * 1000, jedis, currentTime, "real-time-count-chart-");
+
+                    RemoveRealTimeSliding((long)PARAM.SlidingTime.Time1.getTime() * 1000, jedis, currentTime, "real-time-count-tran-");
+                    RemoveRealTimeSliding((long)PARAM.SlidingTime.Time2.getTime() * 1000, jedis, currentTime, "real-time-count-tran-");
+                    RemoveRealTimeSliding((long)PARAM.SlidingTime.Time3.getTime() * 1000, jedis, currentTime, "real-time-count-tran-");
+
+                    RemoveRealTimeSliding((long)PARAM.SlidingTime.Time1.getTime() * 1000, jedis, currentTime, "real-time-count-product-");
+                    RemoveRealTimeSliding((long)PARAM.SlidingTime.Time2.getTime() * 1000, jedis, currentTime, "real-time-count-product-");
+                    RemoveRealTimeSliding((long)PARAM.SlidingTime.Time3.getTime() * 1000, jedis, currentTime, "real-time-count-product-");
 
                     jedis.disconnect();
                 }catch (Exception e){
@@ -53,15 +61,15 @@ public class RemoveForSlidingWorker {
         timer.scheduleAtFixedRate(timerTask, 0, 1000);
     }
 
-    private static void RemoveRealTimeSliding(long slidingTime, Jedis jedis, long currentTime){
+    private static void RemoveRealTimeSliding(long slidingTime, Jedis jedis, long currentTime,String key){
         try {
-            String jedisFirst = jedis.lindex("real-time-count-chart-" + slidingTime, 0);
+            String jedisFirst = jedis.lindex(key + slidingTime, 0);
             if(jedisFirst != null) {
                 while (new JSONObject(jedisFirst).getLong("time")
                         < currentTime - slidingTime) {
-                    jedis.blpop(0, "real-time-count-chart-" + slidingTime);
+                    jedis.blpop(0, key + slidingTime);
 
-                    jedisFirst = jedis.lindex("real-time-count-chart-" + slidingTime, 0);
+                    jedisFirst = jedis.lindex(key + slidingTime, 0);
                     if(jedisFirst == null)
                         break;
                 }

@@ -69,8 +69,8 @@ public class Topology_2_0 {
     private static void TopologySliding(Stream spoutStream, double slidingTime, TridentTopology topology)
     {
         //Cut & Split data
-        Stream PreStream = spoutStream
-                .each(new Fields("list"), new CutDataForSlidingBolt(slidingTime), new Fields("listCut"))
+        Stream PreStream = spoutStream.shuffle()
+                .each(new Fields("list"), new CutDataForSlidingBolt(slidingTime), new Fields("listCut")).parallelismHint(11)
                 .each(new Fields("listCut"), new SplitChannelBolt(jsonFields), jsonFields);
 
         // count tran with each channel
