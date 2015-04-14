@@ -23,10 +23,12 @@ public class RedisBatchSpout implements IBatchSpout {
 
     private String host;
     private int port;
+    private long SlidingTime;
 
-    public RedisBatchSpout(String host, int port) {
+    public RedisBatchSpout(String host, int port, long SlidingTime) {
         this.host = host;
         this.port = port;
+        this.SlidingTime = SlidingTime;
     }
     @Override
     public void close() {
@@ -58,10 +60,10 @@ public class RedisBatchSpout implements IBatchSpout {
         try {
             Jedis jedis = new Jedis(host, port);
             jedis.connect();
-            List<String> list = jedis.lrange("Sliding-data", 0, jedis.llen("Sliding-data"));
+            List<String> list = jedis.lrange("Sliding-data-" + this.SlidingTime, 0, jedis.llen("Sliding-data-" + this.SlidingTime));
             jedis.disconnect();
             collector.emit(new Values(list));
-            System.out.println("spout done");
+            System.out.println("spout done : " + (long)this.SlidingTime);
             Thread.sleep(Properties.getInt("Load.Interval.Time"));
             Thread.yield();
         }catch (Exception e){

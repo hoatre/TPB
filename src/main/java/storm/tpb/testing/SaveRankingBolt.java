@@ -35,9 +35,9 @@ public class SaveRankingBolt extends BaseFunction{
             Jedis jedis = new Jedis(Properties.getString("redis.host"), Properties.getInt("redis.port"));
             jedis.connect();
 
-            String tranType = asList.get(0).getString("transactionType");
-            if (!asList.isEmpty()) {
 
+            if (!asList.isEmpty()) {
+                String tranType = asList.get(0).getString("transactionType");
                 Collections.sort(asList, new Comparator<JSONObject>() {
                     @Override
                     public int compare(JSONObject a, JSONObject b) {
@@ -66,7 +66,7 @@ public class SaveRankingBolt extends BaseFunction{
                 obj.put("TransactionType", tranType);
                 int i = 1;
                 for (int j = 0; j < TOP && j < asList.size(); j++) {
-                    if(asList.get(j).has("account")) {
+                    if (asList.get(j).has("account")) {
                         obj.put("TopTen-Bot" + Integer.toString(i) + "-" + (long) this.Sliding + "-Acc", asList.get(j).getString("account"));
                         obj.put("TopTen-Bot" + Integer.toString(i) + "-" + (long) this.Sliding + "-Amount", asList.get(j).getLong("sum"));
                         i++;
@@ -75,7 +75,7 @@ public class SaveRankingBolt extends BaseFunction{
 
                 int k = 1;
                 for (int j = asList.size() - 1; j >= asList.size() - TOP && j >= 0; j--) {
-                    if(asList.get(j).has("account")) {
+                    if (asList.get(j).has("account")) {
                         obj.put("TopTen-Top" + Integer.toString(k) + "-" + (long) this.Sliding + "-Acc", asList.get(j).getString("account"));
                         obj.put("TopTen-Top" + Integer.toString(k) + "-" + (long) this.Sliding + "-Amount", asList.get(j).getLong("sum"));
                         k++;
@@ -83,13 +83,13 @@ public class SaveRankingBolt extends BaseFunction{
                 }
                 if (obj != null && !tranType.equals(PARAM.TransCode.TRANTYPEFAKE.getValue()))
                     jedis.set("Ranking-" + tranType + "-" + (long) this.Sliding, obj.toString());
-
-            }else
-            {
-                JSONObject obj = new JSONObject();
-                obj.put("TransactionType", tranType);
-                jedis.set("Ranking-" + tranType + "-" + (long) this.Sliding, obj.toString());
             }
+//            }else
+//            {
+//                JSONObject obj = new JSONObject();
+//                obj.put("TransactionType", tranType);
+//                jedis.set("Ranking-" + tranType + "-" + (long) this.Sliding, obj.toString());
+//            }
 
             jedis.disconnect();
 

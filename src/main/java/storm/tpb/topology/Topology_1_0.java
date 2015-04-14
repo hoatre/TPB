@@ -59,26 +59,26 @@ public class Topology_1_0 {
         spoutConf.startOffsetTime =-1;
         OpaqueTridentKafkaSpout spout = new OpaqueTridentKafkaSpout(spoutConf);
 
-        Stream spoutStream = topology.newStream("kafka-stream",spout);
+        Stream spoutStream = topology.newStream("kafka-stream", spout);
 
 
 //        Stream parsedStream = spoutStream.each(new Fields("str"), new
 //                JsonProjectFunction(jsonFields), jsonFields);
 
-        TopologySliding(spoutStream);
-//        TopologySliding(spoutStream, PARAM.SlidingTime.Time2.getTime());
-//        TopologySliding(spoutStream, PARAM.SlidingTime.Time3.getTime());
+        TopologySliding(spoutStream, PARAM.SlidingTime.Time1.getTime() * 1000);
+        TopologySliding(spoutStream, PARAM.SlidingTime.Time2.getTime() * 1000);
+        TopologySliding(spoutStream, PARAM.SlidingTime.Time3.getTime() * 1000);
 
         return topology.build();
     }
 
-    private static void TopologySliding(Stream spoutStream)
+    private static void TopologySliding(Stream spoutStream, double slidingTime)
     {
         //SlidingWindow Sliding = new SlidingWindow().sliding(SlidingTime, SlidingWindow.Time.SECONDS);
 
         //save redis for sliding time
         spoutStream
-                .each(new Fields("str"), new SaveSlidingBolt(), new Fields("tuple"));
+                .each(new Fields("str"), new SaveSlidingBolt(slidingTime), new Fields("tuple"));
 //                .shuffle().each(new Fields("tuple"), new RemoveOutOfSliding(Sliding, SlidingWindow.Time.SECONDS)
 //                , valueChartNew).parallelismHint(5);
     }
