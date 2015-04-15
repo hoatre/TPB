@@ -434,7 +434,7 @@ function onClick(e) {
 							}
 							if(ispush)
 							{
-								datapie.push({  y: data[i].dataPoints[index].y, legendText: data[i].name, label: data[i].name});
+								datapie.push({  y: data[i].dataPoints[index].y, legendText: data[i].name,exploded: true, label: data[i].name});
 							}
 						}
 					}
@@ -458,8 +458,8 @@ function onClick(e) {
 			{       
 				type: "pie",
 				showInLegend: true,
-				toolTipContent: "{legendText}: <strong>{y}%</strong>",
-				indexLabel: "{label} {y}%",
+				toolTipContent: "{legendText}: <strong>{y}</strong>",
+				indexLabel: "{label} #percent %",
 				dataPoints: datapie
 			}
 		]
