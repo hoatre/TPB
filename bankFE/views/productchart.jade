@@ -1,0 +1,66 @@
+extends layout
+
+block content  
+  // START YOUR CONTENT HERE
+  .row
+    .col-lg-12.col-sm-12
+      // Server Info Charts .morris
+      .portlet
+        .portlet-heading.inverse
+          .portlet-title
+            h4
+              i.fa.fa-line-chart
+              |  Customer Avariable
+          .portlet-widgets
+            a#daterange.tooltip-primary(href='javascript:;', data-placement='top', data-rel='tooltip', title='DateRangePicker')
+              i.fa.fa-calendar
+            span.divider
+            a(data-toggle='collapse', data-parent='#accordion', href='#m-charts')
+              i.fa.fa-chevron-down
+          .clearfix
+        #m-charts.panel-collapse.collapse.in
+          .portlet-body
+            .row
+              .col-sm-9
+                h4 Customer Avariable
+                //canvas#chart.chart-holder(style='height: 220px!important; min-height:220px;')
+                #chartCD(style='height: 300px; width: 100%;')
+              //.col-sm-3
+                //h4 Settings
+                //hr.separator
+                //h5 Channels
+                // Channel Options
+                //.tcb
+                  //label.tcb-inline
+                    //input#line11.tc.tc-success(type='checkbox', checked='true', name='Line11')
+                    //span.labels  Brand 1
+                  //label.tcb-inline
+                    //input#line21.tc.tc-info(type='checkbox', checked='true', name='Line21')
+                    //span.labels  Brand 2
+                  //label.tcb-inline
+                    //input#line31.tc(type='checkbox', checked='true', name='Line31')
+                    //span.labels  Brand 3
+                  //label.tcb-inline
+                    //input#line41.tc.tc-warning(type='checkbox', checked='true', , name='Line41')
+                    //span.labels  Contact Center
+                // Channel Options END
+                //hr.separator
+                //h5 Time
+                //select#SlidingTimeCbo.form-control
+  #dialog(width='700',title='product pie chart', style='height: 400px; width: 100%;')
+    #chartCD1(style='height: 300px; width: 100%;')
+       
+
+block append script
+  //App script
+  link(rel='stylesheet', href='/assets/js/jquery-ui.css')
+  script(src='/assets/js/jquery-1.10.2.js')
+  script(src='/assets/js/jquery-ui.js')
+  script(src='socket.io/socket.io.js')
+  script(src='/assets/js/app/canvasjs.min.js') //Chart
+  script(src='/assets/js/underscore.string.min.js')
+  script(src='/assets/js/app/productchart.js') //Sefl code for dashboard
+  
+  
+
+  
