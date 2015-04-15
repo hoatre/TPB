@@ -153,7 +153,7 @@ function CreatePieChart(dataPointsPieChartCount){
                     indexLabelPlacement: "outside",
                     type: "pie",
                     showInLegend: true,
-                    toolTipContent: "<strong>#percent%</strong>",
+                    toolTipContent: "<strong>{y}</strong>",
                     dataPoints: dataPointsPieChartCount
                 }
             ]
