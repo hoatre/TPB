@@ -202,7 +202,6 @@ setInterval(function() {
     //    jsonObj = jsonObj_time3;
     buidData();
     chartCD1.render();
-    TotalCountAmount();
 }, 1000);
 
 /*
@@ -289,6 +288,7 @@ function buidData()
 
                     if (visible == false && jsonObj[j][productCode[i].ProductCode + "-count"] != null && jsonObj[j][productCode[i].ProductCode + "-count"] != "") visible = true;
                     if(jsonObj[j][productCode[i].ProductCode + "-count"] != null && jsonObj[j][productCode[i].ProductCode + "-count"] != "") {
+                        alert(jsonObj[j][productCode[i].ProductCode + "-count"]);
 			//if(dataPoints.length>40)
 			//{
 				//dataPoints.splice(0, dataPoints.length-40);

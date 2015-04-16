@@ -34,6 +34,7 @@ public class SaveCountTranBolt extends BaseFunction{
 
             jedis.rpush("real-time-count-tran-" + (long)this.Sliding, jsonAll.toString());
             jedis.disconnect();
+            System.out.println("done SaveCountTranBolt");
         }catch (Exception e){e.printStackTrace();}
     }
 }

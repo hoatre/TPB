@@ -10,31 +10,30 @@ import storm.trident.tuple.TridentTuple;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SaveCountProductBolt extends BaseFunction{
+public class SaveCountChannelByTranBolt extends BaseFunction{
     private double Sliding;
-    public SaveCountProductBolt(double Sliding){
+    public SaveCountChannelByTranBolt(double Sliding){
         this.Sliding = Sliding;
     }
     public void execute(TridentTuple tuple, TridentCollector collector) {
         try {
             Jedis jedis = new Jedis(Properties.getString("redis.host"), Properties.getInt("redis.port"));
             jedis.connect();
-            List<String> list = new ArrayList<String>();
+            List<JSONObject> list = new ArrayList<JSONObject>();
             if(tuple.getValue(0) != null)
-                list = (List<String>)tuple.getValue(0);
+                list = (List<JSONObject>)tuple.getValue(0);
 
             JSONObject jsonAll = new JSONObject();
             if(!list.isEmpty() && list != null) {
-                for (String a : list) {
-                    JSONObject jsonObject = new JSONObject(a);
-                    jsonAll.put(jsonObject.getString("prd_id") + "-count", jsonObject.getLong("count"));
+                for (JSONObject jsonObject : list) {
+                    jsonAll.put(jsonObject.getString("transaction") + "-" + jsonObject.getString("channel") + "-count", jsonObject.getString("count"));
                 }
             }
             jsonAll.put("time", System.currentTimeMillis());
 
-            jedis.rpush("real-time-count-product-" + (long)this.Sliding, jsonAll.toString());
+            jedis.rpush("real-time-count-chart-tran-" + (long)this.Sliding, jsonAll.toString());
             jedis.disconnect();
-            System.out.println("done SaveCountProductBolt");
+            System.out.println("done SaveCountChannelByTranBolt");
         }catch (Exception e){e.printStackTrace();}
     }
 }

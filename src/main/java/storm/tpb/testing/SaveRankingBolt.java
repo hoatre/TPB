@@ -92,7 +92,7 @@ public class SaveRankingBolt extends BaseFunction{
 //            }
 
             jedis.disconnect();
-
+            System.out.println("done SaveRankingBolt");
         }catch (Exception e){
             e.printStackTrace();
         }

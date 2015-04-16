@@ -15,42 +15,50 @@ import java.util.TimerTask;
  * Created by phonghh on 4/8/15.
  */
 public class RemoveForSlidingWorker {
+    private static int i = 0;
     public static void main(String[] args) throws Exception {
         System.out.println("Worker begin");
-        final List<String> TransactionCode = function.GetListMongo(Properties.getString("MongoDB.TransactionTypes"), "TransactionCode");
-        TimerTask timerTask = new TimerTask() {
 
-            @Override
-            public void run() {
-                try{
+        CreateTimer((long) PARAM.SlidingTime.Time1.getTime() * 1000, "Sliding-data-", "timestamp");
+        CreateTimer((long) PARAM.SlidingTime.Time1.getTime() * 1000, "real-time-count-chart-", "time");
+        CreateTimer((long) PARAM.SlidingTime.Time1.getTime() * 1000, "real-time-count-chart-tran-", "time");
+        CreateTimer((long) PARAM.SlidingTime.Time1.getTime() * 1000, "real-time-count-tran-", "time");
+        CreateTimer((long) PARAM.SlidingTime.Time1.getTime() * 1000, "real-time-count-product-", "time");
 
+        CreateTimer((long) PARAM.SlidingTime.Time2.getTime() * 1000, "Sliding-data-", "timestamp");
+        CreateTimer((long) PARAM.SlidingTime.Time2.getTime() * 1000, "real-time-count-chart-", "time");
+        CreateTimer((long) PARAM.SlidingTime.Time2.getTime() * 1000, "real-time-count-chart-tran-", "time");
+        CreateTimer((long) PARAM.SlidingTime.Time2.getTime() * 1000, "real-time-count-tran-", "time");
+        CreateTimer((long) PARAM.SlidingTime.Time2.getTime() * 1000, "real-time-count-product-", "time");
 
-                    long currentTime = System.currentTimeMillis();
+        CreateTimer((long) PARAM.SlidingTime.Time3.getTime() * 1000, "Sliding-data-", "timestamp");
+        CreateTimer((long) PARAM.SlidingTime.Time3.getTime() * 1000, "real-time-count-chart-", "time");
+        CreateTimer((long) PARAM.SlidingTime.Time3.getTime() * 1000, "real-time-count-chart-tran-", "time");
+        CreateTimer((long) PARAM.SlidingTime.Time3.getTime() * 1000, "real-time-count-tran-", "time");
+        CreateTimer((long) PARAM.SlidingTime.Time3.getTime() * 1000, "real-time-count-product-", "time");
+    }
 
-                    RemoveRealTimeSlidingData((long) PARAM.SlidingTime.Time1.getTime() * 1000, currentTime, "Sliding-data-", "timestamp");
-                    RemoveRealTimeSlidingData((long) PARAM.SlidingTime.Time2.getTime() * 1000, currentTime, "Sliding-data-", "timestamp");
-                    RemoveRealTimeSlidingData((long) PARAM.SlidingTime.Time3.getTime() * 1000, currentTime, "Sliding-data-", "timestamp");
+    private static synchronized void CreateTimer(final long slidingTime,final String key,final String time){
+        try{
 
-                    RemoveRealTimeSlidingData((long) PARAM.SlidingTime.Time1.getTime() * 1000, currentTime, "real-time-count-chart-", "time");
-                    RemoveRealTimeSlidingData((long) PARAM.SlidingTime.Time2.getTime() * 1000, currentTime, "real-time-count-chart-", "time");
-                    RemoveRealTimeSlidingData((long) PARAM.SlidingTime.Time3.getTime() * 1000, currentTime, "real-time-count-chart-", "time");
-
-                    RemoveRealTimeSlidingData((long) PARAM.SlidingTime.Time1.getTime() * 1000, currentTime, "real-time-count-tran-", "time");
-                    RemoveRealTimeSlidingData((long) PARAM.SlidingTime.Time2.getTime() * 1000, currentTime, "real-time-count-tran-", "time");
-                    RemoveRealTimeSlidingData((long) PARAM.SlidingTime.Time3.getTime() * 1000, currentTime, "real-time-count-tran-", "time");
-
-                    RemoveRealTimeSlidingData((long) PARAM.SlidingTime.Time1.getTime() * 1000, currentTime, "real-time-count-product-", "time");
-                    RemoveRealTimeSlidingData((long) PARAM.SlidingTime.Time2.getTime() * 1000, currentTime, "real-time-count-product-", "time");
-                    RemoveRealTimeSlidingData((long) PARAM.SlidingTime.Time3.getTime() * 1000, currentTime, "real-time-count-product-", "time");
-
-
-                }catch (Exception e){
-                    e.printStackTrace();
+            TimerTask timerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    try{
+                        long currentTime = System.currentTimeMillis();
+                        RemoveRealTimeSlidingData(slidingTime, currentTime, key, time);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
                 }
-            }
-        };
-        Timer timer = new Timer("MyTimer");//create a new Timer
-        timer.scheduleAtFixedRate(timerTask, 0, 2000);
+            };
+
+            Timer timer = new Timer("MyTimer" + i++);//create a new Timer
+            timer.scheduleAtFixedRate(timerTask, 0, 1000);
+            System.out.println("Create Timer " + i);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private static synchronized void RemoveRealTimeSlidingData(long slidingTime, long currentTime,String key, String time){
@@ -70,6 +78,7 @@ public class RemoveForSlidingWorker {
                 }
             }
             jedis.disconnect();
+
         }catch (Exception e){
             e.printStackTrace();
         }

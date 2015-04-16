@@ -41,6 +41,7 @@ public class SaveNonRankingBolt extends BaseFunction{
                 jedis.set("Ranking-" + tranType + "-" + (long) this.Sliding, obj.toString());
             }
             jedis.disconnect();
+            System.out.println("done SaveNonRankingBolt");
         }catch (Exception e){e.printStackTrace();}
     }
 }

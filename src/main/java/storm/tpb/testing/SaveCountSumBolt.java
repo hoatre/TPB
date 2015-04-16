@@ -38,6 +38,7 @@ public class SaveCountSumBolt extends BaseFunction{
 
             jedis.rpush("real-time-count-chart-" + (long)this.Sliding, jsonAll.toString());
             jedis.disconnect();
+            System.out.println("done SaveCountSumBolt");
         }catch (Exception e){e.printStackTrace();}
     }
 }

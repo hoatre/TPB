@@ -160,6 +160,18 @@ router.get('/chart', function(req, res) {
 	res.render('chart', { title: 'chart' });
 });
 
+//Point chart display
+router.get('/PointChart', function(req, res) {
+	console.log('PointChart request');
+	res.render('PointChart', { title: 'PointChart' });
+});
+
+//Point chart display
+router.get('/ChannelByTran', function(req, res) {
+	console.log('ChannelByTran request');
+	res.render('ChannelByTran', { title: 'ChannelByTran' });
+});
+
 //smoothie chart display
 router.get('/smoothieChart', function(req, res, next) {
 
