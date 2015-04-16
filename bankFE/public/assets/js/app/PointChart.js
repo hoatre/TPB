@@ -21,7 +21,7 @@ $(document).ready(function() {
 
 // Data
 
-var profileHost = '/profile/';
+var stripLines = 0;
 var transactionCode = [];
 var data = [];
 var time1 = 60000;
@@ -81,6 +81,9 @@ function OnLoad() {
     OpenSocket();
     AddCombobox();
     CreateChart();
+
+    var stripLinesTb = document.getElementById("stripLinesTb");
+    stripLinesTb.value = 0;
     //set event selected cho combobox time
     $('#SlidingTimeCbo').change(function() {
         var SlidingTimeSmoothieCbo = document.getElementById("SlidingTimeCbo");
@@ -101,6 +104,12 @@ function OnLoad() {
 
     }).change();
 
+    $('#stripLinesTb').change(function() {
+        var stripLinesTb = document.getElementById("stripLinesTb");
+        stripLines = stripLinesTb.value;
+        CreateChart();
+    }).change();
+
 }
 
 function CreateChart(){
@@ -115,8 +124,11 @@ function CreateChart(){
 
             },
             axisY:{
-                //includeZero: false
-
+                stripLines:[
+                    {
+                        value : parseInt(stripLines)
+                    }
+                ]
             },
             legend:{
                 cursor:"pointer",

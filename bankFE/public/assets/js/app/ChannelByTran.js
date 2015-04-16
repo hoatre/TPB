@@ -20,7 +20,6 @@ $(document).ready(function() {
 });
 
 // Data
-
 var transactionSelected;
 var channelCode = [];
 var transactionCode;
@@ -113,11 +112,10 @@ function OnLoad() {
         }
 
     }).change();
-
 }
 
 function CreateChart(){
-    chartCD1 = new CanvasJS.Chart("chartCD",
+    chartCD1 = new CanvasJS.Chart("ChannelByTranChart",
         {
             zoomEnabled: true,
             title: {
