@@ -20,7 +20,7 @@ $(document).ready(function() {
 });
 
 // Data
-
+var profileHost = '/profile/';
 var stripLines = 0;
 var transactionCode = [];
 var data = [];
@@ -49,7 +49,7 @@ function OpenSocket(){
                 type: "scatter",
                 showInLegend: true,
                 name: transactionCode[i].TransactionName,
-                toolTipContent: "<span style='\"'color: {color};'\"'><strong>{name}</strong></span><br/><strong> time </strong> {x} <br/><strong> amount </strong></span> {y}",
+                toolTipContent: "<span style='\"'color: {color};'\"'><strong>{name}</strong></span><br/><strong> time </strong> {x} <br/><strong> amount </strong></span> {y} <br/><strong> account </strong></span> {label}",
                 dataPoints:[]};
             data.push(dataSeries);
         }
@@ -180,7 +180,9 @@ function buidData()
 
                         dataPoints.push({
                             x: new Date(jsonObj[j]["timestamp"]),
-                            y: jsonObj[j]["amount"]
+                            y: jsonObj[j]["amount"],
+                            label : jsonObj[j]["acc_no"],
+                            click: onClick
                         });
                     }
                 }
@@ -196,4 +198,9 @@ function buidData()
 
         }
     }
+}
+
+function onClick(e){
+    //alert(e.dataPoint.label);
+    window.location = '/profile/' + e.dataPoint.label;
 }
