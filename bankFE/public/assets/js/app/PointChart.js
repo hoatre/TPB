@@ -202,5 +202,5 @@ function buidData()
 
 function onClick(e){
     //alert(e.dataPoint.label);
-    window.location = '/profile/' + e.dataPoint.label;
+    window.open(profileHost + e.dataPoint.label, '_blank');
 }
