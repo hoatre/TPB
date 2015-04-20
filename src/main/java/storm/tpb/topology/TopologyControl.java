@@ -13,6 +13,8 @@ import storm.kafka.StringScheme;
 import storm.kafka.ZkHosts;
 import storm.kafka.trident.OpaqueTridentKafkaSpout;
 import storm.kafka.trident.TridentKafkaConfig;
+import storm.tpb.bolts.RankingsBolt;
+import storm.tpb.bolts.ValueChartBolt;
 import storm.tpb.testing.*;
 import storm.tpb.tools.function;
 import storm.tpb.util.Properties;
