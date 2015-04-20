@@ -6,24 +6,18 @@ import backtype.storm.StormSubmitter;
 import backtype.storm.generated.StormTopology;
 import backtype.storm.spout.SchemeAsMultiScheme;
 import backtype.storm.tuple.Fields;
-import backtype.storm.tuple.Values;
-import org.json.simple.JSONValue;
 import storm.kafka.BrokerHosts;
 import storm.kafka.StringScheme;
 import storm.kafka.ZkHosts;
 import storm.kafka.trident.OpaqueTridentKafkaSpout;
 import storm.kafka.trident.TridentKafkaConfig;
-import storm.tpb.testing.*;
-import storm.tpb.tools.function;
+import storm.tpb.bolts.SaveSlidingBolt;
 import storm.tpb.util.Properties;
 import storm.trident.Stream;
 import storm.trident.TridentTopology;
 import storm.trident.operation.BaseFunction;
 import storm.trident.operation.TridentCollector;
 import storm.trident.tuple.TridentTuple;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by quangnb on 1/22/15.
@@ -65,6 +59,7 @@ public class Topology_1_0 {
 //        Stream parsedStream = spoutStream.each(new Fields("str"), new
 //                JsonProjectFunction(jsonFields), jsonFields);
 
+        TopologySliding(spoutStream, PARAM.Time.SECONDS.getTime());
         TopologySliding(spoutStream, PARAM.SlidingTime.Time1.getTime() * 1000);
         TopologySliding(spoutStream, PARAM.SlidingTime.Time2.getTime() * 1000);
         TopologySliding(spoutStream, PARAM.SlidingTime.Time3.getTime() * 1000);

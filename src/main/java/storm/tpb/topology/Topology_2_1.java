@@ -8,7 +8,7 @@ import backtype.storm.tuple.Fields;
 import storm.tpb.aggregate.*;
 import storm.tpb.bolts.*;
 import storm.tpb.spouts.RedisBatchSpout;
-import storm.tpb.testing.*;
+import storm.tpb.testing.SaveCountChannelByTranBolt;
 import storm.tpb.tools.function;
 import storm.tpb.util.Properties;
 import storm.trident.Stream;
@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * Created by quangnb on 1/22/15.
  */
-public class Topology_2_0 {
+public class Topology_2_1 {
 
     private static Fields valueChartNew = new Fields("listTotal");
 
@@ -32,7 +32,7 @@ public class Topology_2_0 {
         Config conf = new Config();
         if (args.length == 0) {
             LocalCluster cluster = new LocalCluster();
-            cluster.submitTopology("Topo-2_0", conf,
+            cluster.submitTopology("Topo-2_1", conf,
                     createTopology());
         } else {
             int workers = Properties.getInt("storm.workers");
@@ -49,50 +49,51 @@ public class Topology_2_0 {
 
         List<String> TransactionCode = function.GetListMongo(Properties.getString("MongoDB.TransactionTypes"), "TransactionCode");
 
-        TopologySlidingCountSum(PARAM.SlidingTime.Time1.getTime() * 1000, topology);
-        TopologySlidingCountSum(PARAM.SlidingTime.Time2.getTime() * 1000, topology);
-        TopologySlidingCountSum(PARAM.SlidingTime.Time3.getTime() * 1000, topology);
+        TopologySlidingCountSum(PARAM.Time.SECONDS.getTime(), topology, PARAM.Time.SECONDS.getTime());
+//        TopologySlidingCountSum(PARAM.Time.SECONDS.getTime() * 15, topology);
+//        TopologySlidingCountSum(PARAM.Time.MINUTES.getTime() * 5, topology);
 
-        TopologySlidingOtherChart(PARAM.SlidingTime.Time1.getTime() * 1000, topology);
-        TopologySlidingOtherChart(PARAM.SlidingTime.Time2.getTime() * 1000, topology);
-        TopologySlidingOtherChart(PARAM.SlidingTime.Time3.getTime() * 1000, topology);
-
-        TopologySlidingRanking(PARAM.SlidingTime.Time1.getTime() * 1000, topology, TransactionCode);
-        TopologySlidingRanking(PARAM.SlidingTime.Time2.getTime() * 1000, topology, TransactionCode);
-        TopologySlidingRanking(PARAM.SlidingTime.Time3.getTime() * 1000, topology, TransactionCode);
-
-        TopologySlidingCountByTransaction(PARAM.SlidingTime.Time1.getTime() * 1000, topology);
-        TopologySlidingCountByTransaction(PARAM.SlidingTime.Time2.getTime() * 1000, topology);
-        TopologySlidingCountByTransaction(PARAM.SlidingTime.Time3.getTime() * 1000, topology);
+//        TopologySlidingOtherChart(PARAM.SlidingTime.Time1.getTime() * 1000, topology);
+//        TopologySlidingOtherChart(PARAM.SlidingTime.Time2.getTime() * 1000, topology);
+//        TopologySlidingOtherChart(PARAM.SlidingTime.Time3.getTime() * 1000, topology);
+//
+//        TopologySlidingRanking(PARAM.SlidingTime.Time1.getTime() * 1000, topology, TransactionCode);
+//        TopologySlidingRanking(PARAM.SlidingTime.Time2.getTime() * 1000, topology, TransactionCode);
+//        TopologySlidingRanking(PARAM.SlidingTime.Time3.getTime() * 1000, topology, TransactionCode);
+//
+//        TopologySlidingCountByTransaction(PARAM.SlidingTime.Time1.getTime() * 1000, topology);
+//        TopologySlidingCountByTransaction(PARAM.SlidingTime.Time2.getTime() * 1000, topology);
+//        TopologySlidingCountByTransaction(PARAM.SlidingTime.Time3.getTime() * 1000, topology);
 
         return topology.build();
     }
 
-    private static void TopologySlidingCountSum(double slidingTime, TridentTopology topology)
+    private static void TopologySlidingCountSum(long slidingTime, TridentTopology topology, long slidingTimeWait)
     {
-        RedisBatchSpout spout = new RedisBatchSpout(Properties.getString("redis.host"), Properties.getInt("redis.port"), (long)slidingTime);
+        RedisBatchSpout spout = new RedisBatchSpout(Properties.getString("redis.host"), Properties.getInt("redis.port"), slidingTime, slidingTimeWait);
         Stream spoutStream = topology
-                .newStream("stream-" + (long) slidingTime + "CountSum", spout);
+                .newStream("stream-" + slidingTime + "CountSum", spout);
 
         //Cut & Split data
         Stream PreStream = spoutStream
-                .each(new Fields("list"), new SplitChannelBolt(jsonFields), jsonFields);
-
-        // count tran with each channel
-        Stream CountStream = PreStream
-                .groupBy(new Fields("ch_id"))
-                .aggregate(new Fields("ch_id"), new Count(), new Fields("count"));
-
-        // sum amount with each channel
-        Stream SumStream = PreStream
-                .groupBy(new Fields("ch_id"))
-                .aggregate(new Fields("amount"), new Sum(), new Fields("sum"));
-
-        // merge stream to save redis
-        Stream MergeStream = topology
-                .join(CountStream, new Fields("ch_id"), SumStream, new Fields("ch_id"), new Fields("ch_id", "count", "sum"))
-                .aggregate(new Fields("ch_id", "count", "sum"), new AddStringCountSum(), new Fields("string"))
-                .each(new Fields("string"), new SaveCountSumBolt(slidingTime), new Fields("print"));
+                .each(new Fields("list"), new SplitChannelBolt(jsonFields), jsonFields)
+                .each(jsonFields, new SlidingFilterBolt(slidingTime));
+//
+//        // count tran with each channel
+//        Stream CountStream = PreStream
+//                .groupBy(new Fields("ch_id"))
+//                .aggregate(new Fields("ch_id"), new Count(), new Fields("count"));
+//
+//        // sum amount with each channel
+//        Stream SumStream = PreStream
+//                .groupBy(new Fields("ch_id"))
+//                .aggregate(new Fields("amount"), new Sum(), new Fields("sum"));
+//
+//        // merge stream to save redis
+//        Stream MergeStream = topology
+//                .join(CountStream, new Fields("ch_id"), SumStream, new Fields("ch_id"), new Fields("ch_id", "count", "sum"))
+//                .aggregate(new Fields("ch_id", "count", "sum"), new AddStringCountSum(), new Fields("string"))
+//                .each(new Fields("string"), new SaveCountSumBolt(slidingTime), new Fields("print"));
     }
 
     private static void TopologySlidingCountByTransaction(double slidingTime, TridentTopology topology)
