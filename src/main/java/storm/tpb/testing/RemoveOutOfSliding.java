@@ -15,6 +15,6 @@ public class RemoveOutOfSliding extends BaseFunction{
         this.emitRatePer = emitRatePer;
     }
     public void execute(TridentTuple tuple, TridentCollector collector) {
-        this.sliding.SaveRedisSlidding(tuple.getString(0));
+        //this.sliding.SaveRedisSlidding(tuple.getString(0));
     }
 }
