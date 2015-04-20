@@ -92,7 +92,7 @@ function OpenSocket(){
     });
 }
 
-/*function AddCombobox(){
+function AddCombobox(){
     var x = document.getElementById("SlidingTimeCbo");
     var Cbotext = ["1 Minute", "1 Hour", "1 Day"];
     var CboValue = ["60000", "3600000", "86400000"];
@@ -102,15 +102,15 @@ function OpenSocket(){
         option.value = CboValue[i];
         x.add(option);
     }
-}*/
+}
 
 function OnLoad() {
     OpenSocket();
-    //AddCombobox();
+    AddCombobox();
     CreateChart();
 	jsonObj = jsonObj_time1;
     //set event selected cho combobox time
-    /*$('#SlidingTimeCbo').change(function() {
+    $('#SlidingTimeCbo').change(function() {
         var SlidingTimeSmoothieCbo = document.getElementById("SlidingTimeCbo");
         var CboValue = SlidingTimeSmoothieCbo.options[SlidingTimeSmoothieCbo.selectedIndex].value;
 
@@ -127,7 +127,7 @@ function OnLoad() {
             jsonObj = jsonObj_time3;
         }
 
-    }).change();*/
+    }).change();
 
 }
 
@@ -152,15 +152,18 @@ function CreateChart(){
 }
 
 setInterval(function() {
-    //SlidingTimeCbo = document.getElementById("SlidingTimeCbo");
-    //timer = SlidingTimeCbo.options[SlidingTimeCbo.selectedIndex].value;
-    //if(timer == time1)
+    SlidingTimeCbo = document.getElementById("SlidingTimeCbo");
+    timer = SlidingTimeCbo.options[SlidingTimeCbo.selectedIndex].value;
+    if(timer == time1)
         jsonObj = jsonObj_time1;
-    //else if(timer == time2)
-    //    jsonObj = jsonObj_time2;
-    //else if(timer == time3)
-    //    jsonObj = jsonObj_time3;
+    else if(timer == time2)
+        jsonObj = jsonObj_time2;
+    else if(timer == time3)
+        jsonObj = jsonObj_time3;
+    if(jsonObj)
+    {
     buidData();
+    }
     chartCD1.render();
     //TotalCountAmount();
 }, 1000);
@@ -227,13 +230,13 @@ function SetRanking(Top, array, TranType){
 function buidData()
 {
 	
-    //if(timer == time1)
+    if(timer == time1)
         jsonObj = jsonObj_time1;
 	//alert(jsonObj);
-    /*else if(timer == time2)
+    else if(timer == time2)
         jsonObj = jsonObj_time2;
     else if(timer == time3)
-        jsonObj = jsonObj_time3;*/
+        jsonObj = jsonObj_time3;
 	//alert(data.length);
     for(var k=0;k<data.length;k++) {
         for (var i = 0; i < transactionCode.length; i++) {
@@ -242,7 +245,7 @@ function buidData()
                 var visible = false;
                 for (var j = 0; j < jsonObj.length; j += 1) {
 
-                    //if (visible == false && jsonObj[j][transactionCode[i].TransactionCode + "-count"] != null && jsonObj[j][transactionCode[i].TransactionCode + "-count"] != "") visible = true;
+                    if (visible == false && jsonObj[j][transactionCode[i].TransactionCode + "-count"] != null && jsonObj[j][transactionCode[i].TransactionCode + "-count"] != "") visible = true;
                     //if(jsonObj[j][transactionCode[i].TransactionCode + "-count"] != null && jsonObj[j][transactionCode[i].TransactionCode + "-count"] != "") {
 			//if(dataPoints.length>40)
 			//{
@@ -256,16 +259,16 @@ function buidData()
                     }
                 }
 		data[k].dataPoints = dataPoints;
-                /*if (visible == true) {
+                if (visible == true) {
                     
                     data[k].showInLegend = true;
-                    if(typeof(data[k].visible) === "undefined" || data[k].visible)
-                        transactionCode[i].Display = "1";
+                    //if(typeof(data[k].visible) === "undefined" || data[k].visible)
+                    //    transactionCode[i].Display = "1";
                 }else{
                     data[k].showInLegend = false;
                     data[k].dataPoints = [];
-                    transactionCode[i].Display = "0";
-                }*/
+                    //transactionCode[i].Display = "0";
+                }
         }
     }
 

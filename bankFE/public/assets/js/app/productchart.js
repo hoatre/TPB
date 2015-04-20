@@ -6,7 +6,7 @@ $(document).ready(function() {
     // Populate the user table on initial page load
     OnLoad();
 
-    $("#transactionList input[type='checkbox']").each(function(){
+    /*$("#transactionList input[type='checkbox']").each(function(){
         $(this).click(function(){
             var id = $(this).attr("id");
 
@@ -16,7 +16,7 @@ $(document).ready(function() {
                 alert('... Dang cap nhat');
                 //$('#top' + id).removeClass('hide');
         });        
-    })
+    })*/
 });
 
 // Data
@@ -88,29 +88,31 @@ function OpenSocket(){
 	    }
 	    if(adddata)
 	    {
-	    var dataSeries = { xValueType: "dateTime",click: onClick, type: "line", showInLegend: false, name: productCode[i].ProductName, dataPoints:[]};
+	    var dataSeries = { axisYType: "secondary",xValueType: "dateTime",click: onClick, type: "line", showInLegend: false, name: productCode[i].ProductName, dataPoints:[]};
             data.push(dataSeries);
 	    }
         }
 	if(productCode.length>0)
 	{
-	    var dataSeries = { axisYType: "secondary",xValueType: "dateTime", type: "column", showInLegend: false, name: "Total Product", dataPoints:[]};
+	    var dataSeries = { xValueType: "dateTime",click: onClick, type: "column", showInLegend: false, name: "Total Product", dataPoints:[]};
             data.push(dataSeries);
 	}
     });
     socket.on('listChart-real-time-count-product-' + time1,function(data1){
         jsonObj_time1 = $.parseJSON('[' + data1 + ']');
 	//alert(data1);
+        //alert(time1);
     });
     socket.on('listChart-real-time-count-product-' + time2,function(data1){
         jsonObj_time2 = $.parseJSON('[' + data1 + ']');
+	//alert(time2);
     });
     socket.on('listChart-real-time-count-product-' + time3,function(data1){
         jsonObj_time3 = $.parseJSON('[' + data1 + ']');
     });
 }
 
-/*function AddCombobox(){
+function AddCombobox(){
     var x = document.getElementById("SlidingTimeCbo");
     var Cbotext = ["1 Minute", "1 Hour", "1 Day"];
     var CboValue = ["60000", "3600000", "86400000"];
@@ -120,15 +122,15 @@ function OpenSocket(){
         option.value = CboValue[i];
         x.add(option);
     }
-}*/
+}
 
 function OnLoad() {
     OpenSocket();
-    //AddCombobox();
+    AddCombobox();
     CreateChart();
-	jsonObj = jsonObj_time1;
+	//jsonObj = jsonObj_time1;
     //set event selected cho combobox time
-    /*$('#SlidingTimeCbo').change(function() {
+    $('#SlidingTimeCbo').change(function() {
         var SlidingTimeSmoothieCbo = document.getElementById("SlidingTimeCbo");
         var CboValue = SlidingTimeSmoothieCbo.options[SlidingTimeSmoothieCbo.selectedIndex].value;
 
@@ -145,7 +147,7 @@ function OnLoad() {
             jsonObj = jsonObj_time3;
         }
 
-    }).change();*/
+    }).change();
 
 }
 
@@ -162,13 +164,13 @@ function CreateChart(){
             },
             axisY:{
                 includeZero: false
-
+		,maximum: 2000
             },
             legend:{
                 cursor:"pointer",
                 itemclick : function(e) {
                     if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
-                        e.dataSeries.visible = true;
+                        e.dataSeries.visible = false;
                         /*for(var m=0;m<channelCode.length;m++){
                             if(transactionCode[m].TransactionName.toString() === e.dataSeries.name.toString()) {
                                 //channelCode[m].Display = "0";
@@ -192,16 +194,21 @@ function CreateChart(){
 }
 
 setInterval(function() {
-    //SlidingTimeCbo = document.getElementById("SlidingTimeCbo");
-    //timer = SlidingTimeCbo.options[SlidingTimeCbo.selectedIndex].value;
-    //if(timer == time1)
+    SlidingTimeCbo = document.getElementById("SlidingTimeCbo");
+    timer = SlidingTimeCbo.options[SlidingTimeCbo.selectedIndex].value;
+    //alert(timer);
+    if(timer == time1)
         jsonObj = jsonObj_time1;
-    //else if(timer == time2)
-    //    jsonObj = jsonObj_time2;
-    //else if(timer == time3)
-    //    jsonObj = jsonObj_time3;
+    else if(timer == time2)
+        jsonObj = jsonObj_time2;
+    else if(timer == time3)
+        jsonObj = jsonObj_time3;
+    if(jsonObj)
+    {
     buidData();
+    }
     chartCD1.render();
+    TotalCountAmount();
 }, 1000);
 
 /*
@@ -265,65 +272,49 @@ function SetRanking(Top, array, TranType){
 // build data for chart
 function buidData()
 {
-	
-    //if(timer == time1)
+	//alert(timer);	
+    if(timer == time1)
+    {
+	//alert(timer);	
         jsonObj = jsonObj_time1;
+    }
 	//alert(jsonObj);
-    /*else if(timer == time2)
+    else if(timer == time2)
         jsonObj = jsonObj_time2;
     else if(timer == time3)
-        jsonObj = jsonObj_time3;*/
+        jsonObj = jsonObj_time3;
 	//alert(data.length);
  
     for(var k=0;k<data.length;k++) {
 	data[k].showInLegend = false;
         for (var i = 0; i < productCode.length; i++) {
-		var dataPoints = [];
             if(data[k].name == productCode[i].ProductName) {
-		//alert(productCode[i].ProductCode);
 		data[k].showInLegend = true;
                 var dataPoints = [];
                 var visible = false;
                 for (var j = 0; j < jsonObj.length; j ++) {
-
                     if (visible == false && jsonObj[j][productCode[i].ProductCode + "-count"] != null && jsonObj[j][productCode[i].ProductCode + "-count"] != "") visible = true;
                     if(jsonObj[j][productCode[i].ProductCode + "-count"] != null && jsonObj[j][productCode[i].ProductCode + "-count"] != "") {
-                        alert(jsonObj[j][productCode[i].ProductCode + "-count"]);
-			//if(dataPoints.length>40)
-			//{
-				//dataPoints.splice(0, dataPoints.length-40);
-			//}
-			//alert(jsonObj[j][productCode[i].ProductCode + "-count"]);
-			//alert(productCode[i].ProductCode);
                         dataPoints.push({
                             x: new Date(jsonObj[j]["time"]),
                             y: parseInt(jsonObj[j][productCode[i].ProductCode + "-count"])
                         });
-			
-                    }
+		    }
 		      
                 }
 		
-		data[k].dataPoints = dataPoints;
+		
 		//alert(data.length);
-                /*if (visible == true) {
-                    
+                if (visible == true) {
+                    data[k].dataPoints = dataPoints;
                     data[k].showInLegend = true;
-                    if(typeof(data[k].visible) === "undefined" || data[k].visible)
-                        productCode[i].Display = "1";
                 }else{
                     data[k].showInLegend = false;
                     data[k].dataPoints = [];
-                    productCode[i].Display = "0";
-                }*/
+                }
             }
         }
 	
-	
-	//if(data[k].name == "Total Product")
-	//{
-		//data[k].showInLegend = true;
-	//}	
 	
     }
 	for (var j = 0; j < jsonObj.length; j ++) {
@@ -340,8 +331,12 @@ function buidData()
 		        
 		}
 		for (var k = 0; k < data.length; k++) {
-		data[k].showInLegend = true;
+		//data[k].showInLegend = true;
 		if(data[k].name == "Total Product")
+		{
+		data[k].showInLegend = true;
+		//alert("date: "+date+" - totalCount: "+totalCount);
+		if(date&&totalCount)
 		{
 		dataPoints.push({
 		                    x: date,
@@ -349,7 +344,7 @@ function buidData()
 		                });
 		
 		data[k].dataPoints = dataPoints;
-			
+		}
 		}
 		}
     	}
@@ -420,7 +415,10 @@ function onClick(e) {
 						if(datapie.length==0)
 						{
 						//alert();
+						if(data[i].dataPoints[index].y)
+						{
 						datapie.push({  y: data[i].dataPoints[index].y, legendText: data[i].name, label: data[i].name});						
+						}
 						}
 						else
 						{
@@ -434,7 +432,10 @@ function onClick(e) {
 							}
 							if(ispush)
 							{
+								if(typeof(data[i].dataPoints[index]) !== "undefined" && data[i].dataPoints[index] !== null)
+								{
 								datapie.push({  y: data[i].dataPoints[index].y, legendText: data[i].name,exploded: true, label: data[i].name});
+								}
 							}
 						}
 					}
@@ -467,11 +468,11 @@ function onClick(e) {
 		chart1.render();
                 
                 $( "#dialog" ).dialog();
-    		$('#dialog').css('width', '700px');
+    		//$('#dialog').css('width', '700px');
 	}
 
 //-----popup------
-$(function() {
-    $('#dialog').css('width', '700px');
-    $( "#dialog" ).dialog();
-  });
+/*$(function() {
+    //$('#dialog').css('width', '700px');
+    //$( "#dialog" ).dialog();
+  });*/

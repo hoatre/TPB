@@ -111,7 +111,7 @@ function onListening() {
 
 var mongoskin = require('mongoskin');
 var db = mongoskin.db(commonConfig.serverMongo, {safe:true});
-var t1, t2, t3,t4,t5;
+var t1, t2, t3,t4,t5,t6;
 var channelCode = [];
 var transactionCode = [];
 var transactionCodeJson = [];
@@ -373,16 +373,30 @@ io.sockets.on('connection',function(socket){
         redis_lrange('real-time-count-chart-' + commonConfig.SlidingTimeDay, socket);
         redis_lrange('real-time-count-chart-tran-' + commonConfig.SlidingTimeDay, socket);
     }, commonConfig.SlidingTimeDelayDay);
+
+    //set timeout 1 minute
     t4 = setInterval(function() {
 
         redis_lrange('real-time-count-tran-' + commonConfig.SlidingTimeMinute, socket);
-	
-    }, commonConfig.SlidingTimeDelayMinute);
-    t5 = setInterval(function() {
-
         redis_lrange('real-time-count-product-' + commonConfig.SlidingTimeMinute, socket);
 	
     }, commonConfig.SlidingTimeDelayMinute);
+    //set timeout 1 hour
+    redis_lrange('real-time-count-tran-' + commonConfig.SlidingTimeHour, socket);
+    redis_lrange('real-time-count-product-' + commonConfig.SlidingTimeHour, socket);
+    t5 = setInterval(function() {
+	redis_lrange('real-time-count-tran-' + commonConfig.SlidingTimeHour, socket);
+        redis_lrange('real-time-count-product-' + commonConfig.SlidingTimeHour, socket);
+	
+    }, commonConfig.SlidingTimeDelayHour);
+    //set timeout 1 day
+    redis_lrange('real-time-count-tran-' + commonConfig.SlidingTimeDay, socket);
+    redis_lrange('real-time-count-product-' + commonConfig.SlidingTimeDay, socket);
+    t6 = setInterval(function() {
+	redis_lrange('real-time-count-tran-' + commonConfig.SlidingTimeDay, socket);
+        redis_lrange('real-time-count-product-' + commonConfig.SlidingTimeDay, socket);
+
+    }, commonConfig.SlidingTimeDelayDay);
     socket.on('BuidDataOff',function(data){
 	console.log('BuidDataOff');
 	loadtransactionchart('real-time-count-chart-' + commonConfig.SlidingTimeMinute, socket);

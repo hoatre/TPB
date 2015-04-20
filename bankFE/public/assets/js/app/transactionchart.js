@@ -75,7 +75,7 @@ function OpenSocket(){
     socket.on('loadtransactionchart-real-time-count-chart-60000',function(data1){
 	//alert('loadtransactionchart-real-time-count-chart-');
         jsonObj_time1 = $.parseJSON('[' + data1 + ']');
-	buidDataOff();
+	//buidDataOff();
     });
 
     socket.on('listChart-real-time-count-chart-' + time1,function(data1){
@@ -90,7 +90,7 @@ function OpenSocket(){
     });
 }
 
-/*function AddCombobox(){
+function AddCombobox(){
     var x = document.getElementById("SlidingTimeCbo");
     var Cbotext = ["1 Minute", "1 Hour", "1 Day"];
     var CboValue = ["60000", "3600000", "86400000"];
@@ -100,13 +100,30 @@ function OpenSocket(){
         option.value = CboValue[i];
         x.add(option);
     }
-}*/
+}
 
 function OnLoad() {
     OpenSocket();
-    //AddCombobox();
+    AddCombobox();
     CreateChart();
-    
+    $('#SlidingTimeCbo').change(function() {
+        var SlidingTimeSmoothieCbo = document.getElementById("SlidingTimeCbo");
+        var CboValue = SlidingTimeSmoothieCbo.options[SlidingTimeSmoothieCbo.selectedIndex].value;
+
+        if(CboValue.toLowerCase().localeCompare("60000".toLowerCase()) == 0)
+        {
+            jsonObj = jsonObj_time1;
+        }
+        else if(CboValue.toLowerCase().localeCompare("3600000".toLowerCase()) == 0)
+        {
+            jsonObj = jsonObj_time2;
+        }
+        else if(CboValue.toLowerCase().localeCompare("86400000".toLowerCase()) == 0)
+        {
+            jsonObj = jsonObj_time3;
+        }
+
+    }).change();
 
 }
 
@@ -154,18 +171,20 @@ function CreateChart(){
 //int cnt=0;
 setInterval(function() {
     SlidingTimeCbo = document.getElementById("SlidingTimeCbo");
-    //timer = SlidingTimeCbo.options[SlidingTimeCbo.selectedIndex].value;
-    jsonObj = jsonObj_time1;
-    if(dataPoints.length>0)
+    timer = SlidingTimeCbo.options[SlidingTimeCbo.selectedIndex].value;
+    //alert(timer);
+    if(timer == time1)
+        jsonObj = jsonObj_time1;
+    else if(timer == time2)
+        jsonObj = jsonObj_time2;
+    else if(timer == time3)
+        jsonObj = jsonObj_time3;
+    if(jsonObj)
     {
     buidData();
     }
-    if(dataPoints.length==0)
-    {
-    	//buidDataOff();
-    }
     chartCD1.render();
-    TotalCountAmount();
+    //TotalCountAmount();
 }, 1000);
 
 // set ranking
@@ -229,7 +248,49 @@ function SetRanking(Top, array, TranType){
 var dataPoints = [];
 function buidData()
 {
-    jsonObj = jsonObj_time1;
+    if(timer == time1)
+    {
+	//alert(timer);	
+        jsonObj = jsonObj_time1;
+    }
+	//alert(jsonObj);
+    else if(timer == time2)
+        jsonObj = jsonObj_time2;
+    else if(timer == time3)
+        jsonObj = jsonObj_time3;
+    
+    
+    dataPoints=[];
+    for(var k=0;k<data.length;k++) {
+	
+	
+	for (var j = 0; j < jsonObj.length; j += 1) {
+		totalCount = 0;
+		var date;
+		//var total = 0;
+		//var time;
+		
+		for (var i = 0; i < channelCode.length; i++) {
+			if(jsonObj[j][channelCode[i].ChannelCode + "-count"] != null && jsonObj[j][channelCode[i].ChannelCode + "-count"] != "") {
+			
+                        totalCount = parseInt(totalCount) + parseInt(jsonObj[j][channelCode[i].ChannelCode + "-count"]);
+			date= new Date(jsonObj[j]["time"]);
+			
+                        }
+		        
+		}
+		if(date&&totalCount)
+		{
+		dataPoints.push({
+		                    x: date,
+		                    y: parseInt(totalCount)
+		                });
+		
+			data[k].dataPoints = dataPoints;
+		}
+		}
+    }
+    /*jsonObj = jsonObj_time1;
     
 
     totalCount = 0;
@@ -245,9 +306,13 @@ function buidData()
             }
                 
 	}
-	
-	var timestamp = dataPoints[0].x.getTime();
-	var timestamp1mn=timestamp-60000;
+	var timestamp = 0;
+	var timestamp1mn=0;
+	if(dataPoints[0].x)
+	{
+	timestamp = dataPoints[0].x.getTime();
+	timestamp1mn=timestamp-60000;
+	}
 	//alert(timestamp+"_"+timestamp1mn);
 	
 	var date= new Date(jsonObj[jsonObj.length - 1]["time"]);
@@ -268,8 +333,9 @@ function buidData()
 		                });
 			//dataPoints.splice(0, 2);
 			data[k].dataPoints = dataPoints;
+	
 
-    }
+    }*/
 }
 //buidDataOff();
 socket.emit('BuidDataOff',"Start");
@@ -310,7 +376,7 @@ function buidDataOff()
 //set total count & amount
 function TotalCountAmount()
 {
-    totalSum = 0;
+    /*totalSum = 0;
     totalCount = 0;
     for(var i=0;i<channelCode.length;i++){
         if(channelCode[i].Display == "1") {
@@ -334,5 +400,5 @@ function TotalCountAmount()
     TotalNoTran.innerHTML = totalCount.toString();
 
     var TotalAmount = document.getElementById("TotalAmount");
-    TotalAmount.innerHTML = totalSum.toString();
+    TotalAmount.innerHTML = totalSum.toString();*/
 }
