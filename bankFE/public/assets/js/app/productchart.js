@@ -287,14 +287,16 @@ function buidData()
  
     for(var k=0;k<data.length;k++) {
 	data[k].showInLegend = false;
+	var dataPoints=[];
         for (var i = 0; i < productCode.length; i++) {
             if(data[k].name == productCode[i].ProductName) {
 		data[k].showInLegend = true;
-                var dataPoints = [];
+                dataPoints = [];
                 var visible = false;
                 for (var j = 0; j < jsonObj.length; j ++) {
                     if (visible == false && jsonObj[j][productCode[i].ProductCode + "-count"] != null && jsonObj[j][productCode[i].ProductCode + "-count"] != "") visible = true;
                     if(jsonObj[j][productCode[i].ProductCode + "-count"] != null && jsonObj[j][productCode[i].ProductCode + "-count"] != "") {
+			
                         dataPoints.push({
                             x: new Date(jsonObj[j]["time"]),
                             y: parseInt(jsonObj[j][productCode[i].ProductCode + "-count"])
@@ -318,6 +320,7 @@ function buidData()
 	
     }
 	for (var j = 0; j < jsonObj.length; j ++) {
+		
 		totalCount = 0;
 		var date;
 		//alert("--"+j);
@@ -332,20 +335,21 @@ function buidData()
 		}
 		for (var k = 0; k < data.length; k++) {
 		//data[k].showInLegend = true;
-		if(data[k].name == "Total Product")
-		{
-		data[k].showInLegend = true;
-		//alert("date: "+date+" - totalCount: "+totalCount);
-		if(date&&totalCount)
-		{
-		dataPoints.push({
-		                    x: date,
-		                    y: parseInt(totalCount)
-		                });
+			if(data[k].name == "Total Product")
+			{
+				//alert(data[k].name);
+				data[k].showInLegend = true;
+				//alert("date: "+date+" - totalCount: "+totalCount);
+				if(date&&totalCount)
+				{
+				dataPoints.push({
+						    x: date,
+						    y: parseInt(totalCount)
+						});
 		
-		data[k].dataPoints = dataPoints;
-		}
-		}
+				data[k].dataPoints = dataPoints;
+				}
+			}
 		}
     	}
 }
