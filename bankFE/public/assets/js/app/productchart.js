@@ -150,10 +150,7 @@ function OnLoad() {
     }).change();
 
 }
-
-function CreateChart(){
-    chartCD1 = new CanvasJS.Chart("chartCD",
-        {
+var chartConfig={
             zoomEnabled: true,
             title: {
                 text: ""
@@ -164,7 +161,7 @@ function CreateChart(){
             },
             axisY:{
                 includeZero: false
-		,maximum: 2000
+		,maximum: 1000
             },
             legend:{
                 cursor:"pointer",
@@ -185,11 +182,50 @@ function CreateChart(){
                             }
                         }*/
                     }
-                    chartCD1.render();
+                    //chartCD1.render();
                 }
             },
             data:data
-        });
+        };
+function CreateChart(){
+    chartConfig = {
+            zoomEnabled: true,
+            title: {
+                text: ""
+            },
+            toolTip: {
+                shared: true
+
+            },
+            axisY:{
+                includeZero: false
+		,maximum: 1000
+            },
+            legend:{
+                cursor:"pointer",
+                itemclick : function(e) {
+                    if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                        e.dataSeries.visible = false;
+                        /*for(var m=0;m<channelCode.length;m++){
+                            if(transactionCode[m].TransactionName.toString() === e.dataSeries.name.toString()) {
+                                //channelCode[m].Display = "0";
+                            }
+                        }*/
+                    }
+                    else {
+                        e.dataSeries.visible = true;
+                        /*for(var i = 0;i<channelCode.length;i++){
+                            if(channelCode[i].ChannelName.toString() === e.dataSeries.name.toString()) {
+                                channelCode[i].Display = "1";
+                            }
+                        }*/
+                    }
+                    //chartCD1.render();
+                }
+            },
+            data:data
+        };
+    chartCD1 = new CanvasJS.Chart("chartCD",chartConfig);
     chartCD1.render();
 }
 
@@ -338,6 +374,7 @@ function buidData()
 			if(data[k].name == "Total Product")
 			{
 				//alert(data[k].name);
+				
 				data[k].showInLegend = true;
 				//alert("date: "+date+" - totalCount: "+totalCount);
 				if(date&&totalCount)
@@ -351,6 +388,15 @@ function buidData()
 				}
 			}
 		}
+		if(chartConfig)
+		{
+			if(totalCount>100)
+			{
+			chartConfig.axisY.maximum=eval(totalCount*10);
+			}
+		}
+		//var maxy=eval(totalCount*10+1000);
+		//CreateChart(totalCount*100);
     	}
 }
 
@@ -436,7 +482,7 @@ function onClick(e) {
 							}
 							if(ispush)
 							{
-								if(typeof(data[i].dataPoints[index]) !== "undefined" && data[i].dataPoints[index] !== null)
+								if(data[i].dataPoints[index])
 								{
 								datapie.push({  y: data[i].dataPoints[index].y, legendText: data[i].name,exploded: true, label: data[i].name});
 								}
@@ -471,7 +517,7 @@ function onClick(e) {
 		});
 		chart1.render();
                 
-                $( "#dialog" ).dialog();
+                $( "#dialog" ).dialog({width: 800,height:'auto'});
     		//$('#dialog').css('width', '700px');
 	}
 
