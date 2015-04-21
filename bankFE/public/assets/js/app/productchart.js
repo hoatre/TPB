@@ -355,6 +355,7 @@ function buidData()
 	
 	
     }
+    var max=0;
 	for (var j = 0; j < jsonObj.length; j ++) {
 		
 		totalCount = 0;
@@ -388,16 +389,21 @@ function buidData()
 				}
 			}
 		}
-		if(chartConfig)
-		{
-			if(totalCount>100)
-			{
-			chartConfig.axisY.maximum=eval(totalCount*10);
-			}
-		}
+        if(max<totalCount)
+        {
+            max=totalCount;
+        }
+
 		//var maxy=eval(totalCount*10+1000);
 		//CreateChart(totalCount*100);
     	}
+    if(chartConfig)
+    {
+        if(max>100)
+        {
+            chartConfig.axisY.maximum=eval(max*10);
+        }
+    }
 }
 
 //set total count & amount
@@ -517,7 +523,7 @@ function onClick(e) {
 		});
 		chart1.render();
                 
-                $( "#dialog" ).dialog({width: 800,height:'auto'});
+                $( "#dialog" ).dialog({width: 800,height: 500});
     		//$('#dialog').css('width', '700px');
 	}
 
