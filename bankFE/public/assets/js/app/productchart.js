@@ -374,8 +374,7 @@ function buidData()
 		//data[k].showInLegend = true;
 			if(data[k].name == "Total Product")
 			{
-				//alert(data[k].name);
-				
+				//alert(data[k].name)
 				data[k].showInLegend = true;
 				//alert("date: "+date+" - totalCount: "+totalCount);
 				if(date&&totalCount)
@@ -387,6 +386,13 @@ function buidData()
 		
 				data[k].dataPoints = dataPoints;
 				}
+                else{
+                    if(data[k].dataPoints.length==1)
+                    {
+                        data[k].showInLegend = false;
+                        data[k].dataPoints=[];
+                    }
+                }
 			}
 		}
         if(max<totalCount)
@@ -404,6 +410,7 @@ function buidData()
             chartConfig.axisY.maximum=eval(max*10);
         }
     }
+
 }
 
 //set total count & amount
