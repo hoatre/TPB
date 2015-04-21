@@ -122,10 +122,14 @@ router.get('/profile/:id', function(req, res, next) {
 	Customers.findOne({ACCOUNTNUMBER:req.params.id}, function(error, customer) {
 	    if (error) return next(error);
 	    if (!customer) return next(new Error('Get detail fail.'));
-
+	    
 	    resCustomer	= customer;
-	    var INTERACTION = JSON.parse(resCustomer.INTERACTION);
-
+	    var INTERACTION = JSON.parse("{}");
+	    if(resCustomer.INTERACTION)
+	    {
+	     INTERACTION = JSON.parse(resCustomer.INTERACTION);
+	    }
+	    
 	    var CustomerLogs = db.collection('CustomerLogs');
 	    CustomerLogs.find({acc_no:req.params.id}).sort({timestamp: -1}).limit(5).toArray(function(error, customerLogs) {
 			if (error) return next(error);
