@@ -35,7 +35,7 @@ public class JoinToListString implements CombinerAggregator<List<String>> {
             List<String> list = new ArrayList<String>();
             JSONObject jsonObject = new JSONObject();
             for(String Field : this.Fields) {
-                jsonObject.put(Field, tuple.getStringByField(Field));
+                jsonObject.put(Field, tuple.getValueByField(Field));
             }
             list.add(jsonObject.toString());
             return list;

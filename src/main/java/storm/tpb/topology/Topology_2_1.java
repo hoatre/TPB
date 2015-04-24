@@ -8,7 +8,7 @@ import backtype.storm.tuple.Fields;
 import storm.tpb.aggregate.*;
 import storm.tpb.bolts.*;
 import storm.tpb.spouts.RedisBatchSpout;
-import storm.tpb.testing.SaveCountChannelByTranBolt;
+import storm.tpb.bolts.SaveCountChannelByTranBolt;
 import storm.tpb.tools.function;
 import storm.tpb.util.Properties;
 import storm.trident.Stream;

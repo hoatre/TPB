@@ -176,6 +176,12 @@ router.get('/ChannelByTran', function(req, res) {
 	res.render('ChannelByTran', { title: 'ChannelByTran' });
 });
 
+//Point chart display
+router.get('/PercenOfTran', function(req, res) {
+	console.log('PercenOfTran request');
+	res.render('PercenOfTran', { title: 'PercenOfTran' });
+});
+
 //smoothie chart display
 router.get('/smoothieChart', function(req, res, next) {
 

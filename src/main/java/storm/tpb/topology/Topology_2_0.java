@@ -8,7 +8,6 @@ import backtype.storm.tuple.Fields;
 import storm.tpb.aggregate.*;
 import storm.tpb.bolts.*;
 import storm.tpb.spouts.RedisBatchSpout;
-import storm.tpb.testing.*;
 import storm.tpb.tools.function;
 import storm.tpb.util.Properties;
 import storm.trident.Stream;
@@ -16,6 +15,7 @@ import storm.trident.TridentTopology;
 import storm.trident.operation.builtin.Count;
 import storm.trident.operation.builtin.Sum;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -61,9 +61,13 @@ public class Topology_2_0 {
         TopologySlidingRanking(PARAM.SlidingTime.Time2.getTime() * 1000, topology, TransactionCode);
         TopologySlidingRanking(PARAM.SlidingTime.Time3.getTime() * 1000, topology, TransactionCode);
 
-        TopologySlidingCountByTransaction(PARAM.SlidingTime.Time1.getTime() * 1000, topology);
-        TopologySlidingCountByTransaction(PARAM.SlidingTime.Time2.getTime() * 1000, topology);
-        TopologySlidingCountByTransaction(PARAM.SlidingTime.Time3.getTime() * 1000, topology);
+        TopologySlidingCountChannelByTransaction(PARAM.SlidingTime.Time1.getTime() * 1000, topology);
+        TopologySlidingCountChannelByTransaction(PARAM.SlidingTime.Time2.getTime() * 1000, topology);
+        TopologySlidingCountChannelByTransaction(PARAM.SlidingTime.Time3.getTime() * 1000, topology);
+
+        TopologySlidingSumAmountTransactionByChannel(PARAM.SlidingTime.Time1.getTime() * 1000, topology);
+        TopologySlidingSumAmountTransactionByChannel(PARAM.SlidingTime.Time2.getTime() * 1000, topology);
+        TopologySlidingSumAmountTransactionByChannel(PARAM.SlidingTime.Time3.getTime() * 1000, topology);
 
         return topology.build();
     }
@@ -76,7 +80,8 @@ public class Topology_2_0 {
 
         //Cut & Split data
         Stream PreStream = spoutStream
-                .each(new Fields("list"), new SplitChannelBolt(jsonFields), jsonFields);
+                .each(new Fields("list"), new SplitChannelBolt(jsonFields), jsonFields)
+                .each(jsonFields, new SlidingFilterBolt((long)slidingTime));
 
         // count tran with each channel
         Stream CountStream = PreStream
@@ -95,7 +100,7 @@ public class Topology_2_0 {
                 .each(new Fields("string"), new SaveCountSumBolt(slidingTime), new Fields("print"));
     }
 
-    private static void TopologySlidingCountByTransaction(double slidingTime, TridentTopology topology)
+    private static void TopologySlidingCountChannelByTransaction(double slidingTime, TridentTopology topology)
     {
         RedisBatchSpout spout = new RedisBatchSpout(Properties.getString("redis.host"), Properties.getInt("redis.port"), (long)slidingTime);
         Stream spoutStream = topology
@@ -103,7 +108,8 @@ public class Topology_2_0 {
 
         //Cut & Split data
         Stream PreStream = spoutStream
-                .each(new Fields("list"), new SplitChannelBolt(jsonFields), jsonFields);
+                .each(new Fields("list"), new SplitChannelBolt(jsonFields), jsonFields)
+                .each(jsonFields, new SlidingFilterBolt((long) slidingTime));
 
         // count tran with each channel
         Stream CountStream = PreStream
@@ -111,6 +117,48 @@ public class Topology_2_0 {
                 .aggregate(new Fields("ch_id", "trx_code"), new Count(), new Fields("count"))
                 .aggregate(new Fields("ch_id", "trx_code", "count"), new AddStringCountChannelByTran(), new Fields("string"))
                 .each(new Fields("string"), new SaveCountChannelByTranBolt(slidingTime), new Fields("print"));
+    }
+
+    private static void TopologySlidingSumAmountTransactionByChannel(double slidingTime, TridentTopology topology)
+    {
+        RedisBatchSpout spout = new RedisBatchSpout(Properties.getString("redis.host"), Properties.getInt("redis.port"), (long)slidingTime);
+        Stream spoutStream = topology
+                .newStream("stream-" + (long) slidingTime + "SumByTran", spout);
+
+        //Cut & Split data
+        Stream PreStream = spoutStream
+                .each(new Fields("list"), new SplitChannelBolt(jsonFields), jsonFields)
+                .each(jsonFields, new SlidingFilterBolt((long) slidingTime));
+
+        List<String> fields = new ArrayList<String>();
+        fields.add("ch_id");
+        fields.add("trx_code");
+        fields.add("sum");
+        // count tran with each channel
+        Stream CountStream = PreStream
+                .groupBy(new Fields("ch_id", "trx_code"))
+                .aggregate(new Fields("amount"), new Sum(), new Fields("sum"))
+                .aggregate(new Fields("ch_id", "trx_code", "sum"), new JoinToListJSONObject(fields), new Fields("string"))
+                .each(new Fields("string"), new SaveSumAmountTranByChannelBolt(slidingTime), new Fields("print"));
+    }
+
+    private static void TopologySlidingSumAmountByTransaction(double slidingTime, TridentTopology topology)
+    {
+        RedisBatchSpout spout = new RedisBatchSpout(Properties.getString("redis.host"), Properties.getInt("redis.port"), (long)slidingTime);
+        Stream spoutStream = topology
+                .newStream("stream-" + (long) slidingTime + "CountByTran", spout);
+
+        //Cut & Split data
+        Stream PreStream = spoutStream
+                .each(new Fields("list"), new SplitChannelBolt(jsonFields), jsonFields)
+                .each(jsonFields, new SlidingFilterBolt((long) slidingTime));
+
+//        // count tran with each channel
+//        Stream CountStream = PreStream
+//                .groupBy(new Fields("trx_code"))
+//                .aggregate(new Fields("amount"), new Sum(), new Fields("sum"))
+//                .aggregate(new Fields("trx_code", "sum"), new JoinToListJSONObject(new ArrayList<String>("trx_code", "sum")), new Fields("string"))
+//                .each(new Fields("string"), new SaveCountChannelByTranBolt(slidingTime), new Fields("print"));
     }
 
     private static void TopologySlidingRanking(double slidingTime, TridentTopology topology, List<String> TransactionCode)
@@ -121,7 +169,8 @@ public class Topology_2_0 {
 
         //Cut & Split data
         Stream PreStream = spoutStream
-                .each(new Fields("list"), new SplitChannelBolt(jsonFields), jsonFields);
+                .each(new Fields("list"), new SplitChannelBolt(jsonFields), jsonFields)
+                .each(jsonFields, new SlidingFilterBolt((long) slidingTime));
 
         // ranking theo transactionType
         Stream RankingStream = PreStream
@@ -146,7 +195,8 @@ public class Topology_2_0 {
 
         //Cut & Split data
         Stream PreStream = spoutStream
-                .each(new Fields("list"), new SplitChannelBolt(jsonFields), jsonFields);
+                .each(new Fields("list"), new SplitChannelBolt(jsonFields), jsonFields)
+                .each(jsonFields, new SlidingFilterBolt((long) slidingTime));
 
         // count tran with each channel
         Stream CountStream = PreStream

@@ -343,6 +343,7 @@ io.sockets.on('connection',function(socket){
 
         redis_lrange('real-time-count-chart-' + commonConfig.SlidingTimeMinute, socket);
         redis_lrange('real-time-count-chart-tran-' + commonConfig.SlidingTimeMinute, socket);
+        redis_lrange('real-time-sum-chart-tran-' + commonConfig.SlidingTimeMinute, socket);
         redis_lrange('Sliding-data-' + commonConfig.SlidingTimeMinute, socket);
     t1 = setInterval(function() {
         GetBotTop(commonConfig.SlidingTimeMinute, socket);
@@ -350,27 +351,32 @@ io.sockets.on('connection',function(socket){
         GetBotTop(commonConfig.SlidingTimeHour, socket);
         redis_lrange('real-time-count-chart-' + commonConfig.SlidingTimeMinute, socket);
         redis_lrange('real-time-count-chart-tran-' + commonConfig.SlidingTimeMinute, socket);
+        redis_lrange('real-time-sum-chart-tran-' + commonConfig.SlidingTimeMinute, socket);
         redis_lrange('Sliding-data-' + commonConfig.SlidingTimeMinute, socket);
     }, commonConfig.SlidingTimeDelayMinute);
 
     redis_lrange('real-time-count-chart-' + commonConfig.SlidingTimeHour, socket);
     redis_lrange('real-time-count-chart-tran-' + commonConfig.SlidingTimeHour, socket);
+    redis_lrange('real-time-sum-chart-tran-' + commonConfig.SlidingTimeHour, socket);
     redis_lrange('Sliding-data-' + commonConfig.SlidingTimeHour, socket);
     GetBotTop(commonConfig.SlidingTimeHour, socket);
     t2 = setInterval(function() {
 
         redis_lrange('real-time-count-chart-' + commonConfig.SlidingTimeHour, socket);
         redis_lrange('real-time-count-chart-tran-' + commonConfig.SlidingTimeHour, socket);
+        redis_lrange('real-time-sum-chart-tran-' + commonConfig.SlidingTimeHour, socket);
         redis_lrange('Sliding-data-' + commonConfig.SlidingTimeHour, socket);
     }, commonConfig.SlidingTimeDelayHour);
 
     redis_lrange('real-time-count-chart-' + commonConfig.SlidingTimeDay, socket);
     redis_lrange('real-time-count-chart-tran-' + commonConfig.SlidingTimeDay, socket);
+    redis_lrange('real-time-sum-chart-tran-' + commonConfig.SlidingTimeDay, socket);
     redis_lrange('Sliding-data-' + commonConfig.SlidingTimeDay, socket);
     GetBotTop(commonConfig.SlidingTimeDay, socket);
     t3 = setInterval(function() {
         redis_lrange('Sliding-data-' + commonConfig.SlidingTimeDay, socket);
         redis_lrange('real-time-count-chart-' + commonConfig.SlidingTimeDay, socket);
+        redis_lrange('real-time-sum-chart-tran-' + commonConfig.SlidingTimeDay, socket);
         redis_lrange('real-time-count-chart-tran-' + commonConfig.SlidingTimeDay, socket);
     }, commonConfig.SlidingTimeDelayDay);
 

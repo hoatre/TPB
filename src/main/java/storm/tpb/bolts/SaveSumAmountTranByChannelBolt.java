@@ -1,4 +1,4 @@
-package storm.tpb.testing;
+package storm.tpb.bolts;
 
 import org.json.JSONObject;
 import redis.clients.jedis.Jedis;
@@ -10,9 +10,9 @@ import storm.trident.tuple.TridentTuple;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SaveCountChannelByTranBolt extends BaseFunction{
+public class SaveSumAmountTranByChannelBolt extends BaseFunction{
     private double Sliding;
-    public SaveCountChannelByTranBolt(double Sliding){
+    public SaveSumAmountTranByChannelBolt(double Sliding){
         this.Sliding = Sliding;
     }
     public void execute(TridentTuple tuple, TridentCollector collector) {
@@ -25,15 +25,15 @@ public class SaveCountChannelByTranBolt extends BaseFunction{
 
             JSONObject jsonAll = new JSONObject();
             if(!list.isEmpty() && list != null) {
-                for (JSONObject jsonObject : list) {
-                    jsonAll.put(jsonObject.getString("transaction") + "-" + jsonObject.getString("channel") + "-count", jsonObject.getString("count"));
+                for (int i = 0; i<list.size(); i++) {
+                    jsonAll.put(list.get(i).getString("trx_code") + "-" + list.get(i).getString("ch_id") + "-sum", list.get(i).getString("sum"));
                 }
             }
             jsonAll.put("time", System.currentTimeMillis());
 
-            jedis.rpush("real-time-count-chart-tran-" + (long)this.Sliding, jsonAll.toString());
+            jedis.rpush("real-time-sum-chart-tran-" + (long)this.Sliding, jsonAll.toString());
             jedis.disconnect();
-            System.out.println("done SaveCountChannelByTranBolt");
+            System.out.println("done SaveSumAmountTranByChannelBolt");
         }catch (Exception e){e.printStackTrace();}
     }
 }

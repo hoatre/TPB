@@ -1,0 +1,41 @@
+extends layout
+
+block content  
+  // START YOUR CONTENT HERE
+  .row
+    .col-lg-12.col-sm-12
+      // Server Info Charts .morris
+      .portlet
+        .portlet-heading.inverse
+          .portlet-title
+            h4
+              i.fa.fa-line-chart
+              |  Branches Statics
+          .portlet-widgets
+            a#daterange.tooltip-primary(href='javascript:;', data-placement='top', data-rel='tooltip', title='DateRangePicker')
+              i.fa.fa-calendar
+            span.divider
+            a(data-toggle='collapse', data-parent='#accordion', href='#m-charts')
+              i.fa.fa-chevron-down
+          .clearfix
+        #m-charts.panel-collapse.collapse.in
+          .portlet-body
+            .row
+              .col-sm-9
+                h4 Branch Transactions Distribution - Count
+                #PercenOfTran(style='height: 250px; width: 100%;')
+                h4 Branch Transactions Distribution - Sum
+                #PercenOfTranS(style='height: 250px; width: 100%;')
+              .col-sm-3
+                h4 Settings
+                hr.separator
+                h5 Time
+                select#SlidingTimeCbo.form-control
+                h5 Channel
+                select#ChannelCbo.form-control
+block append script
+  //App script
+  script(src='socket.io/socket.io.js')
+  script(src='/assets/js/app/canvasjs.min.js') //Chart
+  script(src='/assets/js/underscore.string.min.js')
+  script(src='/assets/js/app/PercenOfTran.js') //Sefl code for dashboard

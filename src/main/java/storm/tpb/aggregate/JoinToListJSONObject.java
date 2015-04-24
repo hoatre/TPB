@@ -13,6 +13,7 @@ import java.util.List;
  */
 public class JoinToListJSONObject implements CombinerAggregator<List<JSONObject>> {
     private List<String> Fields = new ArrayList<String>();
+
     public JoinToListJSONObject(List<String> Fields) {
         this.Fields = Fields;
     }
@@ -30,12 +31,13 @@ public class JoinToListJSONObject implements CombinerAggregator<List<JSONObject>
         return newList;
     }
 
+    @Override
     public List<JSONObject> init(TridentTuple tuple) {
         try {
             List<JSONObject> list = new ArrayList<JSONObject>();
             JSONObject jsonObject = new JSONObject();
             for(String Field : this.Fields) {
-                jsonObject.put(Field, tuple.getStringByField(Field));
+                jsonObject.put(Field, tuple.getValueByField(Field));
             }
             list.add(jsonObject);
             return list;
@@ -45,6 +47,7 @@ public class JoinToListJSONObject implements CombinerAggregator<List<JSONObject>
         }
     }
 
+    @Override
     public List<JSONObject> zero() {
         return null;
     }

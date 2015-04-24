@@ -174,7 +174,6 @@ function buidData()
         for (var i = 0; i < transactionCode.length; i++) {
             if(data[k].name==(transactionCode[i].TransactionName)) {
                 var dataPoints = [];
-
                 for (var j = 0; j < jsonObj.length; j += 1) {
                     if(jsonObj[j]["trx_code"] == transactionCode[i].TransactionCode) {
 
