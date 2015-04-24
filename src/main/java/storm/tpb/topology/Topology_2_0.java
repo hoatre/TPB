@@ -49,9 +49,9 @@ public class Topology_2_0 {
 
         List<String> TransactionCode = function.GetListMongo(Properties.getString("MongoDB.TransactionTypes"), "TransactionCode");
 
-        TopologySlidingCountSum(PARAM.SlidingTime.Time1.getTime() * 1000, topology);
-        TopologySlidingCountSum(PARAM.SlidingTime.Time2.getTime() * 1000, topology);
-        TopologySlidingCountSum(PARAM.SlidingTime.Time3.getTime() * 1000, topology);
+        TopologySlidingCountSum(PARAM.SlidingTime.Time1.getTime() * 1000, topology, "ch_id");
+        TopologySlidingCountSum(PARAM.SlidingTime.Time2.getTime() * 1000, topology, "ch_id");
+        TopologySlidingCountSum(PARAM.SlidingTime.Time3.getTime() * 1000, topology, "ch_id");
 
         TopologySlidingOtherChart(PARAM.SlidingTime.Time1.getTime() * 1000, topology);
         TopologySlidingOtherChart(PARAM.SlidingTime.Time2.getTime() * 1000, topology);
@@ -72,7 +72,7 @@ public class Topology_2_0 {
         return topology.build();
     }
 
-    private static void TopologySlidingCountSum(double slidingTime, TridentTopology topology)
+    private static void TopologySlidingCountSum(double slidingTime, TridentTopology topology, String group)
     {
         RedisBatchSpout spout = new RedisBatchSpout(Properties.getString("redis.host"), Properties.getInt("redis.port"), (long)slidingTime);
         Stream spoutStream = topology
@@ -85,18 +85,18 @@ public class Topology_2_0 {
 
         // count tran with each channel
         Stream CountStream = PreStream
-                .groupBy(new Fields("ch_id"))
-                .aggregate(new Fields("ch_id"), new Count(), new Fields("count"));
+                .groupBy(new Fields(group))
+                .aggregate(new Fields(group), new Count(), new Fields("count"));
 
         // sum amount with each channel
         Stream SumStream = PreStream
-                .groupBy(new Fields("ch_id"))
+                .groupBy(new Fields(group))
                 .aggregate(new Fields("amount"), new Sum(), new Fields("sum"));
 
         // merge stream to save redis
         Stream MergeStream = topology
-                .join(CountStream, new Fields("ch_id"), SumStream, new Fields("ch_id"), new Fields("ch_id", "count", "sum"))
-                .aggregate(new Fields("ch_id", "count", "sum"), new AddStringCountSum(), new Fields("string"))
+                .join(CountStream, new Fields(group), SumStream, new Fields(group), new Fields(group, "count", "sum"))
+                .aggregate(new Fields(group, "count", "sum"), new AddStringCountSum(), new Fields("string"))
                 .each(new Fields("string"), new SaveCountSumBolt(slidingTime), new Fields("print"));
     }
 

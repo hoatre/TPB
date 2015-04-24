@@ -52,6 +52,10 @@ function OpenSocket(){
 
 
         var x = document.getElementById("ChannelCbo");
+        var option1 = document.createElement("option");
+        option1.text = "All Channel";
+        option1.value = "All";
+        x.add(option1);
         for(var i = 0; i<channelCode.length; i++) {
             var option = document.createElement("option");
             option.text = channelCode[i].ChannelName;
@@ -253,36 +257,99 @@ function buidData()
         for (var i = 0; i < transactionCode.length; i++) {
             var visible = false;
 
-            if (visible == false && jsonObj[jsonObj.length - 1][transactionCode[i].TransactionCode + "-" + channelSelected + "-count"] != null && jsonObj[jsonObj.length - 1][transactionCode[i].TransactionCode + "-" + channelSelected + "-count"] != "") visible = true;
-            if (jsonObj[jsonObj.length - 1][transactionCode[i].TransactionCode + "-" + channelSelected + "-count"] != null && jsonObj[jsonObj.length - 1][transactionCode[i].TransactionCode + "-" + channelSelected + "-count"] != "") {
+            if (channelSelected == "All"){
+                for(var f=0; f<channelCode.length; f++){
+                    if (visible == false && jsonObj[jsonObj.length - 1][transactionCode[i].TransactionCode + "-" + channelCode[f].ChannelCode + "-count"] != null && jsonObj[jsonObj.length - 1][transactionCode[i].TransactionCode + "-" + channelCode[f].ChannelCode + "-count"] != "") visible = true;
+                    if (jsonObj[jsonObj.length - 1][transactionCode[i].TransactionCode + "-" + channelCode[f].ChannelCode + "-count"] != null && jsonObj[jsonObj.length - 1][transactionCode[i].TransactionCode + "-" + channelCode[f].ChannelCode + "-count"] != "") {
 
-                dataPoints.push({
-                    //x: new Date(jsonObj[jsonObj.length - 1]["time"]),
-                    y: parseInt(jsonObj[jsonObj.length - 1][transactionCode[i].TransactionCode + "-" + channelSelected + "-count"]),
-                    label: transactionCode[i].TransactionName,
-                    color: listColor[i]
-                });
+                        dataPoints.push({
+                            y: parseInt(jsonObj[jsonObj.length - 1][transactionCode[i].TransactionCode + "-" + channelCode[f].ChannelCode + "-count"]),
+                            label: transactionCode[i].TransactionName
+                            //color: listColor[i]
+                        });
+                    }
+                }
+            }else {
+                if (visible == false && jsonObj[jsonObj.length - 1][transactionCode[i].TransactionCode + "-" + channelSelected + "-count"] != null && jsonObj[jsonObj.length - 1][transactionCode[i].TransactionCode + "-" + channelSelected + "-count"] != "") visible = true;
+                if (jsonObj[jsonObj.length - 1][transactionCode[i].TransactionCode + "-" + channelSelected + "-count"] != null && jsonObj[jsonObj.length - 1][transactionCode[i].TransactionCode + "-" + channelSelected + "-count"] != "") {
+
+                    dataPoints.push({
+                        y: parseInt(jsonObj[jsonObj.length - 1][transactionCode[i].TransactionCode + "-" + channelSelected + "-count"]),
+                        label: transactionCode[i].TransactionName
+                        //color: listColor[i]
+                    });
 
 
+                }
             }
 
             var visibleS = false;
 
-            if (visibleS == false && jsonObjS[jsonObjS.length - 1][transactionCode[i].TransactionCode + "-" + channelSelected + "-sum"] != null && jsonObjS[jsonObjS.length - 1][transactionCode[i].TransactionCode + "-" + channelSelected + "-sum"] != "") visibleS = true;
-            if (jsonObjS[jsonObjS.length - 1][transactionCode[i].TransactionCode + "-" + channelSelected + "-sum"] != null && jsonObjS[jsonObjS.length - 1][transactionCode[i].TransactionCode + "-" + channelSelected + "-sum"] != "") {
+            if (channelSelected == "All"){
+                for(var f=0; f<channelCode.length; f++){
+                    if (visibleS == false && jsonObjS[jsonObjS.length - 1][transactionCode[i].TransactionCode + "-" + channelCode[f].ChannelCode + "-sum"] != null && jsonObjS[jsonObjS.length - 1][transactionCode[i].TransactionCode + "-" + channelCode[f].ChannelCode + "-sum"] != "") visibleS = true;
+                    if (jsonObjS[jsonObjS.length - 1][transactionCode[i].TransactionCode + "-" + channelCode[f].ChannelCode + "-sum"] != null && jsonObjS[jsonObjS.length - 1][transactionCode[i].TransactionCode + "-" + channelCode[f].ChannelCode + "-sum"] != "") {
 
-                dataPointsS.push({
-                    //x: new Date(jsonObj[jsonObj.length - 1]["time"]),
-                    y: parseInt(jsonObjS[jsonObjS.length - 1][transactionCode[i].TransactionCode + "-" + channelSelected + "-sum"]),
-                    label: transactionCode[i].TransactionName,
-                    color: listColor[i]
-                });
+                        dataPointsS.push({
+                            y: parseInt(jsonObjS[jsonObjS.length - 1][transactionCode[i].TransactionCode + "-" + channelCode[f].ChannelCode + "-sum"]),
+                            label: transactionCode[i].TransactionName
+                            //color: listColor[i]
+                        });
+                    }
+                }
+            }else {
+                if (visibleS == false && jsonObjS[jsonObjS.length - 1][transactionCode[i].TransactionCode + "-" + channelSelected + "-sum"] != null && jsonObjS[jsonObjS.length - 1][transactionCode[i].TransactionCode + "-" + channelSelected + "-sum"] != "") visibleS = true;
+                if (jsonObjS[jsonObjS.length - 1][transactionCode[i].TransactionCode + "-" + channelSelected + "-sum"] != null && jsonObjS[jsonObjS.length - 1][transactionCode[i].TransactionCode + "-" + channelSelected + "-sum"] != "") {
+
+                    dataPointsS.push({
+                        //x: new Date(jsonObj[jsonObj.length - 1]["time"]),
+                        y: parseInt(jsonObjS[jsonObjS.length - 1][transactionCode[i].TransactionCode + "-" + channelSelected + "-sum"]),
+                        label: transactionCode[i].TransactionName
+                    });
 
 
+                }
             }
         }
     }
-    dataPoints.sort(function (a, b) {
+
+    var result = Enumerable.From(dataPoints)
+        .GroupBy(function (x) { return x.label },     // Key selector
+        function (x) {                          // Element selector
+            return {
+                label: x.label,
+                y: x.y
+            }
+        },
+        function (x, grouping) {                   // Result selector
+            return {
+                label: x,
+                y: grouping.Sum(function (item) {
+                    return item.y
+                })
+            }
+        })
+        .ToArray();
+
+    var resultS = Enumerable.From(dataPointsS)
+        .GroupBy(function (x) { return x.label },     // Key selector
+        function (x) {                          // Element selector
+            return {
+                label: x.label,
+                y: x.y
+            }
+        },
+        function (x, grouping) {                   // Result selector
+            return {
+                label: x,
+                y: grouping.Sum(function (item) {
+                    return item.y
+                })
+            }
+        })
+        .ToArray();
+
+    result.sort(function (a, b) {
 
         if(a.y != "undefined" && b.y != "undefined") {
             if (parseInt(a.y) < parseInt(b.y)) {
@@ -297,7 +364,7 @@ function buidData()
         // a must be equal to b
         return 0;
     });
-    dataPointsS.sort(function (a, b) {
+    resultS.sort(function (a, b) {
 
         if(a.y != "undefined" && b.y != "undefined") {
             if (parseInt(a.y) < parseInt(b.y)) {
@@ -312,21 +379,30 @@ function buidData()
         // a must be equal to b
         return 0;
     });
+
+    //var linq = Enumerable.From(dataPoints);
+    //var result =
+    //    linq.GroupBy(function(x){return x.label;})
+    //        .Select(function(x){return {color: x.color, label:x.Key(), y: x.Sum(function(y){return y.y|0;}) };})
+    //        .ToArray();
+
+
+
     TongCountTran = 0;
     TongCountTranS = 0;
 
-    for(var i = 0; i < dataPoints.length; i++){
-        TongCountTran = parseInt(TongCountTran) + parseInt(dataPoints[i].y);
+    for(var i = 0; i < result.length; i++){
+        TongCountTran = parseInt(TongCountTran) + parseInt(result[i].y);
     }
-    for(var i = 0; i < dataPointsS.length; i++){
-        TongCountTranS = parseInt(TongCountTranS) + parseInt(dataPointsS[i].y);
+    for(var i = 0; i < resultS.length; i++){
+        TongCountTranS = parseInt(TongCountTranS) + parseInt(resultS[i].y);
     }
     var dataSeries = {
         type: "column",
         //showInLegend: true,
         //name: transactionCode[i].TransactionName,
         toolTipContent : "<span style='\"'color: {color};'\"'><strong>{label}</strong></span> count : </span> {y}",
-        dataPoints:dataPoints,
+        dataPoints:result,
         indexLabelPlacement: "inside",
         indexLabelFontColor: "white",
         indexLabelFontWeight: 600,
@@ -337,7 +413,7 @@ function buidData()
         //showInLegend: true,
         //name: transactionCode[i].TransactionName,
         toolTipContent : "<span style='\"'color: {color};'\"'><strong>{label}</strong></span> sum : </span> {y}",
-        dataPoints:dataPointsS,
+        dataPoints:resultS,
         indexLabelPlacement: "inside",
         indexLabelFontColor: "white",
         indexLabelFontWeight: 600,
@@ -357,31 +433,96 @@ function buidDataLine()
     if(transactionCode.length > 0) {
         for (var i = 0; i < transactionCode.length; i++) {
             var visible = false;
-
-            if (visible == false && jsonObj[jsonObj.length - 1][transactionCode[i].TransactionCode + "-" + channelSelected + "-count"] != null && jsonObj[jsonObj.length - 1][transactionCode[i].TransactionCode + "-" + channelSelected + "-count"] != "") visible = true;
-            if (jsonObj[jsonObj.length - 1][transactionCode[i].TransactionCode + "-" + channelSelected + "-count"] != null && jsonObj[jsonObj.length - 1][transactionCode[i].TransactionCode + "-" + channelSelected + "-count"] != "") {
-                //if(dataPoints.length > 0) {
-                //    var cong = parseInt(dataPoints[dataPoints.length - 1].y);
+            if (channelSelected == "All"){
+                for(var f=0; f<channelCode.length; f++){
+                    if (visible == false && jsonObj[jsonObj.length - 1][transactionCode[i].TransactionCode + "-" + channelCode[f].ChannelCode + "-count"] != null && jsonObj[jsonObj.length - 1][transactionCode[i].TransactionCode + "-" + channelCode[f].ChannelCode + "-count"] != "") visible = true;
+                    if (jsonObj[jsonObj.length - 1][transactionCode[i].TransactionCode + "-" + channelCode[f].ChannelCode + "-count"] != null && jsonObj[jsonObj.length - 1][transactionCode[i].TransactionCode + "-" + channelCode[f].ChannelCode + "-count"] != "") {
+                        //if(dataPoints.length > 0) {
+                        //    var cong = parseInt(dataPoints[dataPoints.length - 1].y);
+                        dataPoints.push({
+                            y: (parseInt(jsonObj[jsonObj.length - 1][transactionCode[i].TransactionCode + "-" + channelCode[f].ChannelCode + "-count"]) / parseInt(TongCountTran)) * 100,
+                            label: transactionCode[i].TransactionName
+                        });
+                        //}
+                    }
+                }
+            }else {
+                if (visible == false && jsonObj[jsonObj.length - 1][transactionCode[i].TransactionCode + "-" + channelSelected + "-count"] != null && jsonObj[jsonObj.length - 1][transactionCode[i].TransactionCode + "-" + channelSelected + "-count"] != "") visible = true;
+                if (jsonObj[jsonObj.length - 1][transactionCode[i].TransactionCode + "-" + channelSelected + "-count"] != null && jsonObj[jsonObj.length - 1][transactionCode[i].TransactionCode + "-" + channelSelected + "-count"] != "") {
+                    //if(dataPoints.length > 0) {
+                    //    var cong = parseInt(dataPoints[dataPoints.length - 1].y);
                     dataPoints.push({
                         y: (parseInt(jsonObj[jsonObj.length - 1][transactionCode[i].TransactionCode + "-" + channelSelected + "-count"]) / parseInt(TongCountTran)) * 100,
                         label: transactionCode[i].TransactionName
                     });
-                //}
+                    //}
+                }
             }
 
             var visibleS = false;
-
-            if (visibleS == false && jsonObjS[jsonObjS.length - 1][transactionCode[i].TransactionCode + "-" + channelSelected + "-sum"] != null && jsonObjS[jsonObjS.length - 1][transactionCode[i].TransactionCode + "-" + channelSelected + "-sum"] != "") visibleS = true;
-            if (jsonObjS[jsonObjS.length - 1][transactionCode[i].TransactionCode + "-" + channelSelected + "-sum"] != null && jsonObjS[jsonObjS.length - 1][transactionCode[i].TransactionCode + "-" + channelSelected + "-sum"] != "") {
-                dataPointsS.push({
-                    y: (parseInt(jsonObjS[jsonObjS.length - 1][transactionCode[i].TransactionCode + "-" + channelSelected + "-sum"]) / parseInt(TongCountTranS)) * 100,
-                    label: transactionCode[i].TransactionName
-                });
-                //}
+            if (channelSelected == "All"){
+                for(var f=0; f<channelCode.length; f++){
+                    if (visibleS == false && jsonObjS[jsonObjS.length - 1][transactionCode[i].TransactionCode + "-" + channelCode[f].ChannelCode + "-sum"] != null && jsonObjS[jsonObjS.length - 1][transactionCode[i].TransactionCode + "-" + channelCode[f].ChannelCode + "-sum"] != "") visibleS = true;
+                    if (jsonObjS[jsonObjS.length - 1][transactionCode[i].TransactionCode + "-" + channelCode[f].ChannelCode + "-sum"] != null && jsonObjS[jsonObjS.length - 1][transactionCode[i].TransactionCode + "-" + channelCode[f].ChannelCode + "-sum"] != "") {
+                        //if(dataPoints.length > 0) {
+                        //    var cong = parseInt(dataPoints[dataPoints.length - 1].y);
+                        dataPointsS.push({
+                            y: (parseInt(jsonObjS[jsonObjS.length - 1][transactionCode[i].TransactionCode + "-" + channelCode[f].ChannelCode + "-sum"]) / parseInt(TongCountTranS)) * 100,
+                            label: transactionCode[i].TransactionName
+                        });
+                        //}
+                    }
+                }
+            }else {
+                if (visibleS == false && jsonObjS[jsonObjS.length - 1][transactionCode[i].TransactionCode + "-" + channelSelected + "-sum"] != null && jsonObjS[jsonObjS.length - 1][transactionCode[i].TransactionCode + "-" + channelSelected + "-sum"] != "") visibleS = true;
+                if (jsonObjS[jsonObjS.length - 1][transactionCode[i].TransactionCode + "-" + channelSelected + "-sum"] != null && jsonObjS[jsonObjS.length - 1][transactionCode[i].TransactionCode + "-" + channelSelected + "-sum"] != "") {
+                    dataPointsS.push({
+                        y: (parseInt(jsonObjS[jsonObjS.length - 1][transactionCode[i].TransactionCode + "-" + channelSelected + "-sum"]) / parseInt(TongCountTranS)) * 100,
+                        label: transactionCode[i].TransactionName
+                    });
+                    //}
+                }
             }
         }
     }
-    dataPoints.sort(function (a, b) {
+
+    var result = Enumerable.From(dataPoints)
+        .GroupBy(function (x) { return x.label },     // Key selector
+        function (x) {                          // Element selector
+            return {
+                label: x.label,
+                y: x.y
+            }
+        },
+        function (x, grouping) {                   // Result selector
+            return {
+                label: x,
+                y: grouping.Sum(function (item) {
+                    return item.y
+                })
+            }
+        })
+        .ToArray();
+
+    var resultS = Enumerable.From(dataPointsS)
+        .GroupBy(function (x) { return x.label },     // Key selector
+        function (x) {                          // Element selector
+            return {
+                label: x.label,
+                y: x.y
+            }
+        },
+        function (x, grouping) {                   // Result selector
+            return {
+                label: x,
+                y: grouping.Sum(function (item) {
+                    return item.y
+                })
+            }
+        })
+        .ToArray();
+
+    result.sort(function (a, b) {
 
         if(a.y != "undefined" && b.y != "undefined") {
             if (parseInt(a.y) < parseInt(b.y)) {
@@ -396,7 +537,7 @@ function buidDataLine()
         // a must be equal to b
         return 0;
     });
-    dataPointsS.sort(function (a, b) {
+    resultS.sort(function (a, b) {
 
         if(a.y != "undefined" && b.y != "undefined") {
             if (parseInt(a.y) < parseInt(b.y)) {
@@ -411,14 +552,17 @@ function buidDataLine()
         // a must be equal to b
         return 0;
     });
-    for(var i = 0; i<dataPoints.length; i++){
+
+
+
+    for(var i = 0; i<result.length; i++){
         if(i > 0) {
-            dataPoints[i].y += dataPoints[i-1].y;
+            result[i].y += result[i-1].y;
         }
     }
-    for(var i = 0; i<dataPointsS.length; i++){
+    for(var i = 0; i<resultS.length; i++){
         if(i > 0) {
-            dataPointsS[i].y += dataPointsS[i-1].y;
+            resultS[i].y += resultS[i-1].y;
         }
     }
     var dataSeries = {
@@ -428,7 +572,7 @@ function buidDataLine()
         //showInLegend: true,
         name: "Transaction percent",
         toolTipContent : "<span style='\"'color: {color};'\"'> {y} %",
-        dataPoints:dataPoints
+        dataPoints:result
     };
     var dataSeriesS = {
         yValueFormatString: "####.00",
@@ -437,7 +581,7 @@ function buidDataLine()
         //showInLegend: true,
         name: "Transaction percent",
         toolTipContent : "<span style='\"'color: {color};'\"'> {y} %",
-        dataPoints:dataPointsS
+        dataPoints:resultS
     };
     data.push(dataSeries);
     dataS.push(dataSeriesS);
