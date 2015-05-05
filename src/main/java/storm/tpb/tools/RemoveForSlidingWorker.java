@@ -19,23 +19,33 @@ public class RemoveForSlidingWorker {
     public static void main(String[] args) throws Exception {
         System.out.println("Worker begin");
 
+        CreateTimer(PARAM.Time.MILLISECONDS.getTime() * 500, "Sliding-data-", "timestamp");
+        CreateTimer(PARAM.Time.SECONDS.getTime(), "Sliding-data-", "timestamp");
+        CreateTimer(PARAM.Time.HOURS.getTime(), "Sliding-data-", "timestamp");
+        CreateTimer(PARAM.Time.MINUTES.getTime(), "Sliding-data-", "timestamp");
+        CreateTimer(PARAM.Time.DAYS.getTime(), "Sliding-data-", "timestamp");
+        CreateTimer(PARAM.Time.MINUTES.getTime() * 5, "Sliding-data-", "timestamp");
+
         CreateTimer((long) PARAM.SlidingTime.Time1.getTime() * 1000, "Sliding-data-", "timestamp");
         CreateTimer((long) PARAM.SlidingTime.Time1.getTime() * 1000, "real-time-count-chart-", "time");
         CreateTimer((long) PARAM.SlidingTime.Time1.getTime() * 1000, "real-time-count-chart-tran-", "time");
         CreateTimer((long) PARAM.SlidingTime.Time1.getTime() * 1000, "real-time-count-tran-", "time");
         CreateTimer((long) PARAM.SlidingTime.Time1.getTime() * 1000, "real-time-count-product-", "time");
+        CreateTimer(PARAM.Time.MINUTES.getTime(), "real-time-count-chart-window-", "time");
 
         CreateTimer((long) PARAM.SlidingTime.Time2.getTime() * 1000, "Sliding-data-", "timestamp");
         CreateTimer((long) PARAM.SlidingTime.Time2.getTime() * 1000, "real-time-count-chart-", "time");
         CreateTimer((long) PARAM.SlidingTime.Time2.getTime() * 1000, "real-time-count-chart-tran-", "time");
         CreateTimer((long) PARAM.SlidingTime.Time2.getTime() * 1000, "real-time-count-tran-", "time");
         CreateTimer((long) PARAM.SlidingTime.Time2.getTime() * 1000, "real-time-count-product-", "time");
+        CreateTimer(PARAM.Time.HOURS.getTime(), "real-time-count-chart-window-", "time");
 
         CreateTimer((long) PARAM.SlidingTime.Time3.getTime() * 1000, "Sliding-data-", "timestamp");
         CreateTimer((long) PARAM.SlidingTime.Time3.getTime() * 1000, "real-time-count-chart-", "time");
         CreateTimer((long) PARAM.SlidingTime.Time3.getTime() * 1000, "real-time-count-chart-tran-", "time");
         CreateTimer((long) PARAM.SlidingTime.Time3.getTime() * 1000, "real-time-count-tran-", "time");
         CreateTimer((long) PARAM.SlidingTime.Time3.getTime() * 1000, "real-time-count-product-", "time");
+        CreateTimer(PARAM.Time.DAYS.getTime(), "real-time-count-chart-window-", "time");
     }
 
     private static synchronized void CreateTimer(final long slidingTime,final String key,final String time){

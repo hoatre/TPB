@@ -20,6 +20,24 @@ router.get('/', function(req, res, next) {
 
 });
 
+router.get('/dashboard', function(req, res, next) {
+
+	console.log('Dashboard request');
+	//res.render('index', { title: 'Dashboard' });
+	var db = req.db;
+	var TransactionTypes = db.collection('TransactionTypes');
+	TransactionTypes.find({}).toArray(function(error, transactionTypes) {
+		if (error) return next(error);
+		if (!transactionTypes) return next(new Error('Get list transactionTypes fail.'));
+
+		res.render('dashboard', {
+			title: 'Dashboard',
+			TransactionTypes: transactionTypes || []
+		});
+	});
+
+});
+
 router.get('/productchart', function(req, res, next) {
 
   	console.log('Dashboard request');

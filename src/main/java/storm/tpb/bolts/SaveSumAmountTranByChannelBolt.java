@@ -34,6 +34,7 @@ public class SaveSumAmountTranByChannelBolt extends BaseFunction{
             jedis.rpush("real-time-sum-chart-tran-" + (long)this.Sliding, jsonAll.toString());
             jedis.disconnect();
             System.out.println("done SaveSumAmountTranByChannelBolt");
+            Thread.sleep(Properties.getInt("Load.Interval.Time"));
         }catch (Exception e){e.printStackTrace();}
     }
 }

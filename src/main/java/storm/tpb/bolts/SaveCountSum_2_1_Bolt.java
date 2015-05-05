@@ -10,10 +10,12 @@ import storm.trident.tuple.TridentTuple;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SaveCountProductBolt extends BaseFunction{
+public class SaveCountSum_2_1_Bolt extends BaseFunction{
     private double Sliding;
-    public SaveCountProductBolt(double Sliding){
+    private long SlidingTimeWait = 0;
+    public SaveCountSum_2_1_Bolt(double Sliding, long SlidingTimeWait){
         this.Sliding = Sliding;
+        this.SlidingTimeWait = SlidingTimeWait;
     }
     public void execute(TridentTuple tuple, TridentCollector collector) {
         try {
@@ -27,15 +29,19 @@ public class SaveCountProductBolt extends BaseFunction{
             if(!list.isEmpty() && list != null) {
                 for (String a : list) {
                     JSONObject jsonObject = new JSONObject(a);
-                    jsonAll.put(jsonObject.getString("prd_id") + "-count", jsonObject.getLong("count"));
+                    jsonAll.put(jsonObject.getString("channel") + "-count", jsonObject.getString("count"));
+                    jsonAll.put(jsonObject.getString("channel") + "-sum", jsonObject.getString("sum"));
                 }
             }
             jsonAll.put("time", System.currentTimeMillis());
 
-            jedis.rpush("real-time-count-product-" + (long)this.Sliding, jsonAll.toString());
+            jedis.rpush("real-time-count-chart-window-" + (long)this.Sliding, jsonAll.toString());
             jedis.disconnect();
-            System.out.println("done SaveCountProductBolt");
-            Thread.sleep(Properties.getInt("Load.Interval.Time"));
+            System.out.println("done SaveCountSum_2_1_Bolt");
+            if(this.SlidingTimeWait == 0)
+                Thread.sleep(Properties.getInt("Load.Interval.Time"));
+            else
+                Thread.sleep(SlidingTimeWait);
         }catch (Exception e){e.printStackTrace();}
     }
 }

@@ -59,10 +59,12 @@ public class Topology_1_0 {
 //        Stream parsedStream = spoutStream.each(new Fields("str"), new
 //                JsonProjectFunction(jsonFields), jsonFields);
 
+        TopologySliding(spoutStream, PARAM.Time.MILLISECONDS.getTime()*500);
         TopologySliding(spoutStream, PARAM.Time.SECONDS.getTime());
-        TopologySliding(spoutStream, PARAM.SlidingTime.Time1.getTime() * 1000);
-        TopologySliding(spoutStream, PARAM.SlidingTime.Time2.getTime() * 1000);
-        TopologySliding(spoutStream, PARAM.SlidingTime.Time3.getTime() * 1000);
+        TopologySliding(spoutStream, PARAM.Time.HOURS.getTime());
+        TopologySliding(spoutStream, PARAM.Time.MINUTES.getTime());
+        TopologySliding(spoutStream, PARAM.Time.DAYS.getTime());
+        TopologySliding(spoutStream, PARAM.Time.MINUTES.getTime() * 5);
 
         return topology.build();
     }

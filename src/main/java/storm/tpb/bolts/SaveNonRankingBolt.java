@@ -42,6 +42,7 @@ public class SaveNonRankingBolt extends BaseFunction{
             }
             jedis.disconnect();
             System.out.println("done SaveNonRankingBolt");
+            Thread.sleep(Properties.getInt("Load.Interval.Time"));
         }catch (Exception e){e.printStackTrace();}
     }
 }

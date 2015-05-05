@@ -4,10 +4,7 @@ package storm.tpb.spouts;
  * Created by phonghh on 4/6/15.
  */
 
-import backtype.storm.spout.SpoutOutputCollector;
 import backtype.storm.task.TopologyContext;
-import backtype.storm.topology.IRichSpout;
-import backtype.storm.topology.OutputFieldsDeclarer;
 import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Values;
 import redis.clients.jedis.Jedis;
@@ -19,14 +16,14 @@ import java.util.List;
 import java.util.Map;
 
 //@SuppressWarnings({"serial", "rawtypes"})
-public class RedisBatchSpout implements IBatchSpout {
+public class RedisBatch_2_1_Spout implements IBatchSpout {
 
     private String host;
     private int port;
     private long SlidingTime;
     private long SlidingTimeWait = 0;
 
-    public RedisBatchSpout(String host, int port, long SlidingTime) {
+    public RedisBatch_2_1_Spout(String host, int port, long SlidingTime) {
         this.host = host;
         this.port = port;
         this.SlidingTime = SlidingTime;
@@ -74,7 +71,7 @@ public class RedisBatchSpout implements IBatchSpout {
             collector.emit(new Values(list));
             System.out.println("spout done : " + this.SlidingTime);
 //            if(this.SlidingTimeWait == 0)
-
+//                Thread.sleep(Properties.getInt("Load.Interval.Time"));
 //            else
 //                Thread.sleep(SlidingTimeWait);
             //Thread.yield();

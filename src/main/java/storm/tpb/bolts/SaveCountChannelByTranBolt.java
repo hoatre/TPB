@@ -37,6 +37,7 @@ public class SaveCountChannelByTranBolt extends BaseFunction{
             jedis.rpush("real-time-count-chart-tran-" + (long)this.Sliding, jsonAll.toString());
             jedis.disconnect();
             System.out.println("done SaveCountChannelByTranBolt");
+            Thread.sleep(Properties.getInt("Load.Interval.Time"));
         }catch (Exception e){e.printStackTrace();}
     }
 }
