@@ -97,6 +97,7 @@ function AddCombobox(){
 }
 
 function OnLoad() {
+    alert("check");
     OpenSocket();
     AddCombobox();
     CreateChart();

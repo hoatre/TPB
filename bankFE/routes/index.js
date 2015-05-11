@@ -12,7 +12,8 @@ router.get('/', function(req, res, next) {
 	    if (error) return next(error);
 	    if (!transactionTypes) return next(new Error('Get list transactionTypes fail.'));
 
-	    res.render('index', {
+	    //res.render('index', {
+		res.render('dashboard', {
 	      title: 'Dashboard',
 	      TransactionTypes: transactionTypes || []
 	    });
