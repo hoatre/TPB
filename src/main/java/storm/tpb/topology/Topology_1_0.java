@@ -12,6 +12,7 @@ import storm.kafka.ZkHosts;
 import storm.kafka.trident.OpaqueTridentKafkaSpout;
 import storm.kafka.trident.TridentKafkaConfig;
 import storm.tpb.bolts.SaveSlidingBolt;
+import storm.tpb.testing.StoreTransactionToMongoDB;
 import storm.tpb.util.Properties;
 import storm.trident.Stream;
 import storm.trident.TridentTopology;
@@ -54,7 +55,7 @@ public class Topology_1_0 {
         OpaqueTridentKafkaSpout spout = new OpaqueTridentKafkaSpout(spoutConf);
 
         Stream spoutStream = topology.newStream("kafka-stream", spout);
-
+        spoutStream.each(new Fields("str"), new StoreTransactionToMongoDB(), new Fields("StoreTransactionToMongoDB"));
 
 //        Stream parsedStream = spoutStream.each(new Fields("str"), new
 //                JsonProjectFunction(jsonFields), jsonFields);

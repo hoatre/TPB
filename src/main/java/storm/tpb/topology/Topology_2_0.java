@@ -47,6 +47,7 @@ public class Topology_2_0 {
         TridentTopology topology = new TridentTopology();
 
 
+
         List<String> TransactionCode = function.GetListMongo(Properties.getString("MongoDB.TransactionTypes"), "TransactionCode");
 
         TopologySlidingCountSum(PARAM.SlidingTime.Time1.getTime() * 1000, topology, "ch_id");
